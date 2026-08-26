@@ -1,23 +1,23 @@
-# experiments — taxonomy-conditioned GEPA
+# Taxonomy-conditioned GEPA
 
-Experiment orchestration for the GEPA × failure-taxonomy study: configs, split
-manifests, run scripts, results, logs. Kept separate from PR-bound code per hard
-rule 4.
-
-Baseline GEPA is pinned to **v0.1.4** (`8b0ce6c`). See
-[`docs/findings/phase0-gepa-pin.md`](docs/findings/phase0-gepa-pin.md).
+Companion repository for the study
+[Named Failure Modes: Diagnosing the Program, Not Just the Output](https://andreiberkeley.github.io/gepa-named-failure-modes/blog/2026/08/18/named-failure-modes/):
+the failure-taxonomy components, the experiment pipeline, split manifests, run
+scripts, frozen taxonomies, and offline tests. The optimizer-side hook itself
+lives in [gepa](https://github.com/gepa-ai/gepa) as the
+`reflective_dataset_enricher` argument on `gepa.optimize`.
 
 ## Layout
 
 ```
-configs/            run configs (one per seed / arm)
-manifests/          committed split manifests — a stage boundary artifact
+manifests/          committed split manifests, a stage boundary artifact
 scripts/            standalone stage entrypoints
-src/gepa_taxonomy/  reusable components (PR-bound code lives upstream in ../gepa)
+src/failure_taxonomy/  taxonomy schema, judge, and enricher
+src/gepa_taxonomy/  benchmark programs, adapters, and run machinery
 tests/              free, offline tests
-results/            per-run outputs (raw/ is gitignored)
-logs/
+results/            per-run outputs (raw/ is gitignored) and frozen taxonomies
 docs/findings/      investigation writeups
+patches/            the enricher hook as a patch, for pre-release gepa
 ```
 
 ## Setup
@@ -26,18 +26,11 @@ docs/findings/      investigation writeups
 uv sync
 ```
 
-Taxonomy-conditioned runs use a small optimizer-side GEPA hook. Keep that
-checkout separate from the unmodified v0.1.4 environment used for baseline
-runs:
-
-```bash
-git clone --branch v0.1.4 https://github.com/gepa-ai/gepa.git ../gepa-taxonomy-hook
-git -C ../gepa-taxonomy-hook apply "$PWD/patches/gepa-reflective-dataset-enricher.patch"
-```
-
-The hook runs after an adapter creates its normal reflection records and before
-GEPA requests a revision. It does not wrap, replace, or proxy the adapter, so
-DSPy, LangChain, OpenAI, and custom adapter hooks keep their normal behavior.
+Taxonomy-conditioned runs use GEPA's optimizer-side
+`reflective_dataset_enricher` hook. The hook runs after an adapter creates its
+normal reflection records and before GEPA requests a revision. It does not
+wrap, replace, or proxy the adapter, so DSPy, LangChain, OpenAI, and custom
+adapters keep their normal behavior.
 
 The SWE-Bench harness is optional (it pulls docker + modal) and only needed where
 evaluation actually runs:
@@ -53,7 +46,7 @@ who brings their own taxonomy can skip stages 1–3:
 
 | Stage | Consumes | Produces |
 |---|---|---|
-| 1. Splits | SWE-Bench dataset | `manifests/swebench_full/*.json` |
+| 1. Splits | benchmark dataset | `manifests/<benchmark>/*.json` |
 | 2. Baseline GEPA | manifests, program def | optimized candidate + run state |
 | 3. Trace harvest | candidate, generation manifest | trace bundle (JSONL) |
 | 4. Taxonomy | trace bundle | `taxonomy.json` |
@@ -67,7 +60,7 @@ The stage boundaries remain available, but the normal treatment workflow can be
 started with one command:
 
 ```bash
-uv run gepa-taxonomy hotpotqa --seed 1 --budget 60 --gepa-root ../gepa-taxonomy-hook
+uv run gepa-taxonomy hotpotqa --seed 1 --budget 60
 ```
 
 That command reuses existing artifacts when present. Otherwise it evaluates the
@@ -79,30 +72,41 @@ reflector use the same `--reflection-model` value.
 Repeat `--seed` to prepare once and launch several runs:
 
 ```bash
-uv run gepa-taxonomy hotpotqa --seed 1 --seed 2 --seed 3 --budget 60 --gepa-root ../gepa-taxonomy-hook
+uv run gepa-taxonomy hotpotqa --seed 1 --seed 2 --seed 3 --budget 60
 ```
 
 Bring an existing taxonomy to skip preparation entirely:
 
 ```bash
-uv run gepa-taxonomy hotpotqa --seed 1 --budget 60 --taxonomy path/to/taxonomy.json --gepa-root ../gepa-taxonomy-hook
+uv run gepa-taxonomy hotpotqa --seed 1 --budget 60 --taxonomy path/to/taxonomy.json
 ```
 
 Use `--dry-run` to print all phases without making calls or writing artifacts.
+The supported benchmarks are `hotpotqa`, `ifbench`, `hover`, `livebench-math`,
+and `appworld`.
 
 ## Tests
 
-The suite is free and offline. The engine tests exercise the optimizer-side
-hook, so they need the patched checkout on the path:
+The suite is free and offline:
 
 ```bash
-PYTHONPATH=../gepa-taxonomy-hook/src uv run pytest
+uv run pytest
 ```
 
 Three `test_patch_gate.py` tests additionally need the optional SWE-Bench
 harness (`uv sync --extra swebench`).
 
-## Writeup
+## Until the hook is in a gepa release
 
-The study and its results are described in the blog post
-[Named Failure Modes: Diagnosing the Program, Not Just the Output](https://andreiberkeley.github.io/gepa-named-failure-modes/blog/2026/08/18/named-failure-modes/).
+The pinned `gepa==0.1.4` from PyPI predates the hook. Until a release includes
+it, apply the committed patch to a v0.1.4 checkout and point runs and tests at
+it:
+
+```bash
+git clone --branch v0.1.4 https://github.com/gepa-ai/gepa.git ../gepa-taxonomy-hook
+git -C ../gepa-taxonomy-hook apply "$PWD/patches/gepa-reflective-dataset-enricher.patch"
+```
+
+Add `--gepa-root ../gepa-taxonomy-hook` to `gepa-taxonomy` commands, and run
+the tests with `PYTHONPATH=../gepa-taxonomy-hook/src uv run pytest`. This
+section disappears once the released gepa carries the hook.
