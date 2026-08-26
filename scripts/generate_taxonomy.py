@@ -23,7 +23,8 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
-import sys
+import threading
+import time
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -143,6 +144,14 @@ def main() -> int:
         "architecture cannot exhibit -- it is where Process_Crash_From_Memory_Exhaustion "
         "came from on a pipeline with no process to crash (F055).",
     )
+    parser.add_argument(
+        "--idle-timeout",
+        type=float,
+        default=1800,
+        help="kill generation after this many seconds without a line of output. "
+        "A hung provider call (observed 2026-08-26: a Gemini request with no "
+        "client timeout) produces exactly this signature: zero CPU, zero output.",
+    )
     parser.add_argument("--adamast-python", type=Path, default=ADAMAST_PYTHON)
     args = parser.parse_args()
 
@@ -192,26 +201,50 @@ def main() -> int:
     print(f"traces  : {args.traces}")
     print(f"model   : {args.model}  kappa>={args.kappa_target}  rounds<={args.max_rounds}")
     print(f"deviations: max_codes={args.max_codes or 'uncapped'}  trace_grounded_a={args.trace_grounded}")
-    print("generating (agreement rounds take a while) ...", flush=True)
+    print("generating; streaming AdaMAST progress ...", flush=True)
 
-    proc = subprocess.run(
-        [str(args.adamast_python), "-c", WORKER],
-        input=json.dumps(request),
-        capture_output=True,
+    # Stream the worker's output live, so every draft step and agreement round
+    # is visible as it happens. Two guards replace the old blanket timeout: the
+    # 4-hour ceiling (measured 2026-08-09: agreement alone can be ~1,200 serial
+    # LLM calls and needs every round -- a 2-hour ceiling cut it too fine), and
+    # an idle kill for the silent-hang signature a stuck provider call leaves.
+    proc = subprocess.Popen(
+        [str(args.adamast_python), "-u", "-c", WORKER],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
         text=True,
-        # 4 hours, not 2. Measured from the 2026-08-09 run: agreement is 4
-        # annotators x 60 traces x up to 5 rounds = ~1,200 LLM calls, issued
-        # SERIALLY (the worker runs single-threaded), so ~100-160 minutes on top
-        # of a ~10 minute draft stage. Early stopping does not help -- that run's
-        # kappa went [0.458, -0.031, -0.037, 0.538, 0.908], i.e. it needed every
-        # round to converge. A 2-hour ceiling cut it far too fine: the artifacts
-        # per round survive a timeout, but the final taxonomy.json does not.
-        timeout=14400,
     )
-    if proc.stderr.strip():
-        print(proc.stderr.strip()[:2000], file=sys.stderr)
-    if proc.returncode != 0:
-        raise SystemExit(f"generation failed (exit {proc.returncode})")
+    assert proc.stdin is not None and proc.stdout is not None
+    proc.stdin.write(json.dumps(request))
+    proc.stdin.close()
+
+    state = {"last": time.monotonic()}
+    start = state["last"]
+    killed: list[str] = []
+
+    def _guard() -> None:
+        while proc.poll() is None:
+            now = time.monotonic()
+            if now - start > 14400:
+                killed.append("4-hour ceiling reached")
+            elif now - state["last"] > args.idle_timeout:
+                killed.append(f"no output for {args.idle_timeout:.0f}s; likely a hung provider call")
+            else:
+                time.sleep(15)
+                continue
+            proc.kill()
+            return
+
+    threading.Thread(target=_guard, daemon=True).start()
+    for line in proc.stdout:
+        state["last"] = time.monotonic()
+        print(f"  adamast | {line.rstrip()}", flush=True)
+    returncode = proc.wait()
+    if killed:
+        raise SystemExit(f"generation killed: {killed[0]}")
+    if returncode != 0:
+        raise SystemExit(f"generation failed (exit {returncode})")
 
     args.out.mkdir(parents=True, exist_ok=True)
     (args.out / "provenance.json").write_text(
