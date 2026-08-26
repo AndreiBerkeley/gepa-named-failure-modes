@@ -22,6 +22,16 @@ patches/            the enricher hook as a patch, for pre-release gepa
 
 ## Setup
 
+One command prepares everything, including the sibling checkouts described
+below, and finishes with the free offline checks. It is idempotent, so rerun
+it after any failure:
+
+```bash
+./scripts/bootstrap.sh
+```
+
+The pieces it sets up, for reference or manual installation:
+
 ```bash
 uv sync
 ```
