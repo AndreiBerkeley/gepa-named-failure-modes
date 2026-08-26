@@ -82,6 +82,11 @@ BUDGETED_PHASES: frozenset[str] = frozenset({"optimization"})
 #: raising; they are not what we invoke.
 BEDROCK_PRICES_USD_PER_TOKEN: dict[str, tuple[float, float]] = {
     # model id: (input $/token, output $/token)
+    # Gemini ids route through litellm's gemini provider (explicit prefix).
+    # Pinned for the same reason as the Bedrock ids below: the pinned litellm
+    # predates the model, and its fallback table must not decide budget stops.
+    # $1.50 / $9.00 per million tokens (Gemini API list price, 2026-08).
+    "gemini/gemini-3.5-flash": (1.50e-6, 9.00e-6),
     "anthropic.claude-haiku-4-5-20251001-v1:0": (1.00e-6, 5.00e-6),
     "global.anthropic.claude-haiku-4-5-20251001-v1:0": (1.00e-6, 5.00e-6),
     "us.anthropic.claude-haiku-4-5-20251001-v1:0": (1.10e-6, 5.50e-6),
