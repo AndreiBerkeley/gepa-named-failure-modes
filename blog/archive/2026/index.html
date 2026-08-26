@@ -4750,7 +4750,7 @@
 </figure>
 <p>At each proposal step, GEPA asks a reflection model to revise the current candidate using examples from the current minibatch and feedback produced by the task adapter. That feedback can be detailed, but it is anchored to task performance. It does not necessarily expose recurring patterns in how the program's intermediate steps interact.</p>
 <p>We add a second automated reviewer that examines the program's intermediate steps and uses extra inference to uncover recurring process problems. The system creates its own review criteria from earlier traces, applies them to new traces, and sends the resulting report to GEPA. A person never writes the categories, labels a trace, or approves an individual report.</p>
-<p>The evaluator and second reviewer work independently, and their reports meet only when GEPA reflects on the current rollout. Under the same optimization budget, this additional report improved every paired run we evaluated.</p>
+<p>The evaluator and second reviewer work independently, and their reports meet only when GEPA reflects on the current rollout. The rest of this post describes how that report is built and what changed when reflection received it.</p>
 <h3 id="how-it-works"><a class="toclink" href="../../2026/08/18/named-failure-modes/#how-it-works">How it works</a></h3>
 <p>After launch, every stage runs automatically.</p>
 <p><strong>1. Harvest.</strong> Run the base program and retain its component-level execution traces.</p>
@@ -4810,7 +4810,7 @@
 <p>This separation keeps the second report focused on process rather than correctness. A failure mode can appear in a rollout whose final answer happens to be correct; exposing the outcome could bias the judge toward failed tasks or encourage it to restate the evaluator's verdict. Outcome blindness lets the judge search for hidden patterns on its own terms, preserving information that the task-level report may miss.</p>
 <h3 id="same-budget-different-allocation"><a class="toclink" href="../../2026/08/18/named-failure-modes/#same-budget-different-allocation">Same budget, different allocation</a></h3>
 <p>The online review is the only operation added during optimization. Candidate selection, sampling, scheduling, and the acceptance gate remain unchanged, and the taxonomy judge uses the same model as the reflector.</p>
-<p>Every baseline and taxonomy run received the same $60-per-seed optimization budget. Unmodified GEPA spends that budget on rollouts, candidate evaluation, validation, and reflection. The taxonomy arm pays for those operations and the online judge from the same $60, leaving room to evaluate fewer proposals.</p>
+<p>Every baseline and taxonomy run received the same $60-per-seed optimization budget. Unmodified GEPA spends that budget on rollouts, candidate evaluation, validation, and reflection. The taxonomy arm pays for those operations and the online judge from the same $60.</p>
 <p>Across the reported benchmark averages, the taxonomy arm accepted 50.8% of its proposals, compared with 45.1% for unmodified GEPA, although the rate was not higher on every individual benchmark. Its accepted-candidate pool therefore remained close in size even after paying for diagnosis. A larger budget or substantially larger accepted pool cannot explain the score difference.</p>
 <table>
 <thead>
@@ -4848,7 +4848,7 @@
 </tr>
 </tbody>
 </table>
-<p>The table separates the matched online budget from one-time offline preparation. Trace harvesting runs the base candidate once over the 300-example validation split and records the intermediate component inputs and outputs used to build the taxonomy. Those model calls cost $1.14 for HotpotQA, $1.87 for IFBench, and $1.28 for HoVer.</p>
+<p>The table separates the matched online budget from one-time offline preparation. Trace harvesting runs the base program once over a configurable trace source, the validation split in our runs, and records the intermediate component inputs and outputs used to build the taxonomy. Those model calls cost $1.14 for HotpotQA, $1.87 for IFBench, and $1.28 for HoVer.</p>
 <p>Generating and refining the taxonomy costs $3 to $4 per benchmark. Combined with trace harvesting, the one-time offline setup costs $4 to $6 per benchmark, or roughly 3% of the $180 optimization budget across three treatment seeds. The frozen taxonomy can then be reused across seeds and later runs.</p>
 <details class="note">
 <summary>How diagnoses are attributed to components</summary>
@@ -5223,7 +5223,7 @@
 <p>The integration sits inside GEPA's reflective proposal path rather than inside a task adapter. After the adapter creates its ordinary reflection records for the current minibatch, an optional reviewer examines the captured trajectories and adds the process report before GEPA requests a revision. The adapter remains the same object throughout, so existing DSPy, LangChain, OpenAI, and custom adapter behavior is unchanged.</p>
 <p>Taxonomy generation remains a separate preparation phase. A single launcher can harvest the seed program's traces, generate and freeze the taxonomy, and then start optimization without human intervention, but the GEPA run begins only after the taxonomy artifact has been written.</p>
 <h4 id="using-the-hook"><a class="toclink" href="../../2026/08/18/named-failure-modes/#using-the-hook">Using the hook</a></h4>
-<p>The integration is one optional argument on <code>gepa.optimize</code>. The enricher receives the candidate, the captured evaluation batch, the components under revision, and the adapter's reflective dataset, and returns the enriched dataset:</p>
+<p>The integration is one optional argument on <code>gepa.optimize</code>. The enricher passed to that argument receives the candidate, the captured evaluation batch, the components under revision, and the adapter's reflective dataset, and returns the enriched dataset:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gepa</span>
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
 <a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">failure_taxonomy</span><span class="w"> </span><span class="kn">import</span> <span class="n">LLMFailureJudge</span><span class="p">,</span> <span class="n">TaxonomyFeedbackEnricher</span><span class="p">,</span> <span class="n">load_taxonomy</span>
@@ -5242,7 +5242,7 @@
 </code></pre></div>
 <p>Each diagnosed example gains a single <code>failure_modes</code> field naming the fired codes and their evidence spans. Everything else in the reflective dataset is exactly what the adapter produced, and leaving the argument out gives ordinary GEPA.</p>
 <h4 id="availability"><a class="toclink" href="../../2026/08/18/named-failure-modes/#availability">Availability</a></h4>
-<p>The enricher hook is available in <a href="https://github.com/gepa-ai/gepa">gepa</a>: pass the single argument shown above and nothing else about an adapter changes. The taxonomy components used in this post, the judge, the enricher, and the pipeline that harvests traces, generates a frozen taxonomy, and launches conditioned optimization, live in the <a href="https://github.com/AndreiBerkeley/gepa-named-failure-modes">companion repository</a> together with the frozen taxonomies and the per benchmark experiment scripts.</p>
+<p>The hook is available in <a href="https://github.com/gepa-ai/gepa">gepa</a>: pass the single argument shown above and nothing else about an adapter changes. The taxonomy components used in this post, the judge, the enricher, and the pipeline that harvests traces, generates a frozen taxonomy, and launches conditioned optimization, live in the <a href="https://github.com/AndreiBerkeley/gepa-named-failure-modes">companion repository</a> together with the frozen taxonomies and the per benchmark experiment scripts.</p>
 <h3 id="next-steps"><a class="toclink" href="../../2026/08/18/named-failure-modes/#next-steps">Next steps</a></h3>
 <p>A natural next step is to test whether structured diagnoses can replace, rather than augment, the evaluator used during optimization. We are exploring whether the taxonomy judge can serve both as the source of reflective feedback and as the rubric for ranking and accepting candidates, without exposing gold labels or manually authored correctness feedback anywhere in the optimization loop. If successful, this would make GEPA applicable to settings where reliable gold feedback is expensive, unavailable, or impossible to construct. Early results are promising, but the procedure still requires refinement and broader evaluation, particularly on tasks where gold feedback is unavailable during optimization.</p>
 <div class="footnote">
