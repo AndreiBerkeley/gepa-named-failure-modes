@@ -4752,8 +4752,8 @@
 <p>We add a second automated reviewer that examines the program's intermediate steps and uses extra inference to uncover recurring process problems. The system creates its own review criteria from earlier traces, applies them to new traces, and sends the resulting report to GEPA. A person never writes the categories, labels a trace, or approves an individual report.</p>
 <p>The evaluator and second reviewer work independently, and their reports meet only when GEPA reflects on the current rollout. Under the same optimization budget, this additional report improved every paired run we evaluated.</p>
 <h3 id="how-it-works"><a class="toclink" href="../../2026/08/18/named-failure-modes/#how-it-works">How it works</a></h3>
-<p>After launch, every stage runs automatically. People neither construct the review criteria nor inspect and approve the reports produced from individual traces.</p>
-<p><strong>1. Harvest.</strong> Run the seed program and retain its component-level execution traces.</p>
+<p>After launch, every stage runs automatically.</p>
+<p><strong>1. Harvest.</strong> Run the base program and retain its component-level execution traces.</p>
 <p><strong>2. Generate.</strong> Build and refine a reusable set of named process problems from those traces, then freeze it for optimization.</p>
 <p><strong>3. Review.</strong> Apply the frozen criteria to each new rollout and pass the resulting process report to reflection alongside the usual task feedback.</p>
 <p>If trusted review criteria already exist, the pipeline can begin at the third step.</p>
@@ -4807,7 +4807,7 @@
 </details>
 <h4 id="why-the-second-reviewer-is-outcome-blind"><a class="toclink" href="../../2026/08/18/named-failure-modes/#why-the-second-reviewer-is-outcome-blind">Why the second reviewer is outcome-blind</a></h4>
 <p>During optimization, an LLM applies the frozen taxonomy to each trace. We refer to this model as the <strong>taxonomy judge</strong>. It reviews a deliberately restricted version of the trace: the program's intermediate inputs and outputs are available, but the task score, pass/fail result, gold answer, and evaluator feedback are not. Trace review is automatic, so no person selects the codes, checks the supporting evidence, or approves a diagnosis before reflection receives it.</p>
-<p>This separation keeps the second report focused on process rather than correctness. A failure mode can appear in a rollout whose final answer happens to be correct; exposing the outcome could bias the judge toward failed tasks or encourage it to restate the evaluator's verdict. Outcome blindness lets the judge search for hidden patterns on their own terms, preserving information that the task-level report may miss.</p>
+<p>This separation keeps the second report focused on process rather than correctness. A failure mode can appear in a rollout whose final answer happens to be correct; exposing the outcome could bias the judge toward failed tasks or encourage it to restate the evaluator's verdict. Outcome blindness lets the judge search for hidden patterns on its own terms, preserving information that the task-level report may miss.</p>
 <h3 id="same-budget-different-allocation"><a class="toclink" href="../../2026/08/18/named-failure-modes/#same-budget-different-allocation">Same budget, different allocation</a></h3>
 <p>The online review is the only operation added during optimization. Candidate selection, sampling, scheduling, and the acceptance gate remain unchanged, and the taxonomy judge uses the same model as the reflector.</p>
 <p>Every baseline and taxonomy run received the same $60-per-seed optimization budget. Unmodified GEPA spends that budget on rollouts, candidate evaluation, validation, and reflection. The taxonomy arm pays for those operations and the online judge from the same $60, leaving room to evaluate fewer proposals.</p>
@@ -4855,7 +4855,7 @@
 <p>The taxonomy defines behaviors, not a fixed code-to-component map. For reflection, the integration uses trace evidence to attach a diagnosis only to the component records it implicates. This attribution identifies where the behavior appeared in the trace; it does not say whether the overall task passed or failed.</p>
 </details>
 <h3 id="results"><a class="toclink" href="../../2026/08/18/named-failure-modes/#results">Results</a></h3>
-<p>We evaluated on three benchmarks that stress different parts of a program: multi-hop question answering (HotpotQA), instruction following (IFBench), and multi-hop retrieval (HoVer). Each arm ran three seeds.</p>
+<p>We evaluated on three benchmarks that stress different parts of a program: multi-hop question answering (HotpotQA), instruction following (IFBench), and multi-hop claim verification (HoVer). Each arm ran three seeds.</p>
 <details class="note">
 <summary>Setup</summary>
 <ul>
@@ -4983,7 +4983,7 @@
 </tbody>
 </table>
 </details>
-<p>Relative to the lift over the base program, the effect is larger than the raw deltas suggest. Unmodified GEPA improves the base program by 16.3 points on HotpotQA, 11.2 on IFBench, and 8.3 on HoVer; with named feedback, those lifts become 18.6, 19.8, and 18.0 points. The total improvement over the base program is therefore 1.1×, 1.8×, and 2.2× the lift delivered by unmodified GEPA.</p>
+<p>Measured as lift over the base program, the effect is larger than the raw deltas suggest. Unmodified GEPA improves the base program by 16.3 points on HotpotQA, 11.2 on IFBench, and 8.3 on HoVer; with named feedback, those lifts become 18.6, 19.8, and 18.0 points. The total improvement over the base program is therefore 1.1×, 1.8×, and 2.2× the lift delivered by unmodified GEPA.</p>
 <h4 id="what-diagnoses-the-judge-produced"><a class="toclink" href="../../2026/08/18/named-failure-modes/#what-diagnoses-the-judge-produced">What diagnoses the judge produced</a></h4>
 <p>The judge produced a broad, benchmark-specific mix of diagnoses. It fired 21 or 22 distinct codes on each benchmark, with markedly different distributions.</p>
 <table>
@@ -5221,7 +5221,7 @@
 <p>The evidence span also aligns closely with the rewrite. For that run, the judge attached <code>Spurious_Fact_Introduced_At_Summarization</code> to <code>summarize1</code> with the evidence "Kapolei is colloquially known as being part of the leeward coast of Oahu." The rewritten prompt targets the behavior down to the word <em>colloquially</em>.</p>
 <h3 id="integration-point"><a class="toclink" href="../../2026/08/18/named-failure-modes/#integration-point">Integration point</a></h3>
 <p>The integration sits inside GEPA's reflective proposal path rather than inside a task adapter. After the adapter creates its ordinary reflection records for the current minibatch, an optional reviewer examines the captured trajectories and adds the process report before GEPA requests a revision. The adapter remains the same object throughout, so existing DSPy, LangChain, OpenAI, and custom adapter behavior is unchanged.</p>
-<p>Taxonomy generation remains a separate preparation phase. A single launcher can harvest the seed program's traces, generate and freeze the taxonomy, and then start optimization without human intervention, but the GEPA run begins only after the taxonomy artifact has been written. During optimization, the reviewer uses the same model configured for reflection.</p>
+<p>Taxonomy generation remains a separate preparation phase. A single launcher can harvest the seed program's traces, generate and freeze the taxonomy, and then start optimization without human intervention, but the GEPA run begins only after the taxonomy artifact has been written.</p>
 <h4 id="using-the-hook"><a class="toclink" href="../../2026/08/18/named-failure-modes/#using-the-hook">Using the hook</a></h4>
 <p>The integration is one optional argument on <code>gepa.optimize</code>. The enricher receives the candidate, the captured evaluation batch, the components under revision, and the adapter's reflective dataset, and returns the enriched dataset:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gepa</span>
