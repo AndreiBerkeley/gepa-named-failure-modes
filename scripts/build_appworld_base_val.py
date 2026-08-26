@@ -51,6 +51,7 @@ def main() -> int:
     from gepa_taxonomy.appworld.prompts import SEED_CANDIDATE
     from gepa_taxonomy.bedrock import BedrockLM, require_credentials
     from gepa_taxonomy.cost import CostMeter
+    from gepa_taxonomy.progress import report_rollouts
     from gepa_taxonomy.seed_cache import SeedEvaluationCache
 
     cache_path = args.out / "base_val_cache.json"
@@ -85,7 +86,9 @@ def main() -> int:
     )
 
     started = time.time()
+    stop_progress = report_rollouts(adapter, len(val))
     batch = adapter.evaluate(val, dict(SEED_CANDIDATE), capture_traces=True)
+    stop_progress.set()
     elapsed = time.time() - started
 
     if adapter.transport_errors:

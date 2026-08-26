@@ -37,7 +37,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--manifests", type=Path, default=REPO / "manifests" / "hover")
-    parser.add_argument("--workers", type=int, default=8)
+    parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--k", type=int, default=7)
     parser.add_argument("--solver-model", default="us.anthropic.claude-haiku-4-5-20251001-v1:0")
     parser.add_argument("--max-retries", type=int, default=8)
@@ -53,6 +53,7 @@ def main() -> int:
     from gepa_taxonomy.hotpotqa.retrieval import WikiRetriever
     from gepa_taxonomy.hover.adapter import HoverAdapter, instances_by_id
     from gepa_taxonomy.hover.program import SEED_CANDIDATE, HoverMultiHopProgram
+    from gepa_taxonomy.progress import report_rollouts
     from gepa_taxonomy.seed_cache import SeedEvaluationCache
 
     cache_path = args.out / "base_val_cache.json"
@@ -89,7 +90,9 @@ def main() -> int:
     adapter = HoverAdapter(program=program, instances=instances_by_id(val), max_workers=args.workers)
 
     started = time.time()
+    stop_progress = report_rollouts(adapter, len(val))
     batch = adapter.evaluate(val, dict(SEED_CANDIDATE), capture_traces=True)
+    stop_progress.set()
     elapsed = time.time() - started
 
     if adapter.transport_errors:

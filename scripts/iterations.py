@@ -19,9 +19,9 @@ import time
 from pathlib import Path
 
 RUN = Path(__file__).resolve().parents[1] / "results/runs/baseline-seed1"
-COMPONENT_RE = re.compile(r"^Iteration (\d+): (?:Proposed new text for|proposed for) (\w+)", re.M)
-ACCEPT_RE = re.compile(r"^Iteration (\d+): (?:Accepted candidate|.*BETTER, accepted)", re.M)
-VALSCORE_RE = re.compile(r"^Iteration (\d+): Individual valset scores.*?\{(.*?)\}", re.M | re.S)
+COMPONENT_RE = re.compile(r"^Iteration (\d+): (?:Proposed new text for|proposed for) (\w+)", re.MULTILINE)
+ACCEPT_RE = re.compile(r"^Iteration (\d+): (?:Accepted candidate|.*BETTER, accepted)", re.MULTILINE)
+VALSCORE_RE = re.compile(r"^Iteration (\d+): Individual valset scores.*?\{(.*?)\}", re.MULTILINE | re.DOTALL)
 # REMOVED 2026-08-12: VALSCORE_COMPACT_RE, which was meant to read a compact
 # "11/60 resolved" form from QuietLogger. It never matched anything -- verified
 # against every log in results/, including the new HotpotQA runs: 0 matches.

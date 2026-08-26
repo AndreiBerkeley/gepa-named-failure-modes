@@ -45,7 +45,7 @@ def main() -> int:
     ap.add_argument("--all", action="store_true", help="every finished hover-{baseline,taxonomy}-seed*")
     ap.add_argument("--split", type=Path, default=SPLIT)
     ap.add_argument("--candidate-index", type=int, default=None, help="0 evaluates the SEED candidate")
-    ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--k", type=int, default=7)
     ap.add_argument("--solver-model", default="us.anthropic.claude-haiku-4-5-20251001-v1:0")
     ap.add_argument("--max-retries", type=int, default=8)

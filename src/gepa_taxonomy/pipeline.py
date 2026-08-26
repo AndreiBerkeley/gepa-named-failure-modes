@@ -95,7 +95,7 @@ def _parser() -> argparse.ArgumentParser:
         help="artifact directory name for a newly generated taxonomy",
     )
     parser.add_argument("--results", type=Path, default=REPO / "results")
-    parser.add_argument("--workers", type=int, default=8)
+    parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--solver-model", default="us.anthropic.claude-haiku-4-5-20251001-v1:0")
     parser.add_argument("--reflection-model", default="us.anthropic.claude-sonnet-4-6")
     parser.add_argument("--max-retries", type=int, default=8)

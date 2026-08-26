@@ -110,6 +110,11 @@ class BedrockLM:
     def complete(self, prompt: str, *, max_tokens: int = 4096) -> tuple[str, int, int]:
         import litellm
 
+        # On a retried failure litellm prints a four-line feedback banner per
+        # attempt; a throttled harvest turns that into a wall. Keep the errors,
+        # drop the banner.
+        litellm.suppress_debug_info = True
+
         kwargs: dict[str, object] = {
             "model": self.routed_model,
             "messages": [{"role": "user", "content": prompt}],

@@ -119,7 +119,7 @@ def main() -> int:
     parser.add_argument("--candidate", action="append", required=True, metavar="LABEL=RUN_DIR[#IDX]")
     parser.add_argument("--manifests", type=Path, default=REPO / "manifests" / "hotpotqa")
     parser.add_argument("--out", type=Path, default=None)
-    parser.add_argument("--workers", type=int, default=8)
+    parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--k", type=int, default=10)
     parser.add_argument("--limit", type=int, default=0, help="evaluate only the first N test instances")
     parser.add_argument("--solver-model", default="us.anthropic.claude-haiku-4-5-20251001-v1:0")

@@ -37,7 +37,7 @@ REPO = Path(__file__).resolve().parents[1]
 RUNS = REPO / "results" / "runs"
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from track import _is_finished, spend_of  # noqa: E402  single source of truth
+from track import _is_finished, spend_of
 
 
 def matching(prefix: str) -> list[Path]:

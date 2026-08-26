@@ -114,7 +114,7 @@ def main() -> int:
     parser.add_argument("--candidate-index", type=int, default=None, help="0 evaluates the SEED candidate (base reference)")
     parser.add_argument("--manifests", type=Path, default=REPO / "manifests" / "hover")
     parser.add_argument("--out", type=Path, default=None)
-    parser.add_argument("--workers", type=int, default=8)
+    parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--k", type=int, default=7)
     parser.add_argument("--solver-model", default="us.anthropic.claude-haiku-4-5-20251001-v1:0")
     parser.add_argument("--max-retries", type=int, default=8)

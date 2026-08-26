@@ -66,7 +66,7 @@ def main() -> int:
     parser.add_argument("--manifests", type=Path, default=REPO / "manifests" / "hover")
     parser.add_argument("--base-val-cache", type=Path, default=REPO / "results" / "hover_base_val" / "base_val_cache.json")
     parser.add_argument("--minibatch-size", type=int, default=6)
-    parser.add_argument("--workers", type=int, default=8)
+    parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--judge-workers", type=int, default=8)
     parser.add_argument("--k", type=int, default=7)
     parser.add_argument("--solver-model", default="us.anthropic.claude-haiku-4-5-20251001-v1:0")

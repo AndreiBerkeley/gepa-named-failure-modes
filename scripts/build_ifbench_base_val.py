@@ -33,7 +33,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--manifests", type=Path, default=REPO / "manifests" / "ifbench")
-    parser.add_argument("--workers", type=int, default=8)
+    parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--max-tokens", type=int, default=4096)
     parser.add_argument("--solver-model", default="us.anthropic.claude-haiku-4-5-20251001-v1:0")
     parser.add_argument("--max-retries", type=int, default=8)
@@ -45,6 +45,7 @@ def main() -> int:
     from gepa_taxonomy.ifbench.adapter import IFBenchAdapter, instances_by_id
     from gepa_taxonomy.ifbench.grading import Grade, report
     from gepa_taxonomy.ifbench.program import SEED_CANDIDATE, GenerateEnsureProgram
+    from gepa_taxonomy.progress import report_rollouts
     from gepa_taxonomy.seed_cache import SeedEvaluationCache
 
     cache_path = args.out / "base_val_cache.json"
@@ -85,7 +86,9 @@ def main() -> int:
     adapter = IFBenchAdapter(program=program, instances=instances_by_id(val), max_workers=args.workers)
 
     started = time.time()
+    stop_progress = report_rollouts(adapter, len(val))
     batch = adapter.evaluate(val, dict(SEED_CANDIDATE), capture_traces=True)
+    stop_progress.set()
     elapsed = time.time() - started
 
     if adapter.transport_errors:

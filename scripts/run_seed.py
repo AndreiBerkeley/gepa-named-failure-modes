@@ -39,8 +39,8 @@ from __future__ import annotations
 
 import argparse
 import json
-import sys
 import re
+import sys
 import time
 from pathlib import Path
 
@@ -60,7 +60,7 @@ class QuietLogger:
     """
 
     _SELECTED = re.compile(r"^(Iteration \d+): Selected program (\d+) score: ([\d.]+)")
-    _PROPOSAL = re.compile(r"^(Iteration \d+): Proposed new text for (\w+):\s*(.*)$", re.S)
+    _PROPOSAL = re.compile(r"^(Iteration \d+): Proposed new text for (\w+):\s*(.*)$", re.DOTALL)
     _WORSE = re.compile(r"^(Iteration \d+): New subsample score ([\d.]+) is not better than old score ([\d.]+), skipping")
     _REJECT = re.compile(r"^(Iteration \d+): Candidate rejected by acceptance criterion \(old_sum=([\d.]+), new_sum=([\d.]+)\), skipping")
     _ACCEPT = re.compile(r"^(Iteration \d+): Accepted candidate \(subsample score ([\d.]+) -> ([\d.]+)\)")

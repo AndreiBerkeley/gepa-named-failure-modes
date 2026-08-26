@@ -232,8 +232,8 @@ def score_of(run: Path) -> tuple[float | None, int, int]:
     # proposals contributes almost nothing to `series` -- and the naive
     # len(series) - last_improved reports a handful of flat steps instead of 25.
     # That under-reporting is why a plateau watcher keyed to it never fired.
-    iters = [int(m) for m in re.findall(r"^Iteration (\d+)", log, re.M)]
-    pairs = re.findall(r"^Iteration (\d+): Best valset aggregate score so far: ([\d.]+)", log, re.M)
+    iters = [int(m) for m in re.findall(r"^Iteration (\d+)", log, re.MULTILINE)]
+    pairs = re.findall(r"^Iteration (\d+): Best valset aggregate score so far: ([\d.]+)", log, re.MULTILINE)
     improved_at = [int(i) for i, v in pairs if float(v) >= best - floor]
     if iters and improved_at:
         return best, accepts, max(iters) - min(improved_at)
