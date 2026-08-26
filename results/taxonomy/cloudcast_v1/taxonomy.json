@@ -1,0 +1,260 @@
+{
+  "schema_version": 1,
+  "strategy": "baseline",
+  "status": "accepted",
+  "display_name": "{'name': 'Multi-Cloud Network Routing Optimization', 'content_type': 'Routing algorithms, cost breakdowns, transfer time metrics, graph path selections', 'task_complexity': 'Tasks are hard because they require simultaneously optimizing two competing objectives (minimize cost vs. minimize transfer time) across a heterogeneous graph of cloud provider nodes with different egress pricing tiers, bandwidth constraints, and inter-provider peering costs. The search space grows combinatorially with the number of destinations and intermediate relay nodes. Routing decisions must account for parallel partition transfers, bottleneck identification, and whether intermediate relay hops actually reduce total cost despite adding egress fees at each hop.'} failure taxonomy",
+  "domain": "{'name': 'Multi-Cloud Network Routing Optimization', 'content_type': 'Routing algorithms, cost breakdowns, transfer time metrics, graph path selections', 'task_complexity': 'Tasks are hard because they require simultaneously optimizing two competing objectives (minimize cost vs. minimize transfer time) across a heterogeneous graph of cloud provider nodes with different egress pricing tiers, bandwidth constraints, and inter-provider peering costs. The search space grows combinatorially with the number of destinations and intermediate relay nodes. Routing decisions must account for parallel partition transfers, bottleneck identification, and whether intermediate relay hops actually reduce total cost despite adding egress fees at each hop.'}",
+  "summary": "Failure modes generated and agreement-checked from 300 traces.",
+  "codes": [
+    {
+      "id": "A.1",
+      "name": "Rate_Limit_Induced_Execution_Halt",
+      "description": "Execution is interrupted by an upstream API rate-limiting response (HTTP 429), preventing completion or return of output. This is a distinct root-cause code: the trigger is external API throttling, not internal logic failure or context overflow.",
+      "category": "A",
+      "severity": "critical",
+      "when_to_use": "When an HTTP 429 response from an upstream API is the confirmed or strongly inferred cause of execution stopping. Apply even if the observable artifact is incomplete output — A.1 takes precedence over A.2 when the rate-limit trigger is identifiable.",
+      "when_not_to_use": "Do not apply when output is truncated for reasons unrelated to API throttling (use A.2). Do not apply when execution halts due to internal runtime exceptions (use A.6)."
+    },
+    {
+      "id": "A.2",
+      "name": "Abrupt_Output_Truncation",
+      "description": "The agent begins producing structured output but terminates mid-response without a clean conclusion, leaving output incomplete and potentially unusable. Covers all truncation causes except rate-limit interruption (A.1) and context-window overflow (A.3). Typical causes include internal timeouts, stream interruptions, or model generation stopping unexpectedly.",
+      "category": "A",
+      "severity": "critical",
+      "when_to_use": "When output is observably cut off mid-structure (incomplete JSON, truncated sentence, missing closing tags) and the cause is neither a confirmed HTTP 429 (A.1) nor context-window saturation (A.3).",
+      "when_not_to_use": "Do not apply when truncation is caused by a rate-limit response — use A.1. Do not apply when degradation/truncation is attributable to context-window overflow — use A.3. Do not apply when the agent produces a complete but incorrect or low-quality output."
+    },
+    {
+      "id": "A.3",
+      "name": "Context_Capacity_Degradation",
+      "description": "Output quality, completeness, or coherence degrades — up to and including hard truncation — as input complexity grows because the combined input and reasoning chain approaches or exceeds the model's context-window limit. Encompasses both gradual quality loss and abrupt mid-response cutoffs caused specifically by context overflow.",
+      "category": "A",
+      "severity": "major",
+      "when_to_use": "When degradation (quality drop, omitted reasoning steps, or hard truncation) is correlated with large or growing input size, long chain-of-thought traces, or explicit context-overflow signals from the model layer. Use A.3 even when the surface symptom is truncation, if context saturation is the root cause.",
+      "when_not_to_use": "Do not apply when truncation occurs with small inputs where context limits are not plausibly reached — use A.2. Do not apply when degradation is caused by ambiguous instructions rather than input size."
+    },
+    {
+      "id": "A.4",
+      "name": "Silent_Instruction_Non_Compliance",
+      "description": "The agent ignores or only partially follows output format or constraint requirements explicitly specified in the system prompt (e.g., required fields omitted, wrong schema used, constraints silently violated) without raising an error or flagging non-compliance.",
+      "category": "A",
+      "severity": "major",
+      "when_to_use": "When the system prompt specifies a format or constraint that the agent demonstrably does not follow, and no error is raised — the agent simply proceeds as if the instruction were absent or optional.",
+      "when_not_to_use": "Do not apply when the agent explicitly flags inability to comply. Do not apply when format deviation results from truncation (use A.2 or A.3). Do not apply when the instruction was ambiguous enough that partial compliance is a reasonable interpretation."
+    },
+    {
+      "id": "A.5",
+      "name": "Internal_Execution_Runtime_Error",
+      "description": "The agent's execution halts, crashes, or produces a verifiably corrupt/incomplete result due to a fault originating within the agent's own code logic — not triggered by the nature of the input. Observable indicators include: an explicit exception or stack trace surfaced in logs (e.g., NullPointerException, ZeroDivisionError, IndexOutOfBoundsError, infinite loop timeout), an abrupt mid-task termination without a user-facing explanation, or an output that is structurally broken (e.g., truncated JSON, NaN values, contradictory state) where the same input format has succeeded in other runs. The critical distinguishing criterion is that the error is REPRODUCIBLE with valid, correctly formatted input — confirming the defect lives in the agent's logic, not in what was provided to it.",
+      "category": "A",
+      "severity": "critical",
+      "when_to_use": "1. An explicit runtime exception or stack trace is visible in logs and points to agent-internal code (e.g., division by zero when computing a ratio, null dereference when accessing an uninitialized variable, index out of bounds during graph traversal). 2. The agent terminates mid-execution with no output or a corrupt partial output, and the input itself is well-formed and within the agent's stated scope. 3. The same or equivalent valid input has succeeded in a prior run, confirming the fault is not inherent to the input. 4. An unhandled internal state transition causes the agent to loop, freeze, or emit contradictory results. 5. The error is triggered by an edge case in the agent's own logic (e.g., empty list passed to a function that does not guard against it, even though an empty list is a valid and expected input type).",
+      "when_not_to_use": "1. The input is malformed, uses an unsupported format, or violates the agent's documented input schema — use the appropriate input/format error code instead. 2. The agent explicitly rejects the input with a validation message rather than crashing (that is a handled rejection, not a runtime fault). 3. The failure is caused by an external dependency (e.g., a downstream API timeout, database connection loss, file system permission error) — use the relevant external-failure code. 4. The agent produces a suboptimal or wrong answer but completes execution without an exception or structural corruption — that is a reasoning/accuracy error, not a runtime error. 5. The error message or log clearly attributes the fault to an external library or service outside the agent's own codebase, even if it surfaces during agent execution."
+    },
+    {
+      "id": "A.6",
+      "name": "Unsupported_Input_Format_Causes_Execution_Failure",
+      "description": "The agent receives input in an unsupported or unexpected format — such as an indirect reference key or config-file pointer instead of inline parameters — causing the execution environment to fail when attempting to parse or process the input. The failure is input-structure-triggered, not an internal logic defect.",
+      "category": "A",
+      "severity": "critical",
+      "when_to_use": "When execution fails and the root cause is traceable to the structure or format of the input (wrong type, indirect reference instead of inline value, missing required input fields) rather than to internal algorithm logic.",
+      "when_not_to_use": "Do not apply when the input is well-formed and the failure stems from internal logic — use A.6. Do not apply when the input is valid but the agent chooses not to comply with format requirements (use A.5)."
+    },
+    {
+      "id": "A.7",
+      "name": "Search_Algorithm_Returns_No_Solution",
+      "description": "The internal search or optimization algorithm completes execution normally — without raising an exception — but returns None or an empty result because no valid solution exists within the defined constraints. This represents a legitimate algorithmic outcome, not a crash or logic fault.",
+      "category": "A",
+      "severity": "major",
+      "when_to_use": "When the search or optimization routine terminates without error and the absence of a result is the algorithm's legitimate response to an infeasible or over-constrained problem space. No exception or abnormal termination signal should be present.",
+      "when_not_to_use": "Do not apply when None or empty result co-occurs with an exception, error log, or abnormal termination — use A.6 in that case. Do not apply when the algorithm is interrupted before completion (use A.1 or A.2 as appropriate)."
+    },
+    {
+      "id": "A.8",
+      "name": "Non_Deterministic_Output_For_Identical_Input",
+      "description": "The agent produces materially different outputs — differing routing plans, costs, transfer times, or structural results — across multiple runs given byte-identical input parameters, indicating unstable internal state, non-zero temperature sampling without a seed, or stochastic algorithm behaviour that is not controlled or declared.",
+      "category": "A",
+      "severity": "major",
+      "when_to_use": "When repeated execution with identical inputs yields outputs that differ beyond acceptable floating-point or formatting variance, and the variation is not an intentional, declared design property of the agent.",
+      "when_not_to_use": "Do not apply when non-determinism is an explicitly declared feature (e.g., stochastic sampling with documented temperature settings). Do not apply when differences are cosmetic or within acceptable tolerance bounds."
+    },
+    {
+      "id": "B.1",
+      "name": "Solver_Suboptimal_Cost_Plan",
+      "description": "The solver returns a syntactically valid, executable transfer plan (i.e., all transfers are parseable, reference valid nodes/edges, and satisfy hard constraints such as capacity and flow conservation) where the sum of all transfer costs strictly exceeds the independently verified minimum achievable cost for the identical input configuration. The optimal cost must be established by a reference method (e.g., brute-force enumeration, integer linear programming solver, or a known ground-truth solution provided in the test case) before this code is applied. The gap between the returned cost and the optimal cost must be greater than zero accounting for floating-point tolerance (e.g., difference > 0.001 or > 0.1% of optimal, whichever threshold is defined for the benchmark).",
+      "category": "B",
+      "severity": "critical",
+      "when_to_use": "1. The solver output can be fully parsed and executed without errors. 2. All hard constraints in the problem (capacity limits, supply/demand balance, required transfers) are satisfied by the returned plan. 3. A verified optimal cost value exists for the test case (from ground truth, brute-force, or a certified reference solver). 4. The total cost of the returned plan is numerically greater than the verified optimal cost by more than the agreed tolerance threshold. 5. The suboptimality is solely a cost issue — the plan is otherwise structurally correct.",
+      "when_not_to_use": "1. The plan is unparseable, malformed, or causes a runtime error — use a parse/execution failure code instead. 2. The plan violates any hard constraint (capacity, flow conservation, mandatory transfers) — use a constraint-violation code instead. 3. No verified optimal cost exists for the test case, making it impossible to confirm suboptimality. 4. The cost difference falls within the defined floating-point tolerance threshold (i.e., the plan is effectively optimal). 5. The solver returns no plan or an empty plan — use a no-solution code instead. 6. The cost is higher due to a different but equally valid problem interpretation (e.g., ambiguous input specification) — flag the input ambiguity separately.",
+      "applies_to_role": "solver"
+    },
+    {
+      "id": "B.2",
+      "name": "Solver_Inflated_Transfer_Time",
+      "description": "The solver produces a plan with a transfer_time (bottleneck) that is significantly higher than achievable for the input, either due to suboptimal routing choices that serialize transfers unnecessarily or due to routing cycles that extend the critical path.",
+      "category": "B",
+      "severity": "major",
+      "when_to_use": "When the transfer_time in the output is substantially larger than the transfer_time observed in other valid plans for the same or equivalent input configuration, and the cause is routing decisions rather than a system-level failure.",
+      "when_not_to_use": "When transfer_time is high due to legitimate bandwidth constraints on the only available path. Do not apply when the plan output is missing or truncated.",
+      "applies_to_role": "solver"
+    },
+    {
+      "id": "B.3",
+      "name": "Solver_Missing_Destination_In_Plan",
+      "description": "The solver omits one or more destinations from the per_destination_breakdown that were specified in the input destinations array, producing an incomplete transfer plan.",
+      "category": "B",
+      "severity": "critical",
+      "when_to_use": "When the count or set of destinations in per_destination_breakdown does not match the destinations list in the input configuration.",
+      "when_not_to_use": "When the entire output is missing or truncated due to a system-level failure (use A-code). Do not apply when all input destinations are covered in the breakdown.",
+      "applies_to_role": "solver"
+    },
+    {
+      "id": "B.4",
+      "name": "Solver_Incorrect_Egress_Price_Applied",
+      "description": "The solver applies wrong per-GB egress pricing to one or more network edges, producing incorrect cost estimates that do not reflect the actual cloud provider pricing for the source-destination region pair.",
+      "category": "B",
+      "severity": "critical",
+      "when_to_use": "When the per-GB price shown in most_expensive_edges or implied by (egress_cost / data_volume_gb) for a given edge contradicts the known pricing tier for that provider-pair combination, or when the same edge shows different prices across traces.",
+      "when_not_to_use": "When pricing differences are explained by legitimate volume discounts or different data volumes. Do not apply when the plan is missing or unevaluable.",
+      "applies_to_role": "solver"
+    },
+    {
+      "id": "C.1",
+      "name": "Cyclic_Route_Construction",
+      "description": "A per-destination route path visits the same node more than once, creating a loop. The data is forwarded through a node, continues to other nodes, and then returns to an already-visited node, inflating both egress cost and transfer time without delivering any routing benefit.",
+      "category": "C",
+      "severity": "critical",
+      "when_to_use": "When the per-destination route listing shows a node identifier appearing two or more times in the same route path (e.g., A→B→C→B or A→B→A→B→A).",
+      "when_not_to_use": "When a node appears in multiple different destinations' routes but not twice within the same single route path. Also do not apply when the route is simply long (many hops) but each node appears exactly once."
+    },
+    {
+      "id": "C.10",
+      "name": "Cross_Provider_Egress_Accumulation_Ignored",
+      "description": "When routing data through multiple hops that cross cloud provider boundaries more than once (e.g., GCP→AWS→GCP→AWS), the reasoning fails to account for the fact that each provider-boundary crossing incurs a separate egress charge, causing the total egress to be systematically underestimated or the route to be incorrectly preferred.",
+      "category": "C",
+      "severity": "critical",
+      "when_to_use": "When a route crosses provider boundaries multiple times (identifiable by alternating provider prefixes in the route path, e.g., gcp:X → aws:Y → gcp:Z → aws:W) and the per-destination egress cost appears to only account for one or fewer of those boundary crossings.",
+      "when_not_to_use": "When each provider-boundary crossing is correctly priced in the egress breakdown. Do not apply to routes that stay within one provider throughout (intra-cloud) or that cross the boundary exactly once with correct pricing."
+    },
+    {
+      "id": "C.11",
+      "name": "Broadcast_Tree_Structural_Suboptimality",
+      "description": "The routing plan constructs a broadcast or multicast delivery tree that is structurally inefficient: it fails to exploit tree-level fanout (e.g., treating broadcast as independent unicast streams from the source rather than forwarding from intermediate nodes to their local peers), or it misassigns relay responsibilities such that high-fanout nodes are placed deep in the tree while low-fanout nodes are placed at the root, producing a higher total egress cost or longer completion time than an alternative tree structure would yield.",
+      "category": "C",
+      "severity": "major",
+      "when_to_use": "Use when the problem requires delivering data to multiple destinations and the plan's tree structure (the assignment of which node forwards to which other nodes) produces demonstrably higher total cost or longer completion time than an alternative valid tree. The failure must be in the structural shape of the broadcast tree, not merely in per-hop cost modeling or parallelism scheduling.",
+      "when_not_to_use": "Do not use when the plan correctly evaluates multiple tree structures and selects the best one. Do not use when the inefficiency is solely due to wrong egress pricing (C.5, C.10) or wrong path selection for a fixed tree structure (C.2, C.3). Do not use for C.4, which is about neglecting the slowest destination rather than the overall tree topology."
+    },
+    {
+      "id": "C.12",
+      "name": "Broadcast_Bottleneck_Misidentification",
+      "description": "The reported bottleneck_destination does not match the destination with the longest transfer time in the per-destination breakdown, indicating an error in identifying which destination governs overall broadcast completion time.",
+      "category": "C",
+      "severity": "major",
+      "when_to_use": "When the bottleneck_destination field names a destination whose transfer time in the per-destination breakdown is not the maximum among all listed destinations.",
+      "when_not_to_use": "When the named bottleneck destination does have the longest (or tied-longest) transfer time in the breakdown. Do not apply if the bottleneck is correct but the overall strategy is poor."
+    },
+    {
+      "id": "C.13",
+      "name": "Cost_Breakdown_Arithmetic_Inconsistency",
+      "description": "The numeric values in the cost_breakdown field (egress + instance) do not sum to the reported total_cost, or the per-destination egress values do not sum to the total egress figure, indicating internal arithmetic errors in cost accounting.",
+      "category": "C",
+      "severity": "major",
+      "when_to_use": "When summing egress + instance from cost_breakdown does not equal total_cost (within rounding), or when summing all per-destination egress values yields a different total than the egress figure in cost_breakdown.",
+      "when_not_to_use": "When all arithmetic is consistent within reasonable floating-point rounding (±$0.02). Do not apply when the only issue is suboptimal routing choices rather than calculation errors."
+    },
+    {
+      "id": "C.14",
+      "name": "Intra_Cloud_Direct_Route_Underutilization",
+      "description": "Within a single-provider (intra-cloud) scenario, destinations that could be reached by a low-cost direct route are instead routed through unnecessary intermediate relay nodes, incurring instance costs and additional egress charges that a direct route would not have.",
+      "category": "C",
+      "severity": "minor",
+      "when_to_use": "When the config is intra_aws, intra_gcp, or intra_azure and per-destination routes contain relay intermediaries that add cost without reducing egress rate (i.e., same or higher per-GB rate through the relay as via direct link), and direct edges to the destination are available in the most-expensive-edges table.",
+      "when_not_to_use": "When the relay genuinely reduces the per-GB egress rate for intra-cloud routing. Do not apply to inter-cloud configs (inter_agz, inter_gaz2) where relays are often necessary. Do not apply when the route is direct (single hop)."
+    },
+    {
+      "id": "C.2",
+      "name": "Unnecessary_Multi_Hop_Relay_Chain",
+      "description": "A route uses multiple sequential intermediate relay nodes to reach a destination when a direct edge or single-relay path exists, accumulating egress fees at each hop and instance costs for each relay without achieving a lower total cost than the simpler path.",
+      "category": "C",
+      "severity": "major",
+      "when_to_use": "When a route contains 3+ nodes (2+ hops) for a destination that could reasonably be reached in 1–2 hops, and the multi-hop path does not produce a lower total (egress + instance) cost than the shorter alternative visible in the topology data.",
+      "when_not_to_use": "When the additional hops demonstrably reduce egress cost enough to offset instance cost overhead — i.e., when the relay chain is genuinely cheaper than the direct path. Also do not apply to C.1 (cyclic) cases; use C.1 instead when nodes repeat."
+    },
+    {
+      "id": "C.3",
+      "name": "Low_Bandwidth_Relay_Bottleneck",
+      "description": "A relay node or intermediate edge is selected whose bandwidth (Gbps) is significantly lower than available alternative paths, causing transfer time to be dominated by that slow link even when the egress cost might be acceptable.",
+      "category": "C",
+      "severity": "major",
+      "when_to_use": "When the per-destination transfer time is substantially longer than other destinations, and the route for that destination passes through an edge whose Gbps value (visible in the Most Expensive Edges table or implied by the time calculation) is much lower than alternative edges that could reach the same destination.",
+      "when_not_to_use": "When the slow transfer time is caused by a cyclic route (use C.1) or by the destination simply having no high-bandwidth direct path available. Do not apply when all plausible paths to that destination share similarly low bandwidth."
+    },
+    {
+      "id": "C.4",
+      "name": "Bottleneck_Destination_Neglect",
+      "description": "The overall broadcast transfer time is unnecessarily high because the routing plan optimizes cost or time for most destinations while leaving one destination on a slow path, and no attempt is made to improve that bottleneck destination's route even though faster alternatives exist.",
+      "category": "C",
+      "severity": "major",
+      "when_to_use": "When the reported bottleneck_destination has a transfer time significantly higher than all other destinations (e.g., 2× or more), and the other destinations' routes have been improved (shorter times, relay usage) while the bottleneck destination's route remains unchanged or suboptimal.",
+      "when_not_to_use": "When the bottleneck destination's slow time is inherent to all available paths (no faster route exists). Do not apply when the bottleneck time discrepancy is caused by a cyclic route (use C.1) — only use C.4 when the route itself is non-cyclic but the path choice is suboptimal for time."
+    },
+    {
+      "id": "C.5",
+      "name": "Intra_Cloud_Cost_Model_Applied_To_Inter_Cloud",
+      "description": "A pricing or routing decision where the system, model, or documentation explicitly treats a data transfer that crosses two or more distinct cloud provider boundaries (e.g., AWS to GCP, Azure to AWS) as if it were a transfer occurring entirely within a single provider's network. This is evidenced by: (1) applying a per-GB rate or cost formula that matches or closely approximates the provider's published intra-cloud or same-region transfer pricing rather than the provider's published inter-cloud/internet egress pricing, OR (2) selecting a data transfer route without accounting for the elevated egress fee that the source provider charges when traffic exits its network to an external provider. The error must be traceable to a specific cost figure, rate assumption, routing rule, or explicit claim in the text that can be compared against publicly documented intra-cloud versus inter-cloud pricing for the named provider(s).",
+      "category": "C",
+      "severity": "major",
+      "when_to_use": "1. The text names or implies a specific source cloud provider and a different destination cloud provider (e.g., 'transfer data from our S3 bucket to BigQuery'). 2. A cost estimate, per-GB rate, or routing rule is stated or calculated, AND that value matches intra-cloud/same-provider transfer pricing rather than the provider's published cross-provider egress rate. 3. The justification or formula used explicitly references intra-cloud pricing tiers, internal transfer costs, or VPC-peering-style logic as the basis for a cross-provider transfer cost. 4. A route is chosen specifically because it is labeled 'cheaper' or 'equivalent,' and the stated reason omits or contradicts the known inter-cloud egress surcharge for that provider pair.",
+      "when_not_to_use": "1. The transfer is entirely within one cloud provider, even across regions or availability zones — that is a legitimate intra-cloud scenario and a different potential error class. 2. The text acknowledges inter-cloud egress fees exist but disputes or negotiates the rate (e.g., committed-use discounts, marketplace agreements) — the model is not blindly applying intra-cloud logic, it is applying a different agreed rate. 3. The cost error stems from using the wrong region's pricing table within the same provider, not from conflating provider boundaries. 4. No specific cost figure, rate, or routing decision is present — a general statement about cloud costs without a traceable calculation does not meet the threshold. 5. The error is solely about underestimating intra-cloud cross-region fees with no provider boundary crossing involved — apply a different code for intra-provider regional pricing errors."
+    },
+    {
+      "id": "C.6",
+      "name": "Redundant_Partition_Relay_Splitting",
+      "description": "Data partitions are routed through multiple different intermediate relay nodes to the same destination without improving parallelism or reducing the bottleneck transfer time, resulting in additional instance costs and egress overhead from operating unnecessary relay infrastructure.",
+      "category": "C",
+      "severity": "major",
+      "when_to_use": "When the per-destination breakdown shows the same destination reached via several distinct relay paths (different intermediaries), but the transfer time is not improved compared to using a single best relay, and the additional relay nodes each incur instance cost charges.",
+      "when_not_to_use": "When multiple relay paths to the same destination genuinely parallelize the transfer and reduce bottleneck time. Do not apply when the route simply has multiple hops in sequence (that is C.2); use C.6 only when multiple parallel relay intermediaries all converge on the same destination redundantly."
+    },
+    {
+      "id": "C.7",
+      "name": "Relay_Provides_No_Cost_Reduction",
+      "description": "A relay node is inserted into a route but the total cost (egress to relay + egress from relay + instance cost of relay) equals or exceeds the cost of routing directly to the destination, making the relay economically counterproductive.",
+      "category": "C",
+      "severity": "minor",
+      "when_to_use": "When a route uses an intermediate relay node and the per-destination egress cost is the same as or higher than what the direct-edge price (visible in Most Expensive Edges) would produce for the same data volume, indicating the relay added cost without savings.",
+      "when_not_to_use": "When the relay genuinely reduces the egress rate (e.g., routing through a cheaper GCP intermediary reduces the per-GB rate for an inter-cloud hop). Do not apply to cases where the relay reduces cost but the route is still not globally optimal — use C.2 or C.4 for those."
+    },
+    {
+      "id": "C.8",
+      "name": "Uniform_Direct_Route_Overuse_Ignoring_Relay_Savings",
+      "description": "All destinations are served via direct single-hop routes from the source regardless of whether cheaper relay paths exist, missing egress cost reductions available through cheaper intermediate nodes. The reasoning treats direct routing as universally optimal without evaluating relay alternatives.",
+      "category": "C",
+      "severity": "major",
+      "when_to_use": "When every per-destination route is a direct two-node path (source → destination), total_cost is notably higher than the relay-based alternative visible from edge prices, and no relay exploration is reflected in the reasoning.",
+      "when_not_to_use": "When direct routes genuinely are optimal for all destinations (e.g., the intra-Azure scenario where all destinations are on the same provider and relay savings are minimal or nonexistent). Do not apply when only some destinations use direct routes and others use relays."
+    },
+    {
+      "id": "C.9",
+      "name": "Parallelism_Not_Exploited",
+      "description": "The routing plan fails to leverage available partition-level parallelism to reduce transfer time. Either all partitions are sent sequentially over the same path (treating num_partitions as a serial multiplier on time rather than enabling concurrent transfers), or the plan explicitly serializes partition dispatch when the network and destination capacity would allow simultaneous transmission.",
+      "category": "C",
+      "severity": "major",
+      "when_to_use": "Use when the problem specifies multiple partitions and the transfer time calculation multiplies per-partition time by the number of partitions (implying serial dispatch) when parallel dispatch over available links would reduce total time. Also use when the model's reasoning explicitly sequences partitions that could be sent concurrently.",
+      "when_not_to_use": "Do not use when the network or destination imposes a serialization constraint that the model correctly identifies (e.g., a single-channel link that cannot support concurrent streams). Do not use for C.3, which is about bandwidth of selected paths rather than scheduling of partitions across those paths. Do not use for C.6, which is about unnecessary relay diversity per destination rather than parallelism scheduling."
+    }
+  ],
+  "generation": {
+    "provider": "bedrock",
+    "model": "us.anthropic.claude-sonnet-4-6",
+    "trace_count": 300,
+    "agreement": {
+      "final_kappa": 0.9638709677419355,
+      "final_coverage": 1.0,
+      "rounds_completed": 5,
+      "learned_rules": 2,
+      "anchor_examples": 24
+    }
+  }
+}

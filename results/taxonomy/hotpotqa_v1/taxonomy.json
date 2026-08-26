@@ -1,0 +1,283 @@
+{
+  "schema_version": 1,
+  "strategy": "baseline",
+  "status": "accepted",
+  "display_name": "{'name': 'Open-Domain Question Answering (Trivia / Factual Retrieval)', 'content_type': 'Short factual answers derived from multi-hop passage retrieval and summarization', 'task_complexity': 'Tasks require multi-hop reasoning across retrieved passages (e.g., identifying a person via one passage, then finding a fact about them in another), handling ambiguous or insufficient evidence, resolving comparisons between entities, and synthesizing information from multiple summarization steps before producing a final answer'} failure taxonomy",
+  "domain": "{'name': 'Open-Domain Question Answering (Trivia / Factual Retrieval)', 'content_type': 'Short factual answers derived from multi-hop passage retrieval and summarization', 'task_complexity': 'Tasks require multi-hop reasoning across retrieved passages (e.g., identifying a person via one passage, then finding a fact about them in another), handling ambiguous or insufficient evidence, resolving comparisons between entities, and synthesizing information from multiple summarization steps before producing a final answer'}",
+  "summary": "Failure modes generated and agreement-checked from 300 traces.",
+  "codes": [
+    {
+      "id": "A.1",
+      "name": "Unconditional_Termination_Masking_Low_Quality_Output",
+      "description": "The node designated as the pipeline's termination point (typically 'final_answer') contains no conditional logic, threshold check, or branching mechanism that could prevent it from returning output to the user. Specifically: (1) the node always executes its return/output action regardless of any quality, confidence, or completeness signals present in the payload it receives, AND (2) no upstream edge or router redirects flow away from this node based on output quality. The flaw is structural: inspect the node's code or configuration and confirm that zero conditional paths exist that would suppress, reroute, or recycle the output under any circumstance.",
+      "category": "A",
+      "severity": "critical",
+      "when_to_use": "Apply this code ONLY when ALL three of the following are directly observable: (1) A single node is unambiguously the final output node (e.g., named 'final_answer', calls a user-facing return function, or has no outgoing edges); (2) That node's internal logic contains no if/else, switch, threshold comparison, confidence check, or any branching statement that governs whether output is delivered; (3) The pipeline demonstrably reaches this node and produces user-visible output even when upstream nodes have flagged low confidence, incompleteness, or error states (e.g., a 'confidence' field is present in the payload but is never read by the termination node).",
+      "when_not_to_use": "Do NOT apply this code if: (a) quality checks exist elsewhere in the pipeline and can redirect flow BEFORE reaching the termination node — that is a router/gating flaw, not a termination flaw; (b) the termination node contains any conditional logic, even if that logic is judged to be insufficient or poorly calibrated — use a separate 'weak quality gate' code instead; (c) there is no explicit quality or confidence signal anywhere in the pipeline, making it impossible to confirm the node is ignoring one; (d) the output is intentionally unconditional by valid design (e.g., a logging node, an acknowledgment response); (e) you are inferring the flaw from bad output quality alone without inspecting the node's structure."
+    },
+    {
+      "id": "A.10",
+      "name": "Spurious_Fact_Introduced_At_Summarization",
+      "description": "During an intermediate summarization step, a fact is introduced that does not appear in any of the input passages for that step — the summarization generates a plausible-sounding but unsupported claim, which then propagates forward as if it were grounded. This is a hallucination failure localized to the summarization layer, distinct from retrieval failure (the passages were present but the summarizer invented content beyond them).",
+      "category": "A",
+      "severity": "critical",
+      "when_to_use": "When a summarizer output contains a specific factual claim that cannot be traced to any passage in its input context. Apply when the fabricated fact is consequential to the final answer.",
+      "when_not_to_use": "Do not apply when the fact is present in the retrieved passages but the summarizer correctly includes it (not spurious). Do not apply when the fact is absent because retrieval failed to return it (use A.3 or A.11 — the fact was never available to the summarizer). Do not apply when the conflict is between two summaries rather than between a summary and its source passages (use A.4b)."
+    },
+    {
+      "id": "A.2",
+      "name": "Process_Crash_From_Memory_Exhaustion",
+      "description": "The agent process is terminated by the operating system or runtime due to out-of-memory (OOM) conditions or an external kill signal, causing the current task to fail with no output produced. This operates at the OS/process layer — the process is forcibly ended before any model-level output can be returned. Distinct from A.9, which is a model-layer context overflow causing silent truncation without a hard crash. Cross-reference A.9: if the capacity failure is at the model context window level (truncation, not crash), use A.9.",
+      "category": "A",
+      "severity": "critical",
+      "when_to_use": "When a process is killed by the OS (OOM killer, SIGKILL, or equivalent) or a runtime watchdog, and no output is produced as a result. Apply when logs show OOM events, process signals, or container restarts.",
+      "when_not_to_use": "Do not apply when the failure is a model-level context window overflow that causes silent truncation rather than a hard process crash (use A.9). Do not apply when the process exits cleanly but produces no output (use A.7)."
+    },
+    {
+      "id": "A.3",
+      "name": "Retrieval_Returns_Topically_Adjacent_But_Irrelevant_Passages",
+      "description": "The retrieval component returns passages that are related to surface-level query terms but do not contain the specific facts needed to answer the question. The retrieved content is thematically plausible but informationally insufficient, causing downstream summarization steps to operate on a corpus that cannot yield the correct answer regardless of summarization quality.",
+      "category": "A",
+      "severity": "major",
+      "when_to_use": "When retrieved passages share keywords or topic domain with the query but lack the precise facts required. Apply when the retrieval step is the proximate cause of downstream failure and the passages returned are demonstrably off-target at the fact level.",
+      "when_not_to_use": "Do not apply when the retrieval returns genuinely relevant passages but the summarizer fails to extract the correct information (use A.4 or C.5). Do not apply when no passages are returned at all (gap — see coverage notes). Do not apply when passages are correct but truncated due to context overflow (use A.9)."
+    },
+    {
+      "id": "A.4",
+      "name": "Dual_Summary_Aggregation_Failure",
+      "description": "Both independent summarization steps produce output that renders the aggregator (final_answer) unable to deliver a correct, confident answer. This covers two named variants: (A.4a) Simultaneous Absence — both summaries fail to surface the required information, each returning a 'cannot determine' or equivalent signal; and (A.4b) Unresolved Conflict — the two summaries produce contradictory factual claims (e.g., different years, different entities) and the aggregator selects one answer without principled resolution, discarding the conflict signal. In both variants the architectural location of failure is identical: the aggregator receives two summaries that together do not constitute a reliable basis for a final answer.",
+      "category": "A",
+      "severity": "critical",
+      "when_to_use": "Apply A.4 (with variant noted) whenever the aggregation step fails because of the joint state of both summaries — either both are uninformative (A.4a) or they contradict each other without resolution (A.4b). Use when the failure is localized to the dual-summary→aggregator handoff.",
+      "when_not_to_use": "Do not apply when only one summary fails and the other provides sufficient information (the aggregator should still succeed). Do not apply when the summaries are consistent and adequate but the aggregator itself introduces an error (potential C-code). Do not apply when a single summary introduces a spurious fact (use C.5)."
+    },
+    {
+      "id": "A.5",
+      "name": "Repetition_Looping_In_Output_Generation",
+      "description": "An agent produces output containing repeated phrases, sentences, or reasoning segments, indicating a pathological generation loop that wastes context window capacity, degrades output quality, and may prevent the agent from ever producing a meaningful conclusion within the available token budget.",
+      "category": "A",
+      "severity": "major",
+      "when_to_use": "When generated output contains verbatim or near-verbatim repeated blocks of text, repeated reasoning steps, or circular argumentation that does not converge. Apply when the repetition is within a single generation call, not across separate pipeline steps.",
+      "when_not_to_use": "Do not apply when repetition is intentional (e.g., structured output requiring repeated field names). Do not apply when the same fact appears in multiple summaries due to retrieval overlap rather than generation looping. Do not confuse with A.9 (context overflow causing truncation, not looping)."
+    },
+    {
+      "id": "A.6",
+      "name": "Failure_To_Produce_Substantive_Output",
+      "description": "A processing step fails to deliver a complete, usable output to the next stage. This covers two mechanistically distinct but observationally equivalent sub-types: (A.7a) Deliberate Refusal or Abandonment — the agent explicitly declines the task, returns a refusal message, or stops processing before generating any substantive content; and (A.7b) Abrupt Unclean Termination — the step ends without a proper closing artifact (no final answer field, no summary conclusion, response truncated mid-reasoning) due to an unexpected stop rather than a design-level termination decision. In both cases the downstream stage receives no usable input. Cross-reference A.1: if the termination is governed by an unconditional termination-owner design (final_answer always fires), use A.1 instead.",
+      "category": "A",
+      "severity": "critical",
+      "when_to_use": "Apply whenever a pipeline step produces no substantive output that can be consumed by the next step — whether because the agent refused, abandoned, or stopped unexpectedly mid-generation. Use A.7a when refusal language or an empty response is present; use A.7b when the output is truncated or structurally incomplete without explanation.",
+      "when_not_to_use": "Do not apply when the step produces output but that output is low quality, incorrect, or hallucinated (use appropriate C-codes or A.3/A.4). Do not apply when the absence of output is caused by an OS-level crash (use A.2) or by the unconditional termination-owner design (use A.1). Do not apply when context overflow causes degraded but present output (use A.9)."
+    },
+    {
+      "id": "A.7",
+      "name": "Context_Overflow_Causing_Information_Loss",
+      "description": "The volume of input passed to an agent exceeds the effective context window, causing early content to be silently truncated or deprioritized. Unlike A.2 (hard process crash), this is a model-layer failure: the process continues and produces output, but that output is degraded because critical information was outside the attended context. The agent may be unaware of the truncation and will not flag it. Cross-reference A.2: if the capacity failure results in a hard process crash with no output, use A.2.",
+      "category": "A",
+      "severity": "major",
+      "when_to_use": "When input to a step is demonstrably large (long passages + question + prior summaries stacked) and the output shows unawareness of information that was present in early portions of the input. Apply when the process completes normally but output quality degrades in a way consistent with truncation.",
+      "when_not_to_use": "Do not apply when the process crashes with an OS kill signal (use A.2). Do not apply when information loss is due to poor retrieval rather than truncation (use A.3). Do not apply when the agent explicitly states it cannot process the input length (use A.7a)."
+    },
+    {
+      "id": "A.8",
+      "name": "Instruction_Non_Compliance_In_Output_Format",
+      "description": "An agent fails to follow the output format or brevity constraints specified in its system prompt, producing verbose, decorated, or incorrectly structured output. This can cause downstream parsing failures, context bloat in subsequent steps, or silent data loss when the consuming node expects a specific schema.",
+      "category": "A",
+      "severity": "minor",
+      "when_to_use": "When a step's output violates the format, schema, or length constraints explicitly specified in its prompt — and this violation causes or risks causing a downstream failure. Apply when the content may be correct but the structure is wrong.",
+      "when_not_to_use": "Do not apply when the format is technically violated but the downstream node handles it gracefully with no degradation. Do not apply when the content itself is wrong regardless of format (use appropriate C-codes). Do not confuse with A.6 (repetition looping) which is a generation pathology, not a prompt compliance failure."
+    },
+    {
+      "id": "A.9",
+      "name": "Empty_Or_Null_Retrieval_Result",
+      "description": "The retrieval system returns zero passages or a null result set for a query, providing downstream summarization steps with no content to process. This is distinct from A.3 (topically adjacent but informationally irrelevant results): here the retrieval corpus returns nothing at all, guaranteeing downstream failure regardless of summarization quality.",
+      "category": "A",
+      "severity": "critical",
+      "when_to_use": "When the retrieval step returns an empty list, null, or zero-hit result, and this empty result is passed to a summarization step. Apply when logs or retrieval API responses confirm no passages were returned.",
+      "when_not_to_use": "Do not apply when passages are returned but are topically wrong (use A.3). Do not apply when the retrieval system crashes rather than returning empty (use A.2 or A.7). Do not apply when the summarizer is given passages but produces no output for other reasons (use A.7)."
+    },
+    {
+      "id": "B.1",
+      "name": "Solver_Answer_Not_Grounded_In_Evidence",
+      "description": "The solver produces an answer that is not grounded in the retrieved passages or summaries — either by asserting a claim entirely absent from all retrieved evidence (fabrication with no evidential anchor), or by drawing an unjustified inferential leap from indirect or circumstantial evidence that does not directly support the conclusion. The output goes beyond what the available evidence can legitimately sustain.",
+      "category": "B",
+      "severity": "critical",
+      "when_to_use": "When the solver's answer contains a claim that cannot be traced to any explicit statement in the retrieved passages or summaries, OR when the solver reaches a conclusion by treating weak, indirect, or circumstantial evidence as if it were direct proof — and no retrieved passage directly states the asserted claim.",
+      "when_not_to_use": "Do not apply when the solver's wrong claim directly contradicts something explicitly stated in the retrieved passages (use B.6 instead). Do not apply when the solver correctly identifies that evidence is insufficient and declines to answer (that is correct behaviour). Do not apply to system-level failures such as missing outputs or timeouts.",
+      "applies_to_role": "solver"
+    },
+    {
+      "id": "B.2",
+      "name": "Solver_Unwarranted_Uncertainty_When_Answer_Available",
+      "description": "The solver concludes it cannot answer or expresses unwarranted uncertainty despite one or both summaries containing sufficient information to derive a confident, correct answer. The solver under-commits to an answer that the evidence fully supports.",
+      "category": "B",
+      "severity": "major",
+      "when_to_use": "When the retrieved passages or summaries contain explicit, sufficient information to answer the question, but the solver hedges, refuses, or states the information is unavailable.",
+      "when_not_to_use": "Do not apply when the evidence genuinely is ambiguous, incomplete, or conflicting (uncertainty may then be appropriate). Do not apply to system-level failures where the solver produced no output at all.",
+      "applies_to_role": "solver"
+    },
+    {
+      "id": "B.3",
+      "name": "Solver_Answer_Addresses_Wrong_Question_Aspect",
+      "description": "The solver answers a related but different sub-question than what was asked — the retrieved context is appropriate for the question's topic, but the solver targets the wrong aspect or dimension of the question (e.g., answers who instead of when, answers the cause instead of the effect). The root cause is a question-interpretation error, not a context-selection error.",
+      "category": "B",
+      "severity": "major",
+      "when_to_use": "When the solver's evidence base is topically correct for the question but the answer addresses a different facet of that topic than was requested. Apply when the mismatch is traceable to misreading or mis-targeting the question itself.",
+      "when_not_to_use": "Do not apply when the solver's error is primarily caused by selecting a passage about the wrong entity or topic (use B.4 instead). If the root cause cannot be determined but a wrong-entity passage is identifiable, prefer B.4.",
+      "applies_to_role": "solver"
+    },
+    {
+      "id": "B.4",
+      "name": "Solver_Irrelevant_Context_Accepted_As_Answer_Basis",
+      "description": "The solver uses a topically adjacent but factually irrelevant passage or wrong-entity context as the primary evidence base, producing an answer derived from the wrong source. The root cause is a context-selection error — the solver latches onto a passage that is superficially related but concerns a different entity, event, or topic than the question requires.",
+      "category": "B",
+      "severity": "major",
+      "when_to_use": "When the solver's answer can be traced to a passage that is about the wrong entity or wrong topic, and the context mismatch is the identifiable primary cause of the wrong answer. Apply when a correct passage exists in the retrieved set but the solver used the wrong one.",
+      "when_not_to_use": "Do not apply when the retrieved passages are all correctly scoped to the question's entity/topic and the solver simply mis-targets the question's aspect (use B.3 instead). Do not apply when no relevant passage was retrieved at all (that is a retrieval-stage failure, not a solver quality failure).",
+      "applies_to_role": "solver"
+    },
+    {
+      "id": "B.5",
+      "name": "Solver_Partial_Answer_Missing_Required_Components",
+      "description": "The solver answers only part of a multi-part or compound question, omitting one or more required answer components while correctly addressing others.",
+      "category": "B",
+      "severity": "major",
+      "when_to_use": "When the question explicitly or implicitly requires multiple distinct answer components and the solver provides some but not all of them.",
+      "when_not_to_use": "Do not apply to single-part questions. Do not apply when the omitted component is genuinely unanswerable given the evidence (use B.2 if the solver should have flagged this). Do not apply to system-level failures.",
+      "applies_to_role": "solver"
+    },
+    {
+      "id": "B.6",
+      "name": "Solver_Incorrect_Factual_Answer",
+      "description": "The solver produces a factually wrong answer that directly contradicts or misrepresents information explicitly stated in the retrieved passages or summaries. The error concerns a claim that IS present in the evidence — the solver has the evidence but renders it incorrectly.",
+      "category": "B",
+      "severity": "critical",
+      "when_to_use": "When the solver's answer asserts something that is directly contradicted by an explicit statement in the retrieved passages or summaries. The passage must contain the correct information and the solver must have contradicted it.",
+      "when_not_to_use": "Do not apply when the wrong claim is entirely absent from the passages and not contradicted by them (use B.1 instead). Tiebreaker: if a wrong claim is both absent from AND contradicts a passage, classify as B.6 — contradiction is the more diagnosable failure and takes precedence over B.1.",
+      "applies_to_role": "solver"
+    },
+    {
+      "id": "B.7",
+      "name": "Solver_Reasoning_Error_On_Derived_Facts",
+      "description": "The solver performs an incorrect inference or calculation when the answer requires combining or deriving information from multiple pieces of evidence. The individual inputs are correctly read from the evidence, but the derivation step (arithmetic, logical combination, temporal reasoning, etc.) produces a wrong result.",
+      "category": "B",
+      "severity": "major",
+      "when_to_use": "When the question requires the solver to compute, combine, or logically derive an answer from two or more evidence statements, and the solver's derivation is wrong despite correctly reading the inputs.",
+      "when_not_to_use": "Do not apply when the solver misreads an input value from a passage (that is B.6). Do not apply when only one piece of evidence is needed and no derivation is required.",
+      "applies_to_role": "solver"
+    },
+    {
+      "id": "B.8",
+      "name": "Solver_Overly_Verbose_Answer_Exceeding_Task_Scope",
+      "description": "The solver produces an answer that substantially exceeds the required level of detail for the task, restating summary content, adding unrequested context, or padding the response in a way that obscures the actual answer and reduces answer quality.",
+      "category": "B",
+      "severity": "minor",
+      "when_to_use": "When the solver's response is materially longer than the task requires, includes unrequested background or restatements, and this verbosity makes the answer harder to evaluate or use.",
+      "when_not_to_use": "Do not apply when additional detail is warranted by the complexity of the question. Do not apply to minor length differences — only apply when verbosity meaningfully degrades answer quality or obscures the core answer.",
+      "applies_to_role": "solver"
+    },
+    {
+      "id": "B.9",
+      "name": "Solver_Failure_To_Reconcile_Conflicting_Summary_Claims",
+      "description": "The solver receives two summaries containing conflicting factual claims about the same fact but selects one without acknowledging the conflict or applying any reconciliation reasoning, producing a potentially arbitrary answer when explicit conflict resolution was required.",
+      "category": "B",
+      "severity": "major",
+      "when_to_use": "When two retrieved summaries contain mutually contradictory statements about the same fact and the solver picks one silently, treating it as settled rather than flagging or reasoning through the conflict.",
+      "when_not_to_use": "Do not apply when only one summary addresses the fact in question (no conflict exists). Do not apply when the solver explicitly acknowledges the conflict and provides reasoned justification for its choice (that is correct behaviour).",
+      "applies_to_role": "solver"
+    },
+    {
+      "id": "C.1",
+      "name": "Wrong_Intermediate_Entity_In_Multi_Hop_Chain",
+      "description": "In a multi-hop question, the first resolution step identifies the wrong intermediate entity, and this error propagates into the final answer. The reasoning proceeds confidently using the incorrect intermediate entity without detecting the mismatch.",
+      "category": "C",
+      "severity": "critical",
+      "when_to_use": "When a multi-hop question requires identifying entity X first and then finding a fact about X, but the passages or summaries identify a different entity as X, leading to a final answer derived from that wrong entity.",
+      "when_not_to_use": "When the intermediate entity is correctly identified but the second-hop fact is simply missing. Do not apply when the chain fails at the second hop rather than the first."
+    },
+    {
+      "id": "C.2",
+      "name": "Overly_Broad_Shared_Property_Identification",
+      "description": "When asked what specific property two entities share, the reasoning identifies a trivially broad or non-discriminating property (e.g., 'both are films', 'both are food companies') rather than the most specific shared property intended by the question.",
+      "category": "C",
+      "severity": "minor",
+      "when_to_use": "When the answer names a property shared by virtually all members of the entities' general category rather than a specific distinguishing characteristic, and a more specific shared property was available in the passages.",
+      "when_not_to_use": "When no more specific shared property exists or can be found in the passages. Do not apply when the broad property is genuinely the only one supported by evidence."
+    },
+    {
+      "id": "C.3",
+      "name": "Entity_Attribute_Misassignment",
+      "description": "A factual attribute (birth date, nationality, title, role) retrieved from passages is assigned to the wrong entity — typically because multiple entities are discussed in nearby passages and the reasoning associates a fact with the wrong one.",
+      "category": "C",
+      "severity": "major",
+      "when_to_use": "When the summary or answer attributes a specific fact to entity A, but the passage that contains that fact clearly associates it with entity B (a different person, place, or object discussed in the same passage set).",
+      "when_not_to_use": "When the misassignment stems from retrieving passages about a wrong entity from the start (use C.1 instead). Do not apply when the correct entity is identified and the fact is simply wrong for unrelated reasons."
+    },
+    {
+      "id": "C.4",
+      "name": "Insufficient_Passage_Coverage_Yields_Undetermined",
+      "description": "Retrieved passages cover only a subset of the entities or facts needed to answer the question, causing the reasoning to conclude 'cannot be determined' even though the answer may be knowable from general knowledge or from passages not retrieved.",
+      "category": "C",
+      "severity": "major",
+      "when_to_use": "When the trace explicitly states that one or more required entities are 'not mentioned in any of the passages' and the final answer is therefore indeterminate, while the question itself is clearly answerable.",
+      "when_not_to_use": "When the question is genuinely unanswerable or when the passages do cover all required entities. Do not apply when the 'cannot be determined' conclusion is correct given the retrieved evidence."
+    },
+    {
+      "id": "C.5",
+      "name": "Conflation_Of_Nominations_And_Wins",
+      "description": "The reasoning confuses 'nominations' for an award with actual 'wins', or conflates counts of one type of award recognition with another, producing an incorrect numeric or categorical answer.",
+      "category": "C",
+      "severity": "major",
+      "when_to_use": "When the trace uses the word 'won' or 'wins' alongside a count that the passage attributes to 'nominations', or when nomination counts are treated as win counts in the final answer.",
+      "when_not_to_use": "When the passage clearly states wins and the reasoning correctly uses that figure. Do not apply to general numeric errors unrelated to award categories."
+    },
+    {
+      "id": "C.6",
+      "name": "Historical_Chronology_Or_Causation_Inversion",
+      "description": "When reasoning about historical events or figures, the trace inverts the temporal order of events, misattributes causation by reversing cause and effect, or places a figure in the wrong historical period — leading to a factually wrong conclusion about sequence, influence, or contemporaneity.",
+      "category": "C",
+      "severity": "critical",
+      "when_to_use": "Use when the trace makes a claim about the order in which historical events occurred, or about which event caused or preceded another, and that order or causal direction is demonstrably reversed relative to established historical record. Also use when a historical figure is placed in the wrong century or era in a way that materially affects the answer.",
+      "when_not_to_use": "Do not use when the date error is a minor off-by-one year with no effect on the answer's logic. Do not use when the entity is correctly placed in time but an attribute is misassigned (use C.6). Do not use for fictional or speculative timelines unless the question explicitly treats them as factual."
+    },
+    {
+      "id": "C.7",
+      "name": "Geographic_Or_Infrastructure_Scope_Conflation",
+      "description": "When reasoning about geography or infrastructure (railways, administrative boundaries, cities, routes), the trace conflates entities of different scope — for example, treating a regional line as a national network, merging two distinct administrative regions, attributing a route's properties to the wrong terminus city, or confusing a city with the broader region it belongs to.",
+      "category": "C",
+      "severity": "major",
+      "when_to_use": "Use when the trace makes a geographic or infrastructure claim that incorrectly merges, substitutes, or rescales an entity — such as treating a local railway branch as a mainline, attributing a city's statistics to the entire country, or confusing two distinct but similarly named geographic or infrastructure entities.",
+      "when_not_to_use": "Do not use for simple factual errors about a single geographic attribute (e.g., wrong population number) where no scope conflation occurs. Do not use when the error is a multi-hop chain failure rather than a scope confusion (use C.2). Do not use when the entity name is correct and only a numeric attribute is wrong."
+    },
+    {
+      "id": "C.8",
+      "name": "Sports_Record_Or_Standing_Temporal_Misapplication",
+      "description": "When reasoning about sports results, standings, or records, the trace applies statistics, rankings, or outcomes from the wrong season, tournament edition, or time period — either because retrieved passages cover a different year than the question specifies, or because the trace fails to filter evidence to the relevant temporal scope.",
+      "category": "C",
+      "severity": "major",
+      "when_to_use": "Use when the question asks about a specific season, year, or edition of a competition and the trace answers using figures or standings from a different period without acknowledging the mismatch. Use when a record or title is attributed based on cumulative or wrong-period statistics rather than the period in question.",
+      "when_not_to_use": "Do not use when the question asks about all-time or career statistics and the trace correctly uses cumulative figures. Do not use when the temporal period is irrelevant to the answer. Do not use when the error is a win/nomination type confusion rather than a period confusion (use C.10 for award contexts)."
+    },
+    {
+      "id": "C.9",
+      "name": "Taxonomic_Or_Enumeration_Scope_Error",
+      "description": "When reasoning about scientific classifications or enumerations (species counts, genera in a family, subspecies, varieties), the trace uses a count or membership list that applies to the wrong taxonomic rank, a different taxonomic group with a similar name, or an outdated/superseded classification — producing a wrong numerical or categorical answer.",
+      "category": "C",
+      "severity": "major",
+      "when_to_use": "Use when the question asks for a count or membership at a specific taxonomic rank (e.g., number of species in a genus, number of genera in a family) and the trace reports a figure that corresponds to a different rank, a synonym taxon, or an obsolete taxonomy. Also use when plant or animal enumeration questions are answered with totals that conflate accepted species with synonyms, subspecies, or cultivars.",
+      "when_not_to_use": "Do not use when the taxonomic rank is correct but the count is simply outdated by a small margin with no rank conflation. Do not use when the error is a geographic scope conflation rather than a taxonomic one (use C.12). Do not use for non-taxonomic enumeration errors unrelated to scientific classification."
+    }
+  ],
+  "generation": {
+    "provider": "bedrock",
+    "model": "global.anthropic.claude-sonnet-4-6",
+    "trace_count": 300,
+    "agreement": {
+      "final_kappa": 1.0,
+      "final_coverage": 1.0,
+      "rounds_completed": 4,
+      "learned_rules": 1,
+      "anchor_examples": 24
+    }
+  }
+}
