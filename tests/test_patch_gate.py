@@ -70,7 +70,7 @@ def test_our_apply_ladder_matches_the_harness_verbatim():
     """If swebench changes its commands, our skip stops being equivalent."""
     import pathlib
 
-    import swebench
+    swebench = pytest.importorskip("swebench")
 
     src = (pathlib.Path(swebench.__file__).parent / "harness" / "run_evaluation.py").read_text()
     i = src.index("GIT_APPLY_CMDS = [")
@@ -85,7 +85,7 @@ def test_harness_excludes_empty_patches_before_running_anything():
     """Tier 1 is exactly what the harness does -- verified in its source."""
     import pathlib
 
-    import swebench
+    swebench = pytest.importorskip("swebench")
 
     src = (pathlib.Path(swebench.__file__).parent / "harness" / "run_evaluation.py").read_text()
     assert "empty_patch_ids" in src
@@ -97,7 +97,7 @@ def test_harness_raises_on_apply_failure_so_score_is_zero():
     """Tier 2: all commands failing raises EvaluationError -> never resolved."""
     import pathlib
 
-    import swebench
+    swebench = pytest.importorskip("swebench")
 
     src = (pathlib.Path(swebench.__file__).parent / "harness" / "run_evaluation.py").read_text()
     assert "if not applied_patch:" in src
