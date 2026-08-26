@@ -1,0 +1,6432 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A framework for optimizing textual system components using LLM-based reflection and Pareto-efficient evolutionary search.">
+      
+      
+      
+        <link rel="canonical" href="https://gepa-ai.github.io/gepa/guides/use-cases/">
+      
+      
+      
+        <link rel="next" href="../../about/">
+      
+      
+        
+      
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../feed_rss_updated.xml">
+      
+      <link rel="icon" href="../../static/img/gepa_logo.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+  
+    
+      
+        <title>Showcase - GEPA</title>
+      
+    
+  
+
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../static/css/custom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+<!-- RSS feed discovery -->
+<link rel="alternate" type="application/rss+xml" title="GEPA Blog" href="https://gepa-ai.github.io/gepa/blog/feed.xml">
+<link rel="alternate" type="application/atom+xml" title="GEPA Blog (updated)" href="https://gepa-ai.github.io/gepa/blog/feed_updated.xml">
+
+<!--
+  NOTE on social_image paths: The blog plugin rewrites page URLs
+  (blog/2026/02/18/slug/) but copies image assets at the original source
+  directory path (blog/2026-02-18-slug/images/). The social_image front matter
+  uses the source path — that's where the image actually lives. Both resolve.
+
+  NOTE on JSON-LD: Conditional fields (description, image, datePublished)
+  always have a non-conditional field after them (publisher, mainEntityOfPage),
+  so commas are never trailing. Validated with Python's strict json parser.
+-->
+
+<!-- Open Graph meta tags -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="GEPA: Showcase">
+<meta property="og:url" content="https://gepa-ai.github.io/gepa/guides/use-cases/">
+<meta property="og:site_name" content="GEPA">
+<meta property="og:description" content="A framework for optimizing textual system components using LLM-based reflection and Pareto-efficient evolutionary search.">
+
+
+
+<!-- Twitter Card meta tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@LakshyAAAgrawal">
+<meta name="twitter:creator" content="@LakshyAAAgrawal">
+<meta name="twitter:title" content="GEPA: Showcase">
+<meta name="twitter:description" content="A framework for optimizing textual system components using LLM-based reflection and Pareto-efficient evolutionary search.">
+
+
+
+
+<!-- Structured data (JSON-LD) — uses |tojson to avoid autoescape corruption -->
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "GEPA: Showcase",
+  "url": "https://gepa-ai.github.io/gepa/guides/use-cases/",
+  "description": "A framework for optimizing textual system components using LLM-based reflection and Pareto-efficient evolutionary search.",
+  "isPartOf": { "@id": "https://gepa-ai.github.io/gepa/#website" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "GEPA",
+    "url": "https://gepa-ai.github.io/gepa/"
+  }
+}
+</script>
+
+
+
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HGHHSE0CDS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-HGHHSE0CDS');
+</script>
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#showcase" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="GEPA" class="md-header__button md-logo" aria-label="GEPA" data-md-component="logo">
+      <img src="../../static/img/gepa_logo_with_text_white.svg" alt="logo">
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="landing-nav">
+      <a href="./" class="landing-nav__link landing-nav__link--active">Showcase</a>
+      <a href="../../blog/" class="landing-nav__link landing-nav__link--highlight">Blog<span class="landing-nav__badge">New</span></a>
+      <a href="../" class="landing-nav__link">Docs</a>
+      <a href="../../tutorials/" class="landing-nav__link">Tutorials</a>
+      <a href="../../api/" class="landing-nav__link">API</a>
+      <a href="../../about/" class="landing-nav__link">About</a>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/gepa-ai/gepa" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    gepa-ai/gepa
+  </div>
+</a>
+      </div>
+    
+    <button class="toc-toggle md-header__button md-icon" aria-label="Table of contents" title="Table of contents">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2Z"/></svg>
+    </button>
+  </nav>
+</header>
+
+    <div class="md-container" data-md-component="container">
+      
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="GEPA" class="md-nav__button md-logo" aria-label="GEPA" data-md-component="logo">
+      
+  <img src="../../static/img/gepa_logo_with_text_white.svg" alt="logo">
+
+    </a>
+    GEPA
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/gepa-ai/gepa" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    gepa-ai/gepa
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Showcase
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Showcase
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#enterprise-production" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enterprise &amp; Production
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ai-coding-agents-research-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AI Coding Agents &amp; Research Tools
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#domain-specific-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain-Specific Applications
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced Capabilities
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#research-academic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Research &amp; Academic
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#media-press-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Media &amp; Press Coverage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#emerging-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Emerging Applications
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#community-integrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Community Integrations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#infrastructure-devops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infrastructure &amp; DevOps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creative-generative-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creative &amp; Generative Applications
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-processing-synthesis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Processing &amp; Synthesis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#community-tutorials-guides" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Community Tutorials &amp; Guides
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#international-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        International Coverage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Get Started
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../blog/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Blog
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Archive
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Archive
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blog/archive/2026/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2026
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../adapters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Creating Adapters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../confidence-adapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Confidence-Aware Classification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../candidate-selection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Candidate Selection Strategies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../acceptance-criterion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acceptance Criterion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../batch-sampling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Batch Sampling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../parallel-proposals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parallel Proposals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../combee/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ComBEE (Scalable Reflection)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../callbacks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Using Callbacks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cost-tracking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cost & Token Tracking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../experiment-tracking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experiment Tracking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../claude-cli-as-proposer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Using Claude Code as a Proposer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agent-skill/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Using the GEPA Agent Skill
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gskill/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    gskill
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../tutorials/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/dspy_full_program_evolution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DSPy Full Program Evolution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/arc_agi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARC AGI Example
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/3d_unicorn_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3D Unicorn Optimization (Seedless)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/confidence_adapter_classification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ConfidenceAdapter AG News Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/langchain_adapter_pair_sum_product_walkthrough/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LangChain Adapter Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../api/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    optimize_anything
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    optimize_anything
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/optimize_anything/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    optimize_anything
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/Task/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Task
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/OptimizeAnythingConfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OptimizeAnythingConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/Engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/Result/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Result
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/EvalServer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EvalServer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/BudgetTracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BudgetTracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/optimize_anything_with_server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    optimize_anything_with_server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/list_engines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    list_engines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/register_engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    register_engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_3" id="__nav_6_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GEPA Engine
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    GEPA Engine
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/GEPAConfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GEPAConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/EngineConfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EngineConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/ReflectionConfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ReflectionConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/MergeConfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MergeConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/RefinerConfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RefinerConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/TrackingConfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TrackingConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/Evaluator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evaluator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/OptimizationState/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OptimizationState
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/LogContext/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LogContext
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/get_log_context/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    get_log_context
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/set_log_context/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    set_log_context
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/optimize_anything/make_litellm_lm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    make_litellm_lm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Core
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/core/optimize/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    optimize
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/core/GEPAAdapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GEPAAdapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/core/EvaluationBatch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EvaluationBatch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/core/GEPAResult/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GEPAResult
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/core/GEPACallback/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GEPACallback
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/core/DataLoader/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataLoader
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/core/GEPAState/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GEPAState
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/core/EvaluationCache/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EvaluationCache
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Callbacks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Callbacks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/GEPACallback/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GEPACallback
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/CompositeCallback/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CompositeCallback
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/OptimizationStartEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OptimizationStartEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/OptimizationEndEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OptimizationEndEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/IterationStartEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IterationStartEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/IterationEndEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IterationEndEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/CandidateSelectedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CandidateSelectedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/CandidateAcceptedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CandidateAcceptedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/CandidateRejectedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CandidateRejectedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/EvaluationStartEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EvaluationStartEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/EvaluationEndEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EvaluationEndEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/ValsetEvaluatedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ValsetEvaluatedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/ParetoFrontUpdatedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ParetoFrontUpdatedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/MergeAttemptedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MergeAttemptedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/MergeAcceptedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MergeAcceptedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/MergeRejectedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MergeRejectedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/BudgetUpdatedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BudgetUpdatedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/ErrorEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ErrorEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/callbacks/StateSavedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StateSavedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_6" id="__nav_6_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stop Conditions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Stop Conditions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/stop_conditions/StopperProtocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StopperProtocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/stop_conditions/MaxMetricCallsStopper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MaxMetricCallsStopper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/stop_conditions/TimeoutStopCondition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TimeoutStopCondition
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/stop_conditions/NoImprovementStopper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NoImprovementStopper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/stop_conditions/ScoreThresholdStopper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ScoreThresholdStopper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/stop_conditions/FileStopper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FileStopper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/stop_conditions/SignalStopper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SignalStopper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/stop_conditions/CompositeStopper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CompositeStopper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_7" id="__nav_6_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Adapters
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Adapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/adapters/DefaultAdapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DefaultAdapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/adapters/ConfidenceAdapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ConfidenceAdapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/adapters/DSPyAdapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DSPy Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/adapters/DSPyFullProgramAdapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DSPy Full Program Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/adapters/RAGAdapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RAG Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/adapters/MCPAdapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/adapters/TerminalBenchAdapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TerminalBench Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/adapters/LangChainAdapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LangChain Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../api/proposers/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proposers
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6_8" id="__nav_6_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Proposers
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/proposers/CandidateProposal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CandidateProposal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/proposers/ProposeNewCandidate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ProposeNewCandidate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/proposers/ReflectiveMutationProposer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ReflectiveMutationProposer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/proposers/MergeProposer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MergeProposer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/proposers/Signature/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Signature
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/proposers/LanguageModel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LanguageModel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_9" id="__nav_6_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/logging/LoggerProtocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LoggerProtocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/logging/StdOutLogger/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StdOutLogger
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/logging/Logger/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logger
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/logging/ExperimentTracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ExperimentTracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/logging/create_experiment_tracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    create_experiment_tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_10" id="__nav_6_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategies
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Strategies
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/strategies/BatchSampler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BatchSampler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/strategies/EpochShuffledBatchSampler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EpochShuffledBatchSampler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/strategies/CandidateSelector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CandidateSelector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/strategies/ParetoCandidateSelector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ParetoCandidateSelector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/strategies/CurrentBestCandidateSelector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CurrentBestCandidateSelector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/strategies/EpsilonGreedyCandidateSelector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EpsilonGreedyCandidateSelector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/strategies/ComponentSelector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ComponentSelector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/strategies/RoundRobinComponentSelector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RoundRobinComponentSelector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/strategies/AllComponentSelector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AllComponentSelector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/strategies/EvaluationPolicy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EvaluationPolicy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/strategies/FullEvaluationPolicy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FullEvaluationPolicy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/strategies/InstructionProposalSignature/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    InstructionProposalSignature
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#enterprise-production" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enterprise &amp; Production
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ai-coding-agents-research-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AI Coding Agents &amp; Research Tools
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#domain-specific-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain-Specific Applications
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced Capabilities
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#research-academic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Research &amp; Academic
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#media-press-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Media &amp; Press Coverage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#emerging-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Emerging Applications
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#community-integrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Community Integrations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#infrastructure-devops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infrastructure &amp; DevOps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creative-generative-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creative &amp; Generative Applications
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-processing-synthesis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Processing &amp; Synthesis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#community-tutorials-guides" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Community Tutorials &amp; Guides
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#international-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        International Coverage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Get Started
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/gepa-ai/gepa/blob/main/docs/docs/guides/use-cases.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="showcase">Showcase<a class="headerlink" href="#showcase" title="Permanent link">&para;</a></h1>
+<p>Discover how organizations and researchers are using GEPA to optimize AI systems across diverse domains. These examples showcase the versatility and impact of reflective prompt evolution.</p>
+<div class="admonition tip">
+<p class="admonition-title">Living Document</p>
+<p>This page is continuously updated with new use cases from the community. Have a GEPA success story? Share it on <a href="https://discord.gg/WXFSeVGdbW">Discord</a>, <a href="https://join.slack.com/t/gepa-ai/shared_invite/zt-3o352xhyf-QZDfwmMpiQjsvoSYo7M1_w">Slack</a>, or <a href="https://x.com/LakshyAAAgrawal">Twitter/X</a>!</p>
+</div>
+<p><strong>Quick Navigation:</strong></p>
+<ul>
+<li><a href="#enterprise-production"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 3v18h6v-3.5h2V21h6V3zm2 2h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zM7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm8 0h2v2h-2z"/></svg></span> Enterprise &amp; Production</a></li>
+<li><a href="#ai-coding-agents-research-tools"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8 3a2 2 0 0 0-2 2v4a2 2 0 0 1-2 2H3v2h1a2 2 0 0 1 2 2v4a2 2 0 0 0 2 2h2v-2H8v-5a2 2 0 0 0-2-2 2 2 0 0 0 2-2V5h2V3m6 0a2 2 0 0 1 2 2v4a2 2 0 0 0 2 2h1v2h-1a2 2 0 0 0-2 2v4a2 2 0 0 1-2 2h-2v-2h2v-5a2 2 0 0 1 2-2 2 2 0 0 1-2-2V5h-2V3z"/></svg></span> AI Coding Agents &amp; Research Tools</a></li>
+<li><a href="#domain-specific-applications"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 22V7a1 1 0 0 1 1-1h4V2h10v4h4a1 1 0 0 1 1 1v15h-8v-5h-4v5zM9 4v6h2V8h2v2h2V4h-2v2h-2V4zM4 20h4v-3H4zm0-5h4v-3H4zm12 5h4v-3h-4zm0-5h4v-3h-4zm-6 0h4v-3h-4z"/></svg></span> Domain-Specific Applications</a></li>
+<li><a href="#advanced-capabilities"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg></span> Advanced Capabilities</a></li>
+<li><a href="#research-academic"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 2c-.9 0-2 1-2 2H8c0-1-1.1-2-2-2H2v9c0 1 1 2 2 2h2.2c.4 2 1.7 3.7 4.8 4v2.08C8 19.54 8 22 8 22h8s0-2.46-3-2.92V17c3.1-.3 4.4-2 4.8-4H20c1 0 2-1 2-2V2zM6 11H4V4h2zm14 0h-2V4h2z"/></svg></span> Research &amp; Academic</a></li>
+<li><a href="#media-press-coverage"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11H4V8h16m0 7h-7v-2h7m0 6h-7v-2h7m-9 2H4v-6h7m9.33-8.33L18.67 3 17 4.67 15.33 3l-1.66 1.67L12 3l-1.67 1.67L8.67 3 7 4.67 5.33 3 3.67 4.67 2 3v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V3z"/></svg></span> Media &amp; Press Coverage</a></li>
+<li><a href="#emerging-applications"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m16 6 2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg></span> Emerging Applications</a></li>
+<li><a href="#community-integrations"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14c-3.36 0-4.46 1.35-4.82 2.24C9.25 16.7 10 17.76 10 19a3 3 0 0 1-3 3 3 3 0 0 1-3-3c0-1.31.83-2.42 2-2.83V7.83A2.99 2.99 0 0 1 4 5a3 3 0 0 1 3-3 3 3 0 0 1 3 3c0 1.31-.83 2.42-2 2.83v5.29c.88-.65 2.16-1.12 4-1.12 2.67 0 3.56-1.34 3.85-2.23A3.01 3.01 0 0 1 14 7a3 3 0 0 1 3-3 3 3 0 0 1 3 3c0 1.34-.88 2.5-2.09 2.86C17.65 11.29 16.68 14 13 14m-6 4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1M7 4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m10 2a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1"/></svg></span> Community Integrations</a></li>
+<li><a href="#infrastructure-devops"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6.5 20q-2.28 0-3.89-1.57Q1 16.85 1 14.58q0-1.95 1.17-3.48 1.18-1.53 3.08-1.95.63-2.3 2.5-3.72Q9.63 4 12 4q2.93 0 4.96 2.04Q19 8.07 19 11q1.73.2 2.86 1.5 1.14 1.28 1.14 3 0 1.88-1.31 3.19T18.5 20m-12-2h12q1.05 0 1.77-.73.73-.72.73-1.77t-.73-1.77Q19.55 13 18.5 13H17v-2q0-2.07-1.46-3.54Q14.08 6 12 6 9.93 6 8.46 7.46 7 8.93 7 11h-.5q-1.45 0-2.47 1.03Q3 13.05 3 14.5T4.03 17q1.02 1 2.47 1m5.5-6"/></svg></span> Infrastructure &amp; DevOps</a></li>
+<li><a href="#creative-generative-applications"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 5a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4m0 10c2.67 0 8 1.34 8 4v2H1v-2c0-2.66 5.33-4 8-4m7.76-9.64c2.02 2.2 2.02 5.25 0 7.27l-1.68-1.69c.84-1.18.84-2.71 0-3.89zM20.07 2c3.93 4.05 3.9 10.11 0 14l-1.63-1.63c2.77-3.18 2.77-7.72 0-10.74z"/></svg></span> Creative &amp; Generative</a></li>
+<li><a href="#data-processing-synthesis"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 12v1.5a4 4 0 0 1 4 4c0 .82-.25 1.58-.67 2.21l-1.09-1.09c.17-.34.26-.72.26-1.12A2.5 2.5 0 0 0 19 15v1.5l-2.25-2.25zm0 11v-1.5a4 4 0 0 1-4-4c0-.82.25-1.58.67-2.21l1.09 1.09c-.17.34-.26.72-.26 1.12A2.5 2.5 0 0 0 19 20v-1.5l2.25 2.25zM12 3c4.42 0 8 1.79 8 4s-3.58 4-8 4-8-1.79-8-4 3.58-4 8-4M4 9c0 2.21 3.58 4 8 4 1.11 0 2.17-.11 3.14-.32-.95.86-1.64 1.99-1.96 3.28L12 16c-4.42 0-8-1.79-8-4zm16 0v2h-.5l-.6.03c.7-.6 1.1-1.29 1.1-2.03M4 14c0 2.21 3.58 4 8 4l1-.03c.09 1.06.42 2.03.95 2.91L12 21c-4.42 0-8-1.79-8-4z"/></svg></span> Data Processing &amp; Synthesis</a></li>
+<li><a href="#community-tutorials-guides"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.5c-1.35-.85-3.8-1.5-5.5-1.5-1.65 0-3.35.3-4.75 1.05-.1.05-.15.05-.25.05-.25 0-.5-.25-.5-.5V6c.6-.45 1.25-.75 2-1 1.11-.35 2.33-.5 3.5-.5 1.95 0 4.05.4 5.5 1.5 1.45-1.1 3.55-1.5 5.5-1.5 1.17 0 2.39.15 3.5.5.75.25 1.4.55 2 1v14.6c0 .25-.25.5-.5.5-.1 0-.15 0-.25-.05-1.4-.75-3.1-1.05-4.75-1.05-1.7 0-4.15.65-5.5 1.5M12 8v11.5c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5V7c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5m1 3.5c1.11-.68 2.6-1 4.5-1 .91 0 1.76.09 2.5.28V9.23c-.87-.15-1.71-.23-2.5-.23q-2.655 0-4.5.84zm4.5.17c-1.71 0-3.21.26-4.5.79v1.69c1.11-.65 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24v-1.5c-.87-.16-1.71-.23-2.5-.23m2.5 2.9c-.87-.16-1.71-.24-2.5-.24-1.83 0-3.33.27-4.5.8v1.69c1.11-.66 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24z"/></svg></span> Community Tutorials</a></li>
+<li><a href="#international-coverage"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17.9 17.39c-.26-.8-1.01-1.39-1.9-1.39h-1v-3a1 1 0 0 0-1-1H8v-2h2a1 1 0 0 0 1-1V7h2a2 2 0 0 0 2-2v-.41a7.984 7.984 0 0 1 2.9 12.8M11 19.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.22.21-1.79L9 15v1a2 2 0 0 0 2 2m1-16A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg></span> International Coverage</a></li>
+</ul>
+<hr />
+<h2 id="enterprise-production"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 3v18h6v-3.5h2V21h6V3zm2 2h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zM7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zm-8 4h2v2H7zm8 0h2v2h-2z"/></svg></span> Enterprise &amp; Production<a class="headerlink" href="#enterprise-production" title="Permanent link">&para;</a></h2>
+<div class="grid cards">
+<ul>
+<li>
+<p><strong>DataBricks: 90x Cost Reduction</strong></p>
+<hr />
+<p><img alt="DataBricks Enterprise Agents" class="card-image" src="../../static/img/use-cases/databricks_enterprise.png" /></p>
+<p>DataBricks achieved <strong>90x cheaper inference</strong> while maintaining or improving performance by optimizing enterprise agents with GEPA.</p>
+<p><strong>Key Results:</strong></p>
+<ul>
+<li>Open-source models optimized with GEPA outperform Claude Opus 4.1, Claude Sonnet 4, and GPT-5</li>
+<li>Consistent <strong>3-7% performance gains</strong> across all model types</li>
+<li>At 100,000 requests, serving costs represent 95%+ of AI expenditure—GEPA makes this sustainable</li>
+</ul>
+<p><a href="https://www.databricks.com/blog/building-state-art-enterprise-agents-90x-cheaper-automated-prompt-optimization"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the full blog</a></p>
+</li>
+<li>
+<p><strong>Databricks Genie: Optimizing Frontier Data Agents</strong></p>
+<hr />
+<p>The Databricks AI Research team uses GEPA inside <a href="https://www.databricks.com/blog/pushing-frontier-data-agents-genie">Genie</a> — Databricks' enterprise data agent for natural-language analytics — to push the accuracy / cost frontier of the <strong>table search</strong> subsystem (discovering the relevant tables for a user's query across enterprise data sources).</p>
+<p><strong>Key Insights:</strong></p>
+<ul>
+<li>GEPA used to navigate accuracy-vs-cost trade-offs across different LLM backends for table search</li>
+<li>Specialized knowledge search lifts table search performance by up to <strong>40%</strong>, and GEPA further optimizes per-LLM accuracy and cost from there</li>
+<li>Demonstrates GEPA's role in production data-agent infrastructure beyond standalone prompt benchmarks</li>
+</ul>
+<p><a href="https://www.databricks.com/blog/pushing-frontier-data-agents-genie"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the blog</a></p>
+</li>
+<li>
+<p><strong>Dropbox Dash: 45% NMSE Reduction for Relevance Judging</strong></p>
+<hr />
+<p>Dropbox used GEPA to optimize their Dash search relevance judge, achieving <strong>45% NMSE reduction</strong> on gpt-oss-120b and reducing model adaptation time from weeks to days. For the small gemma-3-12b model, GEPA cut malformed JSON from 40% to under 3% while improving NMSE from 46.88 to 17.26.</p>
+<p><strong>Key Results:</strong></p>
+<ul>
+<li>45% NMSE improvement on gpt-oss-120b (8.83 → 4.86)</li>
+<li>gemma-3-12b: malformed JSON 40% → &lt;3%, NMSE 46.88 → 17.26</li>
+<li>Model adaptation time: 1-2 weeks → 1-2 days</li>
+<li>10-100x more data labeling at equivalent costs</li>
+</ul>
+<p><a href="https://dropbox.tech/machine-learning/optimizing-dropbox-dash-relevance-judge-with-dspy"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the blog</a></p>
+</li>
+<li>
+<p><strong>OpenAI Cookbook: Self-Evolving Agents</strong></p>
+<hr />
+<p><img alt="OpenAI Cookbook" class="card-image" src="../../static/img/use-cases/openai_cookbook.png" /></p>
+<p>The official OpenAI Cookbook (Nov 2025) features GEPA for building <strong>autonomous self-healing workflows</strong>.</p>
+<p><strong>What You'll Learn:</strong></p>
+<ul>
+<li>Diagnose why agents fall short of production readiness</li>
+<li>Build automated LLMOps retraining loops</li>
+<li>Combine human review, LLM-as-judge evaluations, and GEPA optimization</li>
+</ul>
+<p><a href="https://cookbook.openai.com/examples/partners/self_evolving_agents/autonomous_agent_retraining"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> View cookbook</a></p>
+</li>
+<li>
+<p><strong>HuggingFace Cookbook</strong></p>
+<hr />
+<p><img alt="HuggingFace Cookbook" class="card-image" src="../../static/img/use-cases/huggingface_cookbook.png" /></p>
+<p>Comprehensive guide on <strong>prompt optimization with DSPy and GEPA</strong>.</p>
+<p><strong>What's Inside:</strong></p>
+<ul>
+<li>Setting up DSPy with language models</li>
+<li>Processing mathematical problem datasets</li>
+<li>Building Chain-of-Thought reasoning programs</li>
+<li>Error-driven feedback optimization</li>
+</ul>
+<p><a href="https://huggingface.co/learn/cookbook/en/dspy_gepa"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> View cookbook</a></p>
+</li>
+<li>
+<p><strong>Google: ADK + Gemini Enterprise Agent Platform</strong></p>
+<hr />
+<p><img alt="Google ADK Training" class="card-image" src="../../static/img/use-cases/google_adk.png" /></p>
+<p>Google ships GEPA as the <strong>official agent-optimization engine</strong> in two places: the open-source <a href="https://adk.dev/optimize/">Agent Development Kit</a> and Google Cloud's <a href="https://docs.cloud.google.com/gemini-enterprise-agent-platform/optimize/evaluation/optimize-agent">Gemini Enterprise Agent Platform</a>. The platform docs describe the integration directly: <em>"This command applies the GEPA algorithm to iteratively refine root system instructions by evaluating them against your test suite."</em></p>
+<p><strong>Key Features:</strong></p>
+<ul>
+<li>Official <code>adk optimize</code> CLI powered by GEPA</li>
+<li><code>LocalEvalSampler</code> for running evaluations</li>
+<li>Automatic prompt rewriting via <code>GEPARootAgentPromptOptimizer</code></li>
+<li>Same GEPA pipeline available inside the Gemini Enterprise Agent Platform's "Quality Flywheel" optimization loop</li>
+</ul>
+<p><a href="https://docs.cloud.google.com/gemini-enterprise-agent-platform/optimize/evaluation/optimize-agent"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Gemini Enterprise Agent Platform docs</a></p>
+<p><a href="https://adk.dev/optimize/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Official ADK docs</a></p>
+<p><a href="https://raphaelmansuy.github.io/adk_training/blog/gepa-optimization-tutorial/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Community tutorial</a></p>
+</li>
+<li>
+<p><strong>Microsoft AI: MAI-Thinking-1 Pre-training Data Curation</strong></p>
+<hr />
+<p>The Microsoft AI team's <strong>MAI-Thinking-1</strong> ("Building a Hill-Climbing Machine") uses <strong>GEPA / DSPy to optimize an LLM-judge prompt for filtering pre-training data</strong>. They score each candidate document with a Qwen3-30B judge whose prompt was tuned by GEPA against ~2,000 human labels.</p>
+<p><strong>From the paper:</strong></p>
+<blockquote>
+<p>"To further improve quality, we score each candidate document using Qwen3-30B. The judge prompt is optimized with GEPA / DSPy (Agrawal et al., 2026) with approximately 2,000 human labels. After filtering out low-quality documents with additional heuristics, we obtain a dataset of approximately 233B tokens."</p>
+</blockquote>
+<p><strong>Key Insights:</strong></p>
+<ul>
+<li>GEPA-tuned LLM judge drives the Code-pages filtering pipeline that produces <strong>~233B tokens</strong> of high-quality pre-training data</li>
+<li>First public report of GEPA being used inside a frontier model's pre-training data pipeline</li>
+<li>Demonstrates GEPA's reach beyond inference-time prompt optimization, into upstream data quality</li>
+</ul>
+<p><a href="https://microsoft.ai/wp-content/uploads/2026/06/main_20260602_2.pdf"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>Nubank: 100M-User Customer Support Agents</strong></p>
+<hr />
+<p>Nubank's evaluation-driven framework for building customer-support AI agents at <strong>100M+ user scale</strong> uses <strong>GEPA inside DSPy to optimize their LLM-as-a-Judge prompts</strong>. GEPA-tuned judges align with human annotators and produce stable cross-model scores, which then drive prompt iteration on the production agents. Deployed across <strong>five production domains</strong> (card delivery, debt management, credit-limit support, and more).</p>
+<p><strong>Key Results (LLM-judge evaluation accuracy, starter prompt → GEPA-optimized):</strong></p>
+<ul>
+<li><strong>E1: 77.78% → 82.00%</strong>; <strong>E2: 68.88% → 88.89%</strong> on customer-support evals (5-run mean, narrow 95% CIs)</li>
+<li><strong>Cohen's κ (GPT-4.1 vs GPT-4.1-mini): 0.00 → 0.745</strong> — judges go from random to strong cross-model agreement</li>
+<li><strong>GPT-4.1 vs GPT-4o: κ = 0.895</strong> post-optimization</li>
+<li>GEPA settings: <code>auto="light"</code> (~500 iterations), reflection minibatch 3, Pareto selection, GPT-4.1-mini base + GPT-5.1 reflection, free-text human rationales fed to the optimizer</li>
+</ul>
+<p><strong>Downstream production wins (enabled by the GEPA-tuned eval stack):</strong></p>
+<ul>
+<li><strong>+37 pp AI transactional NPS</strong> in card-delivery deployment</li>
+<li><strong>+29 pp self-service rate</strong> vs. prior agent variants</li>
+<li>AI satisfaction within a few percentage points of expert human agents</li>
+</ul>
+<p><a href="https://arxiv.org/abs/2606.08867"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>Comet-ml Opik Integration</strong></p>
+<hr />
+<p>GEPA is integrated into Comet's <strong>Opik Agent Optimizer</strong> platform as a core optimization algorithm.</p>
+<p><strong>Capabilities:</strong></p>
+<ul>
+<li>Optimize prompts, agents, and multimodal systems</li>
+<li>Works alongside MetaPrompt, HRPO, Few-Shot Bayesian optimizers</li>
+<li>Automates prompt editing, testing, and tool refinement</li>
+</ul>
+<p><a href="https://www.comet.com/docs/opik/agent_optimization/algorithms/gepa_optimizer"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> View documentation</a></p>
+</li>
+<li>
+<p><strong>BAML Prompt Optimization</strong></p>
+<hr />
+<p>BAML integrates GEPA into <code>baml-cli optimize</code> for test-driven prompt optimization with multi-objective support (accuracy, latency, tokens).</p>
+<p><a href="https://docs.boundaryml.com/guide/baml-advanced/prompt-optimization"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the guide</a></p>
+</li>
+<li>
+<p><strong>Prompt Optimization with Pydantic AI</strong></p>
+<hr />
+<p>Tutorial demonstrating GEPA integration with Pydantic AI using <code>Agent.override()</code> for instruction injection and Pydantic Evals for parallel evaluation.</p>
+<p><strong>Results:</strong> Contact extraction improved from 86% → 97% accuracy</p>
+<p><a href="https://pydantic.dev/articles/prompt-optimization-with-gepa"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the tutorial</a></p>
+<p><a href="https://github.com/pydantic/pydantic-stack-demo/tree/main/pai-gepa-prompt-optimization"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> View code examples</a></p>
+</li>
+</ul>
+</div>
+<hr />
+<h2 id="ai-coding-agents-research-tools"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8 3a2 2 0 0 0-2 2v4a2 2 0 0 1-2 2H3v2h1a2 2 0 0 1 2 2v4a2 2 0 0 0 2 2h2v-2H8v-5a2 2 0 0 0-2-2 2 2 0 0 0 2-2V5h2V3m6 0a2 2 0 0 1 2 2v4a2 2 0 0 0 2 2h1v2h-1a2 2 0 0 0-2 2v4a2 2 0 0 1-2 2h-2v-2h2v-5a2 2 0 0 1 2-2 2 2 0 0 1-2-2V5h-2V3z"/></svg></span> AI Coding Agents &amp; Research Tools<a class="headerlink" href="#ai-coding-agents-research-tools" title="Permanent link">&para;</a></h2>
+<div class="grid cards">
+<ul>
+<li>
+<p><strong>Nous Research Hermes Agent: Self-Evolution</strong></p>
+<hr />
+<p>Nous Research's <strong>Hermes Agent</strong> uses DSPy + GEPA as its evolutionary self-improvement system, optimizing the agent's own skills, prompts, and code. It maintains populations of solutions, applies LLM-driven mutations targeted at specific failure cases, and selects based on fitness.</p>
+<p><strong>Key Features:</strong></p>
+<ul>
+<li>Evolutionary self-improvement of agent skills and prompts</li>
+<li>Population-based optimization with fitness selection</li>
+<li>Targeted mutations driven by failure case analysis</li>
+</ul>
+<p><a href="https://github.com/NousResearch/hermes-agent-self-evolution"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> View the repo</a></p>
+<p><a href="https://x.com/NousResearch/status/2031137681439109147"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Announcement</a></p>
+<p><a href="https://soap628.com/blog/hermes-agent-self-evolution/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Deep dive: "The Agent That Rewrites Itself"</a> by Zihao Wang (Fudan University) — analysis of GEPA's reflective mutation, Pareto-based selection, and how Hermes uses GEPA to autonomously evolve agent skills</p>
+</li>
+<li>
+<p><strong>Production Incident Diagnosis</strong></p>
+<hr />
+<p><img alt="ATLAS Incident Diagnosis" class="card-image" src="../../static/img/use-cases/atlas_incidents.png" /></p>
+<p>Arc.computer's <strong>ATLAS</strong> system uses GEPA-optimized agents to teach LLMs to diagnose production incidents.</p>
+<p><strong>Application:</strong></p>
+<ul>
+<li>Automated root cause analysis (RCA)</li>
+<li>Dynamic collection of logs, metrics, and databases</li>
+<li>Reduces manual burden on on-call engineers</li>
+</ul>
+<p><a href="https://www.arc.computer/blog/atlas-sre-diagnosis"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Learn more</a></p>
+</li>
+<li>
+<p><strong>ATLAS Augmented: +142% Student Performance</strong></p>
+<hr />
+<p><img alt="ATLAS Augmented" class="card-image" src="../../static/img/use-cases/atlas_augmented.jpg" /></p>
+<p>GEPA can <strong>augment even RL-tuned models</strong>. The Intelligence Arc team uses GEPA in their ATLAS framework to improve an already powerful and RL-tuned teacher model.</p>
+<p><strong>Key Result:</strong></p>
+<ul>
+<li><strong>+142% student performance improvement</strong> when guided by the GEPA-improved teacher</li>
+<li>Demonstrates that GEPA works alongside RL, not just as an alternative</li>
+<li>Shows GEPA's value even for already-optimized models</li>
+</ul>
+<p><a href="https://www.arc.computer/blog/supercharging-rl-with-online-optimization"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the technical blog</a></p>
+</li>
+<li>
+<p><strong>Data Analysis Coding Agents</strong></p>
+<hr />
+<p><img alt="FireBird Auto-Analyst" class="card-image" src="../../static/img/use-cases/firebird_auto_analyst.png" /></p>
+<p>FireBird Technologies optimized their <strong>Auto-Analyst</strong> platform using GEPA for improved code execution.</p>
+<p><strong>Architecture:</strong></p>
+<ul>
+<li>4 specialized agents: Pre-processing, Statistical Analytics, Machine Learning, Visualization</li>
+<li>Optimized 4 primary signatures covering 90% of all code runs</li>
+<li>Tested across multiple model providers to avoid overfitting</li>
+</ul>
+<p><a href="https://medium.com/firebird-technologies/context-engineering-improving-ai-coding-agents-using-dspy-gepa-df669c632766"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the article</a></p>
+</li>
+<li>
+<p><strong>Backdoor Detection in AI Code</strong></p>
+<hr />
+<p><img alt="LessWrong Backdoor Detection" class="card-image" src="../../static/img/use-cases/lesswrong_backdoor.png" /></p>
+<p>GEPA enables <strong>AI control research</strong> by optimizing classifiers to detect backdoors in AI-generated code.</p>
+<p><strong>Approach:</strong></p>
+<ul>
+<li>Trusted monitoring using weaker models</li>
+<li>Classification based on suspicion scores</li>
+<li>Safety measured by true positive rate at given false positive rate</li>
+</ul>
+<p><a href="https://www.lesswrong.com/posts/bALBxf3yGGx4bvvem/prompt-optimization-can-enable-ai-control-research"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read on LessWrong</a></p>
+</li>
+<li>
+<p><strong>AI Code Safety Monitoring</strong></p>
+<hr />
+<p><img alt="Code Safety Monitoring" class="card-image" src="../../static/img/use-cases/code_safety.png" /></p>
+<p>GEPA enables <strong>monitoring safety of AI-generated code</strong> through optimized classifiers.</p>
+<p><strong>Capabilities:</strong></p>
+<ul>
+<li>Detect potentially unsafe code patterns</li>
+<li>Monitor code generation in real-time</li>
+<li>Improve detection accuracy with reflective optimization</li>
+</ul>
+<p><a href="https://tinyurl.com/gepa-ai-code-monitor"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Try the example</a></p>
+</li>
+<li>
+<p><strong>DeepResearch Agent</strong></p>
+<hr />
+<p>A production-grade <strong>agentic research system</strong> combining LangGraph + DSPy + GEPA.</p>
+<p><strong>Pipeline:</strong></p>
+<ul>
+<li>Query planning with diverse search queries</li>
+<li>Parallel web search via Exa API</li>
+<li>Summarization, gap analysis, and iterative research rounds</li>
+<li>Module-specific GEPA optimization for each agent role</li>
+</ul>
+<p><a href="https://www.rajapatnaik.com/blog/2025/10/23/langgraph-dspy-gepa-researcher"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> View tutorial</a></p>
+</li>
+<li>
+<p><strong>RLM-GEPA on AppWorld: Beating the Public Leaderboard</strong></p>
+<hr />
+<p>Gabriel Lespérance ports GEPA to optimize <strong>RLM skills</strong> (not weights) for the <strong>AppWorld</strong> agent benchmark (email, calendar, Spotify, Venmo, shopping, todo over realistic app APIs). Unoptimized <code>PredictRLM(GPT-5.5 low)</code> already exceeds the public leaderboard; RLM-GEPA pushes it further.</p>
+<p><strong>Key Results:</strong></p>
+<ul>
+<li>Unoptimized <code>PredictRLM(GPT-5.5 low)</code>: <strong>0.917 TGC / 0.839 SGC</strong> on test_normal vs current public leaderboard high-water mark of 0.804 SGC</li>
+<li>RLM-GEPA optimized: <strong>0.940 TGC / 0.911 SGC</strong> on test_normal (+2.3pp TGC, +7.2pp SGC)</li>
+<li>test_challenge transfer: 0.914 TGC / 0.820 SGC unoptimized → 0.911 TGC / 0.849 SGC optimized</li>
+<li>Optimizer reads execution traces + evaluator feedback, rewrites the skill instructions only (held-out splits reserved)</li>
+</ul>
+<p><a href="https://x.com/GabLesperance/status/2060754345247863075"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the thread</a></p>
+</li>
+</ul>
+</div>
+<hr />
+<h2 id="domain-specific-applications"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 22V7a1 1 0 0 1 1-1h4V2h10v4h4a1 1 0 0 1 1 1v15h-8v-5h-4v5zM9 4v6h2V8h2v2h2V4h-2v2h-2V4zM4 20h4v-3H4zm0-5h4v-3H4zm12 5h4v-3h-4zm0-5h4v-3h-4zm-6 0h4v-3h-4z"/></svg></span> Domain-Specific Applications<a class="headerlink" href="#domain-specific-applications" title="Permanent link">&para;</a></h2>
+<div class="grid cards">
+<ul>
+<li>
+<p><strong>Healthcare Multi-Agent RAG</strong></p>
+<hr />
+<p>Building <strong>multi-agent RAG systems</strong> for diabetes and COPD using DSPy and GEPA.</p>
+<p><strong>System Design:</strong></p>
+<ul>
+<li>Two specialized subagents (disease experts)</li>
+<li>Vector database search for medical documents</li>
+<li>ReAct subagents individually optimized with GEPA</li>
+<li>Lead agent for orchestration</li>
+</ul>
+<p><a href="https://kargarisaac.medium.com/building-and-optimizing-multi-agent-rag-systems-with-dspy-and-gepa-2b88b5838ce2"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the guide</a></p>
+</li>
+<li>
+<p><strong>OCR Accuracy: Up to 38% Error Reduction</strong></p>
+<hr />
+<p><img alt="OCR Intrinsic Labs" class="card-image" src="../../static/img/use-cases/ocr_intrinsic.png" /></p>
+<p>Intrinsic Labs achieved significant <strong>OCR error rate reductions</strong> across Gemini model classes.</p>
+<p><strong>Models Improved:</strong></p>
+<ul>
+<li>Gemini 2.5 Pro</li>
+<li>Gemini 2.5 Flash</li>
+<li>Gemini 2.0 Flash</li>
+</ul>
+<p>A grounded benchmark for document-understanding agents under operational constraints.</p>
+<p><a href="https://www.intrinsic-labs.ai/research/ocr-gepa-v1.pdf"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the research</a></p>
+<p><a href="https://www.intrinsic-labs.ai/resources/prompt-optimized-ocr-for-production"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Resources page</a></p>
+</li>
+<li>
+<p><strong>LanceDB: Handwritten Medical-Notes OCR Pipeline</strong></p>
+<hr />
+<p>Prashanth Rao (LanceDB) uses <strong>DSPy + GEPA</strong> to optimize the prompt for a handwritten-medicine-name OCR reader on top of <code>gemini-3.1-flash-lite</code>, keeping the same low-cost student model and using <code>gemini-3.1-pro-preview</code> as the reflection LM. A ~15-minute optimization run on a laptop lifts held-out results on 780 test images:</p>
+<ul>
+<li><strong>Normalized OCR match:</strong> 54.1% → <strong>59.4%</strong></li>
+<li><strong>Average edit distance:</strong> 1.01 → <strong>0.87</strong></li>
+<li>No fine-tuning, no bigger model — the discovered instruction alone (trailing-letters, casing, punctuation, pharmacological tie-breakers) drives the lift.</li>
+</ul>
+<p>The post also walks through metric design pitfalls specific to GEPA (why edit distance shouldn't dominate the objective and how validation-set sizing trades off against exploration budget).</p>
+<p><a href="https://www.lancedb.com/blog/make-handwritten-notes-searchable-optimizing-an-ocr-pipeline-with-lancedb"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the blog post</a></p>
+</li>
+<li>
+<p><strong>Market Research AI Personas</strong></p>
+<hr />
+<p><img alt="Market Research Focus Groups" class="card-image" src="../../static/img/use-cases/market_research.png" /></p>
+<p>Simulating <strong>realistic focus groups</strong> with GEPA-optimized AI personas for market research.</p>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>Eliminates geographic constraints and facility costs</li>
+<li>No moderator bias</li>
+<li>Tests across different personality types</li>
+<li>Research timelines: weeks → hours</li>
+</ul>
+<p><a href="https://x.com/hammer_mt/status/1984269888979116061"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Learn more</a></p>
+</li>
+<li>
+<p><strong>Fiction Writing with Small Models</strong></p>
+<hr />
+<p><img alt="Creative Writing" class="card-image" src="../../static/img/use-cases/creative_writing.png" /></p>
+<p>Teaching <strong>Gemma3-1B</strong> to write engaging fiction through GEPA optimization.</p>
+<p>Demonstrates that small models can handle creative tasks with the right prompts.</p>
+<p><a href="https://meandnotes.substack.com/p/i-taught-a-small-llm-to-write-fiction?triedRedirect=true"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read on Substack</a></p>
+</li>
+</ul>
+</div>
+<hr />
+<h2 id="advanced-capabilities"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg></span> Advanced Capabilities<a class="headerlink" href="#advanced-capabilities" title="Permanent link">&para;</a></h2>
+<div class="grid cards">
+<ul>
+<li>
+<p><strong>Multimodal/VLM Performance (OCR)</strong></p>
+<hr />
+<p><img alt="Multimodal OCR" class="card-image" src="../../static/img/use-cases/multimodal_ocr.png" /></p>
+<p>GEPA improves <strong>Multimodal/VLM Performance</strong> for OCR tasks through optimized prompting strategies.</p>
+<p><a href="https://www.intrinsic-labs.ai/research/ocr-gepa-v1.pdf"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Try the example</a></p>
+</li>
+<li>
+<p><strong>Agent Architecture Discovery</strong></p>
+<hr />
+<p><img alt="Architecture Discovery" class="card-image" src="../../static/img/use-cases/arc_agi_image.png" /></p>
+<p>GEPA for <strong>automated agent architecture discovery</strong> - finding optimal agent designs through evolutionary search.</p>
+<p><a href="../../tutorials/arc_agi/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> View ARC-AGI tutorial</a></p>
+</li>
+<li>
+<p><strong>Adversarial Prompt Search</strong></p>
+<hr />
+<p><img alt="Adversarial Prompt Search" class="card-image" src="../../static/img/use-cases/adversarial_prompt.png" /></p>
+<p>GEPA for <strong>adversarial prompt search</strong> - discovering edge cases and failure modes in AI systems.</p>
+<p><em>Advanced application for AI safety research</em></p>
+</li>
+<li>
+<p><strong>Unverifiable Tasks (Evaluator-Optimizer)</strong></p>
+<hr />
+<p><img alt="Unverifiable Evaluator" class="card-image" src="../../static/img/use-cases/unverifiable_evaluator.png" /></p>
+<p>GEPA for <strong>unverifiable tasks</strong> using evaluator-optimizer patterns where ground truth is unavailable.</p>
+<p><a href="https://x.com/AsfiShaheen/status/1967866903331999807"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> View example</a></p>
+</li>
+</ul>
+</div>
+<hr />
+<h2 id="research-academic"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 2c-.9 0-2 1-2 2H8c0-1-1.1-2-2-2H2v9c0 1 1 2 2 2h2.2c.4 2 1.7 3.7 4.8 4v2.08C8 19.54 8 22 8 22h8s0-2.46-3-2.92V17c3.1-.3 4.4-2 4.8-4H20c1 0 2-1 2-2V2zM6 11H4V4h2zm14 0h-2V4h2z"/></svg></span> Research &amp; Academic<a class="headerlink" href="#research-academic" title="Permanent link">&para;</a></h2>
+<div class="grid cards">
+<ul>
+<li>
+<p><strong>Berkeley AI Summit: GEPA Deep Dive</strong></p>
+<hr />
+<p>@matei_zaharia presents GEPA at Berkeley AI Summit, explaining how reflective prompt evolution works even with few rollouts.</p>
+<p><strong>Key Insight:</strong></p>
+<blockquote>
+<p>"FLOPs are getting cheaper, but rollouts for complex agentic tasks are not. The next frontier of AI will be limited by rollouts budget!"</p>
+</blockquote>
+<p><a href="https://youtu.be/c39fJ2WAj6A?t=6386"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Watch the presentation</a></p>
+</li>
+<li>
+<p><strong>LLMs Are Optimizing Themselves (Matei Zaharia)</strong></p>
+<hr />
+<p>Matei Zaharia (Databricks CTO, UC Berkeley) discusses how LLMs are increasingly optimizing themselves through reflective prompt evolution and automated search, arguing this represents a fundamental shift in how AI systems improve.</p>
+<p><a href="https://www.youtube.com/watch?v=CtU21gc4gbk"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Watch the talk</a></p>
+</li>
+<li>
+<p><strong>Why Are Prompt Optimizers Still So Underrated? (Chris Potts)</strong></p>
+<hr />
+<p>Chris Potts discusses GEPA at the Bay Area DSPy Meetup (November 2025), making the case for why prompt optimizers are underappreciated and how GEPA's reflective evolution approach changes the optimization landscape.</p>
+<p><a href="https://www.youtube.com/watch?v=0bkwd9OYqfk"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Watch the talk</a></p>
+</li>
+<li>
+<p><strong>Judge the Judge: Building LLM Evaluators That Actually Work with GEPA (AI Engineer)</strong></p>
+<hr />
+<p>Mahmoud Mabrouk (CEO, Agenta AI) walks through building a calibrated LLM-as-a-judge — from capturing ground truth to optimizing with GEPA and assessing the judge. Presented at AI Engineer conference, April 2026.</p>
+<p><a href="https://www.youtube.com/watch?v=X4dEHRzBLmc"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Watch the workshop</a></p>
+<p><a href="https://github.com/Agenta-AI/judge-the-judge"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Workshop repo</a></p>
+</li>
+<li>
+<p><strong>NeurIPS 2025 Workshop: 12.5% → 62.5% Gains</strong></p>
+<hr />
+<p><img alt="NeurIPS Poster" class="card-image" src="../../static/img/use-cases/neurips_poster.jpg" /></p>
+<p>Veris.AI used GEPA in their RAISE framework to achieve <strong>12.5% → 62.5% gains</strong> in task correctness accuracy, demonstrating GEPA's immediate practical impact for training reliable domain-specific AI agents through simulated environments.</p>
+<p><strong>Key Results:</strong></p>
+<ul>
+<li>RAISE: Simulation-first experiential learning framework</li>
+<li>GEPA prompt optimization for 4 epochs</li>
+<li>Poster session at NeurIPS 2025 San Diego</li>
+</ul>
+<p><a href="https://x.com/solidwillity/status/1997747867629633971"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> View the announcement</a></p>
+</li>
+<li>
+<p><strong>100% on Clock Hands Problem</strong></p>
+<hr />
+<p>Achieving <strong>perfect accuracy</strong> on the challenging clock hands mathematical reasoning problem using GEPA optimization.</p>
+<p><strong>Application:</strong></p>
+<ul>
+<li>Complex spatial reasoning</li>
+<li>Mathematical problem-solving</li>
+<li>Demonstrates GEPA on hard reasoning tasks</li>
+</ul>
+<p><a href="https://colab.research.google.com/drive/1W-XNxKL2CXFoUTwrL7GLCZ7J7uZgXsut?usp=sharing"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Try the notebook</a></p>
+</li>
+<li>
+<p><strong>Prompt Optimization Makes Misalignment Legible</strong></p>
+<hr />
+<p>Biddulph &amp; Carroll (MATS 8.0 / ICML submission) show that GEPA's optimized system prompts <strong>verbalize reward-hacking strategies in plain English</strong>, making misalignment detectable and removable — unlike RL, where learned strategies are opaque.</p>
+<p><strong>Key Findings:</strong></p>
+<ul>
+<li>GEPA prompts that reward-hack also describe the hack in the prompt text</li>
+<li>Sanitizing the prompt (removing misaligned instructions) stops the hacking</li>
+<li>Tested on Hinted MMLU, Targeted Sycophancy, and other environments</li>
+</ul>
+<p><a href="https://www.lesswrong.com/posts/vRpLPZpmECCfxHfv6/paper-prompt-optimization-makes-misalignment-legible"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the post</a></p>
+</li>
+<li>
+<p><strong>Attack Selection in AI Control (Pivotal Research + Redwood)</strong></p>
+<hr />
+<p>Schaeffer, Khandelwal &amp; Tracy (Pivotal Research / Oxford / Redwood Research) use GEPA to red-team attack-selection prompts in the BigCodeBench backdooring setting, finding that the <strong>GEPA-optimized prompt is the strongest attack</strong> they tested — outperforming handwritten rubric prompts at evading trusted monitoring.</p>
+<p><strong>Key Results:</strong></p>
+<ul>
+<li>GEPA-optimized prompt drives safety to <strong>59%</strong> at 0.5% auditing budget vs the handwritten rubric prompt's <strong>79%</strong> (lower = more effective attack); approaches the "monitor prompt leaked" upper bound of 53%</li>
+<li>AUC across auditing budgets: <strong>GEPA 1.37 &lt; Rubric 1.46</strong> (lower = stronger)</li>
+<li>Transfers across monitors (GPT-4.1 Nano, Claude 3.5 Haiku, Gemini 2.0 Flash Lite) and attacker models (GPT-4.1 Mini, Claude Haiku 4.5)</li>
+</ul>
+<p><a href="https://arxiv.org/abs/2602.04930"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>DivSkill-SQL: Residual Skill Optimization for Text-to-SQL Ensembles (UC San Diego + Microsoft)</strong></p>
+<hr />
+<p>Zhu, Guan, Prashant, Kuang et al. (UC San Diego + Microsoft) build complementary agentic text-to-SQL ensembles without fine-tuning by adopting <strong>GEPA as their inner-loop skill optimizer</strong> — described in the paper as "the state-of-the-art prompt and skill optimization technique". Each new skill is GEPA-optimized on examples the current ensemble fails to solve.</p>
+<p><strong>Key Results (Spider2-Lite, Opus-4.6):</strong></p>
+<ul>
+<li><strong>+11.1 pp</strong> selected accuracy on Snowflake over CHASE-SQL baseline (64.25 vs 53.14)</li>
+<li><strong>+8.3 pp</strong> on BigQuery (64.88 vs 56.59)</li>
+<li><strong>+2.6 pp</strong> on BIRD-Critic (PostgreSQL) over CHASE-SQL</li>
+<li>Demonstrates GEPA as the enabling optimizer for residual-failure skill discovery in text-to-SQL</li>
+</ul>
+<p><a href="https://arxiv.org/abs/2605.21792"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>DD-GEPA: Dialogue Disentanglement Prompt Optimization (Yokohama National University)</strong></p>
+<hr />
+<p>Takada &amp; Mori decompose the LLM dialogue-disentanglement prompt into three components — <strong>task instruction</strong>, <strong>utterance representation</strong>, and <strong>output instruction</strong> — and use <strong>GEPA as the core optimizer</strong> over them on multi-party chat. The optimized prompt surpasses the authors' own hand-crafted prompt and several non-LLM baselines on Qwen3-30B.</p>
+<p><strong>Key Results (Qwen3-30B on the Kummerfeld benchmark, baseline → DD-GEPA optimum):</strong></p>
+<ul>
+<li><strong>F1: 39.40 → 42.52</strong> (+3.1 pp); P: 38.30 → 42.22; R: 40.56 → 42.82</li>
+<li>NMI: 93.62 → 95.51; ARI: 70.02 → 75.87; 1-1: 78.46 → 82.26</li>
+<li>Optimized prompt surpasses Takada &amp; Mori's own hand-crafted prompt and the Elsner non-LLM baseline (15.5 F1)</li>
+</ul>
+<p><a href="https://arxiv.org/abs/2606.07894"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>Automated Risk-of-Bias Assessment of Clinical Trials</strong></p>
+<hr />
+<p>Li, Mathrani &amp; Susnjak (2025) use GEPA to optimize prompts for risk-of-bias assessment across <strong>7 RoB domains</strong> and multiple LLMs, achieving <strong>30–40% improvement</strong> in key domains over manually crafted prompts.</p>
+<p><strong>Key Results:</strong></p>
+<ul>
+<li>Highest overall accuracy across 100 randomized controlled trials</li>
+<li>Models: Mistral Small 3.1, GPT-oss-20b, GPT-4 Nano/Mini</li>
+<li>Inspectable execution traces via DSPy + GEPA</li>
+</ul>
+<p><a href="https://arxiv.org/abs/2512.01452"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>Clinical NER: GEPA vs Domain-Specific Transformers (IEEE BigData 2025)</strong></p>
+<hr />
+<p>Varghese &amp; Shang (University of Missouri, IEEE BigData 2025) benchmark GEPA optimization against fine-tuned Bio+ClinicalBERT on the n2c2 Track 2 ADE dataset, reporting <strong>up to 12.5% improvement</strong> in zero-shot clinical NER from GEPA optimization.</p>
+<p><strong>Key Results:</strong></p>
+<ul>
+<li>GEPA improved zero-shot F1 by up to 12.5%</li>
+<li>Switching reflection model from GPT-4o-mini to GPT-4.1-mini raised few-shot F1 from 41.4% to 45.4%</li>
+<li>Fine-tuned domain models still lead, but GEPA narrows the gap without any training data</li>
+</ul>
+<p><a href="https://ieeexplore.ieee.org/abstract/document/11401686"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>Empowering Small Models for GPU Parallelization</strong></p>
+<hr />
+<p>Jhaveri &amp; Lopes (2026) use GEPA to evolve prompts so that small "nano" LLMs can generate correct OpenACC pragmas, improving <strong>GPT-4.1 Nano compilation rate from 66.7% to 93.3%</strong> and GPT-5 Nano to <strong>100%</strong> on the PolyBench suite.</p>
+<p><strong>Key Results:</strong></p>
+<ul>
+<li>21% increase in programs achieving GPU speedups over CPU</li>
+<li>GEPA makes cheap models match expensive ones on HPC code generation</li>
+</ul>
+<p><a href="https://arxiv.org/abs/2601.08884"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>Prompt Optimisation for Error Detection in Medical Notes</strong></p>
+<hr />
+<p>Myles, Schrempf &amp; Harris-Birtill (2026) use GEPA as the primary optimization method, improving <strong>GPT-5 accuracy from 0.669 to 0.785</strong> and <strong>Qwen3-32B from 0.578 to 0.690</strong> on the MEDEC benchmark, approaching medical doctor performance.</p>
+<p><strong>Key Results:</strong></p>
+<ul>
+<li>~17–20% relative accuracy gains from GEPA optimization</li>
+<li>State-of-the-art on clinical error detection</li>
+</ul>
+<p><a href="https://arxiv.org/abs/2602.22483"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>Prompt Triage: Structured Optimization for VLMs on Medical Imaging (Stanford)</strong></p>
+<hr />
+<p>Singhvi, Bikia, Aali, Chaudhari &amp; Daneshjou (Stanford) benchmark GEPA among DSPy-based prompt optimizers on <strong>five medical imaging tasks</strong> across radiology, gastroenterology, and dermatology, evaluating <strong>10 open-source VLMs</strong>.</p>
+<p><strong>Key Results:</strong></p>
+<ul>
+<li><strong>Median 53% relative improvement</strong> over zero-shot prompting baselines</li>
+<li><strong>300%–3,400% gains</strong> on tasks where zero-shot performance was low</li>
+<li>Weight-agnostic improvement: no domain finetuning, no manual prompt engineering</li>
+</ul>
+<p><a href="https://arxiv.org/abs/2511.11898"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>Cancer-Myth: False Presuppositions in Cancer Patient Questions</strong></p>
+<hr />
+<p>Zhu, Chen et al. (USC + Keck Medicine) use GEPA-optimized precautionary prompts as a mitigation against false presuppositions in cancer patient questions, raising Cancer-Myth accuracy to <strong>80% on Gemini-2.5-Pro</strong> and exposing tradeoffs on other medical benchmarks.</p>
+<p><a href="https://arxiv.org/abs/2504.11373"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>WER is Unaware: Clinical Risk Assessment of ASR Errors (IWSDS 2026)</strong></p>
+<hr />
+<p>Ellis et al. use GEPA (via DSPy) with a cost-sensitive metric to optimize a Gemini-2.5-Pro LLM-as-a-Judge for clinical risk assessment of ASR errors in doctor–patient dialogue, reaching <strong>90% accuracy</strong> and a strong <strong>Cohen's κ of 0.816</strong> — human-comparable performance.</p>
+<p><a href="https://aclanthology.org/2026.iwsds-1.39.pdf"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>EvoClinician: Multi-Turn Medical Diagnosis</strong></p>
+<hr />
+<p>He et al. evaluate GEPA as a prompt-optimization baseline against their self-evolving evolutionary agent on the <strong>Med-Inquire</strong> multi-turn medical diagnosis benchmark.</p>
+<p><a href="https://arxiv.org/abs/2601.22964"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>TRACE: Temporal Reasoning over Streaming EHRs</strong></p>
+<hr />
+<p>Qu &amp; Färber (KIT) adopt a <strong>two-phase evolution strategy "inspired by GEPA"</strong> for offline protocol induction over streaming Electronic Health Records, using reflective error analysis on failed clinical interventions.</p>
+<p><a href="https://arxiv.org/abs/2602.12833"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>SecureForge: Hardening Code-Generation LLMs Against Vulnerabilities (Stanford)</strong></p>
+<hr />
+<p>Liu, Einstein, Yang, Baumann et al. (Stanford) use GEPA as their <strong>core methodology</strong> with Semgrep ±1 CWE-labeled rewards to harden system prompts against generating vulnerable code, reporting that <strong>GEPA is statistically significantly more effective than MIPRO</strong> at reducing vulnerabilities across 11 frontier models.</p>
+<p><a href="https://arxiv.org/abs/2605.08382"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>OrchMAS: Orchestrated Multi-Agent Scientific Reasoning</strong></p>
+<hr />
+<p>Feng, Luo et al. (Magellan / NTU) run GEPA as a representative MAS prompt-optimization baseline (alongside OPRO and TextGrad) on <strong>six QA benchmarks</strong> (2Wiki, HotpotQA, GSM8K, DAPO, PopQA, MusiQue) implemented on GPT-4o-mini.</p>
+<p><a href="https://arxiv.org/abs/2603.03005"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>REVERE: Reflective Evolving Research Engineer (TCS Research + Yale)</strong></p>
+<hr />
+<p>Gangireddi, Garikaparthi, Patwardhan &amp; Cohan run GEPA's official implementation (32 iterations / 600-eval budget) as the <strong>offline prompt-optimization baseline</strong> for scientific research-coding agents on <strong>SUPER, ResearchCodeBench, and ScienceAgentBench</strong>.</p>
+<p><a href="https://arxiv.org/abs/2603.20667"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>Automated Refinement of Essay Scoring Rubrics (U. Tokyo)</strong></p>
+<hr />
+<p>Harada, Yoshida, Kojima, Iwasawa &amp; Matsuo describe their iterative rubric refinement for LLM-based automated essay scoring as <strong>"a simplified version of GEPA"</strong>, dropping Pareto-based candidate filtering and system-aware merge for implementation ease.</p>
+<p><a href="https://arxiv.org/abs/2510.09030"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>Optimized Agentic AI Systems for Asset Pricing</strong></p>
+<hr />
+<p>Researchers apply GEPA to optimize agentic AI systems for <strong>asset pricing</strong> — extending prompt evolution to a finance research domain.</p>
+<p><a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6474601"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> SSRN paper</a></p>
+</li>
+<li>
+<p><strong>VeriInteresting: Verilog HDL Code Generation</strong></p>
+<hr />
+<p>Uses GEPA to evolve prompts for <strong>Verilog HDL code generation</strong>, applying reflective prompt optimization to register-transfer-level hardware design.</p>
+<p><a href="https://arxiv.org/abs/2603.08715"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>VeriAct: Formal Spec Synthesis</strong></p>
+<hr />
+<p>Uses GEPA as a <strong>core part of the methodology</strong> for synthesizing formal specifications from natural-language requirements.</p>
+<p><a href="https://arxiv.org/abs/2604.00280"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>Survey on AI-Driven Circuit Verification (ASPDAC 2026, CUHK)</strong></p>
+<hr />
+<p>Survey on AI-driven hardware verification cites GEPA as a <strong>promising approach to avoid data scarcity</strong> in circuit verification workflows.</p>
+<p><a href="https://www.cse.cuhk.edu.hk/~byu/papers/C312-ASPDAC2026-Verif.pdf"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>FEM-Bench: Finite Element Method Scientific Reasoning</strong></p>
+<hr />
+<p>Scientific-reasoning benchmark covering finite element method problems uses GEPA as a <strong>baseline optimizer</strong> for evaluating LLMs and agents on engineering-physics tasks.</p>
+<p><a href="https://arxiv.org/abs/2512.20732"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>AssayBench: Assay-Level Virtual Cell Benchmark</strong></p>
+<hr />
+<p>De Brouwer, Edwards, Wu, Collier et al. introduce an <strong>assay-level virtual cell benchmark</strong> for phenotypic screen prediction and use GEPA to optimize the LLM/agent pipelines being evaluated before measuring task performance.</p>
+<p><a href="https://arxiv.org/abs/2605.10876"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>What Do Prompts Reveal About Model Capabilities in Low-Resource Languages? (AfricaNLP 2026)</strong></p>
+<hr />
+<p>Ajayi &amp; Ogundepo (AfricaNLP 2026) investigate what GEPA-optimized prompts reveal about LLM capabilities when applied to <strong>low-resource African languages</strong>, using prompt optimization as a lens into model behavior on underrepresented languages.</p>
+<p><a href="https://openreview.net/attachment?id=7JZmTp85Yf&amp;name=pdf"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+<p><a href="https://www.linkedin.com/feed/update/urn%3Ali%3Aactivity%3A7444797637414924289/?commentUrn=urn%3Ali%3Acomment%3A%28activity%3A7444797637414924289%2C7445145380280758273%29&amp;dashCommentUrn=urn%3Ali%3Afsd%5Fcomment%3A%287445145380280758273%2Curn%3Ali%3Aactivity%3A7444797637414924289%29"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> LinkedIn announcement</a></p>
+</li>
+<li>
+<p><strong>Beyond the Answer: Decoding the Behavior of LLMs as Scientific Reasoners (ICLR 2026 Workshop)</strong></p>
+<hr />
+<p>Pandey, Ye &amp; Li (Post-AGI Science and Society Workshop, ICLR 2026) use a GEPA-based approach to systematically optimize prompts for scientific reasoning tasks, finding that reasoning gains correspond to <strong>model-specific heuristics that fail to generalize</strong> across systems — framing prompt optimization as a tool for model interpretability.</p>
+<p><a href="https://arxiv.org/abs/2603.28038"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>Build, Judge, Optimize: Multi-Agent Consumer Assistants (Instacart)</strong></p>
+<hr />
+<p>Breen Herrera et al. present a blueprint for continuously improving production-scale conversational shopping assistants. They compare localized sub-agent GEPA optimization with MAMuT GEPA (joint multi-agent trajectory-aware optimization), showing that <strong>joint optimization achieves 84.7% rubric pass rate vs 77.1% for localized</strong>, with +12.0pp gains in Safety &amp; Compliance.</p>
+<p><strong>Key Insight:</strong></p>
+<p>Optimizing individual sub-agents in isolation can introduce hallucinations at the system level. Trajectory-aware joint optimization with GEPA coordinates prompts across agents, reducing inter-agent failures.</p>
+<p><a href="https://arxiv.org/abs/2603.03565"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>Self-Optimizing Multi-Agent Systems for Deep Research (ECIR 2026 Workshop)</strong></p>
+<hr />
+<p>Camara, Slot &amp; Zavrel (Zeta Alpha, ECIR 2026) evaluate GEPA and TextGrad for optimizing multi-agent Deep Research systems. <strong>GEPA outperforms TextGrad, OpenAI's prompt optimizer, and expert-crafted prompts</strong>, with GEPA + custom meta-prompt achieving the best overall score (0.705) on the ScholarQA-CS benchmark.</p>
+<p><strong>Key Results:</strong></p>
+<ul>
+<li>GEPA's Pareto-based exploration converges faster than TextGrad's greedy search</li>
+<li>Domain-tailored meta-prompts yield the best performance</li>
+<li>Optimized agents match or outperform expert-crafted prompts</li>
+</ul>
+<p><a href="https://arxiv.org/abs/2604.02988"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+<li>
+<p><strong>Reinforced Agent: Inference-Time Feedback for Tool-Calling Agents</strong></p>
+<hr />
+<p>Ta, Zhu &amp; Shayandeh (2026) introduce a secondary <em>reviewer</em> agent that evaluates a tool-calling agent's provisional tool calls <strong>before execution</strong>, shifting from post-hoc error recovery to in-loop correction. GEPA-based automatic prompt optimization is applied on top of the reviewer architecture for additional gains on BFCL and τ²-Bench.</p>
+<p><strong>Key Results:</strong></p>
+<ul>
+<li><strong>+5.5%</strong> on irrelevance detection (BFCL) and <strong>+7.1%</strong> on multi-turn tasks (τ²-Bench) from the reviewer architecture</li>
+<li><strong>GEPA contributes an additional +1.5–2.8%</strong> on top via automated prompt optimization</li>
+<li>o3-mini reviewer achieves a 3:1 benefit-to-risk ratio (vs. 2.1:1 for GPT-4o) under their Helpfulness-Harmfulness metrics</li>
+</ul>
+<p><a href="https://arxiv.org/abs/2604.27233"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the paper</a></p>
+</li>
+</ul>
+</div>
+<hr />
+<h2 id="media-press-coverage"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11H4V8h16m0 7h-7v-2h7m0 6h-7v-2h7m-9 2H4v-6h7m9.33-8.33L18.67 3 17 4.67 15.33 3l-1.66 1.67L12 3l-1.67 1.67L8.67 3 7 4.67 5.33 3 3.67 4.67 2 3v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V3z"/></svg></span> Media &amp; Press Coverage<a class="headerlink" href="#media-press-coverage" title="Permanent link">&para;</a></h2>
+<div class="grid cards">
+<ul>
+<li>
+<p><strong>VentureBeat: GEPA Optimizes LLMs Without Costly RL</strong></p>
+<hr />
+<p>VentureBeat coverage of GEPA's approach to optimizing LLMs without expensive reinforcement learning.</p>
+<p><strong>Highlights:</strong></p>
+<ul>
+<li>Explains reflective prompt evolution to a broader audience</li>
+<li>Discusses cost and efficiency benefits</li>
+<li>Industry perspective on GEPA's impact</li>
+</ul>
+<p><a href="https://venturebeat.com/ai/gepa-optimizes-llms-without-costly-reinforcement-learning/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the article</a></p>
+</li>
+<li>
+<p><strong>DAIR.AI: Top AI Papers of the Week</strong></p>
+<hr />
+<p>GEPA featured in DAIR.AI's "Top AI Papers of The Week" roundup, alongside other breakthrough research.</p>
+<p><strong>Recognition:</strong></p>
+<ul>
+<li>Listed among Graph-R1, AlphaEarth, Self-Evolving Agents</li>
+<li>Highlighted natural language reflection approach</li>
+</ul>
+<p><a href="https://github.com/dair-ai/ML-Papers-of-the-Week"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> View DAIR.AI newsletter</a></p>
+</li>
+<li>
+<p><strong>DSPy Weekly Newsletter</strong></p>
+<hr />
+<p>GEPA regularly featured in the DSPy Weekly newsletter, tracking adoption and new use cases.</p>
+<p><strong>Coverage:</strong></p>
+<ul>
+<li>Issue #4: "GEPA is 🌶️🔥 and on a hype 🚄 as people discover GEPA"</li>
+<li>Regular updates on community applications</li>
+</ul>
+<p><a href="https://dspyweekly.com/newsletter/4/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read DSPy Weekly</a></p>
+</li>
+<li>
+<p><strong>LinkedIn AI Talk: Automatic Prompt Optimization</strong></p>
+<hr />
+<p>Vaibhav Gupta (CEO @ Boundary / BAML) provides a detailed GEPA tutorial, first explaining the algorithm and then walking through a code example.</p>
+<p><strong>What's Covered:</strong></p>
+<ul>
+<li>GEPA algorithm explanation</li>
+<li>Step-by-step code walkthrough</li>
+<li>Practical implementation guidance</li>
+</ul>
+<p><a href="https://www.linkedin.com/events/automaticpromptoptimization-ait7404883890873618433/theater/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Watch the event</a></p>
+<p><a href="https://docs.boundaryml.com/guide/baml-advanced/prompt-optimization"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> BAML Prompt Optimization Guide</a></p>
+</li>
+</ul>
+</div>
+<hr />
+<h2 id="emerging-applications"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m16 6 2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg></span> Emerging Applications<a class="headerlink" href="#emerging-applications" title="Permanent link">&para;</a></h2>
+<div class="grid cards">
+<ul>
+<li>
+<p><strong>The State of AI Coding 2025</strong></p>
+<hr />
+<p><img alt="Greptile State of AI Coding" class="card-image" src="../../static/img/use-cases/greptile_state_of_ai_coding.jpg" /></p>
+<p>GEPA was highlighted in Greptile's comprehensive <strong>State of AI Coding 2025</strong> report as a key advancement in AI coding capabilities.</p>
+<p><strong>Key Insight:</strong></p>
+<p>GEPA evolves prompts via trace analysis, matching RL performance with far fewer rollouts—making it ideal for coding agent optimization.</p>
+<p><a href="https://greptile.com/state-of-ai-coding-2025"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the report</a></p>
+</li>
+<li>
+<p><strong>Model Migration Workflows</strong></p>
+<hr />
+<p>GEPA is proving valuable for <strong>migrating existing LLM-based workflows</strong> to new models across model families.</p>
+<p><strong>Pattern:</strong></p>
+<ul>
+<li>Keep your DSPy program structure</li>
+<li>Change only the LM initialization  </li>
+<li>Re-run GEPA optimization for the new model</li>
+<li>Much faster than manually re-tuning prompts</li>
+</ul>
+<p>This is especially useful as new models are released and organizations need to migrate quickly.</p>
+</li>
+<li>
+<p><strong>Evaluator-Optimizer Pattern</strong></p>
+<hr />
+<p><img alt="Evaluator Optimizer" class="card-image" src="../../static/img/use-cases/evaluator_optimizer.jpg" /></p>
+<p>@hammer_mt shares the powerful <strong>Evaluator-Optimizer pattern</strong> for fuzzy generative tasks where evals are informal and subjective.</p>
+<p><strong>Use Case:</strong></p>
+<ul>
+<li>Creative writing tasks</li>
+<li>Persona generation</li>
+<li>Tasks without ground-truth labels</li>
+</ul>
+<p><a href="https://www.youtube.com/watch?v=gstt7E65FRM"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Watch the talk</a></p>
+</li>
+<li>
+<p><strong>Program Synthesis &amp; Kernel Optimization</strong></p>
+<hr />
+<p>GEPA shows promise for <strong>program synthesis</strong> tasks:</p>
+<p><strong>Applications:</strong></p>
+<ul>
+<li>CUDA kernel optimization</li>
+<li>AMD NPU kernel generation</li>
+<li>Outperforms RAG and iterative refinement (Section 6 of paper)</li>
+</ul>
+<p>Especially valuable for tasks with expensive rollouts (simulation, long runtime).</p>
+</li>
+<li>
+<p><strong>GPU Parallelization (OpenACC)</strong></p>
+<hr />
+<p><img alt="GPU Optimization" class="card-image" src="../../static/img/use-cases/gpu_optimization.png" /></p>
+<p>Jhaveri &amp; @cristalopes applied GEPA to <strong>GPU optimization</strong>, targeting OpenACC parallelization.</p>
+<p><strong>Results:</strong></p>
+<ul>
+<li>Boosted GPT-5 Nano to generate pragmas improving compilation success from 87% → 100%</li>
+<li>Models saw up to <strong>50% increase</strong> in # functional GPU speedups</li>
+</ul>
+<p>Demonstrates GEPA's applicability to code synthesis beyond prompts.</p>
+</li>
+<li>
+<p><strong>Material Science Applications</strong></p>
+<hr />
+<p>GEPA being explored for <strong>material science</strong> workflows where simulations are costly.</p>
+<p><strong>Why GEPA:</strong></p>
+<ul>
+<li>High sample efficiency</li>
+<li>Works with expensive evaluation functions</li>
+<li>Can optimize simulation parameters</li>
+</ul>
+<p><em>Exploratory use case from the research community</em></p>
+</li>
+<li>
+<p><strong>Continuous Learning &amp; Self-Improvement</strong></p>
+<hr />
+<p>GEPA enables <strong>continual learning</strong> patterns:</p>
+<p><strong>Emerging Pattern:</strong></p>
+<ol>
+<li>Deploy optimized agent</li>
+<li>Collect feedback from production</li>
+<li>Batch feedback and re-optimize</li>
+<li>Redeploy improved agent</li>
+</ol>
+<p>Works alongside RL (see BetterTogether paper) for even better results.</p>
+</li>
+<li>
+<p><strong>Letta: Continual Learning in Token Space</strong></p>
+<hr />
+<p>Letta's blog post explores <strong>continual learning in token space</strong>, discussing how GEPA and similar approaches enable agents to learn and improve over time.</p>
+<p><strong>Concepts:</strong></p>
+<ul>
+<li>Memory-augmented agents</li>
+<li>Long-term learning patterns</li>
+<li>Token-space optimization</li>
+</ul>
+<p><a href="https://www.letta.com/blog/continual-learning"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the blog</a></p>
+</li>
+</ul>
+</div>
+<hr />
+<h2 id="community-integrations"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14c-3.36 0-4.46 1.35-4.82 2.24C9.25 16.7 10 17.76 10 19a3 3 0 0 1-3 3 3 3 0 0 1-3-3c0-1.31.83-2.42 2-2.83V7.83A2.99 2.99 0 0 1 4 5a3 3 0 0 1 3-3 3 3 0 0 1 3 3c0 1.31-.83 2.42-2 2.83v5.29c.88-.65 2.16-1.12 4-1.12 2.67 0 3.56-1.34 3.85-2.23A3.01 3.01 0 0 1 14 7a3 3 0 0 1 3-3 3 3 0 0 1 3 3c0 1.34-.88 2.5-2.09 2.86C17.65 11.29 16.68 14 13 14m-6 4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1M7 4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m10 2a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1"/></svg></span> Community Integrations<a class="headerlink" href="#community-integrations" title="Permanent link">&para;</a></h2>
+<div class="grid cards">
+<ul>
+<li>
+<p><strong>Weaviate Podcast #127: Deep Dive on GEPA</strong></p>
+<hr />
+<p>Comprehensive podcast episode covering GEPA in depth with Lakshya A. Agrawal.</p>
+<p><strong>Topics Covered:</strong></p>
+<ul>
+<li>Natural Language Rewards</li>
+<li>Reflective prompt evolution principles</li>
+<li>Production deployment patterns</li>
+</ul>
+<p><a href="https://www.youtube.com/watch?v=rrtxyZ4Vnv8"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Listen to podcast</a></p>
+</li>
+<li>
+<p><strong>Weaviate GEPA Hands-On Notebook</strong></p>
+<hr />
+<p>Interactive notebook demonstrating GEPA for reranking optimization in RAG pipelines.</p>
+<p><strong>What's Inside:</strong></p>
+<ul>
+<li>End-to-end GEPA optimization</li>
+<li>Integration with Weaviate vector store</li>
+<li>Practical reranking examples</li>
+</ul>
+<p><a href="https://github.com/weaviate/recipes/blob/main/integrations/llm-agent-frameworks/dspy/GEPA-Hands-On-Reranker.ipynb"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> View notebook</a></p>
+</li>
+<li>
+<p><strong>LangStruct GEPA Examples</strong></p>
+<hr />
+<p>Strong examples demonstrating GEPA's effectiveness with Gemini Flash and other models.</p>
+<p><a href="https://langstruct.dev/examples/gepa/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Explore examples</a></p>
+</li>
+<li>
+<p><strong>GEPA in Go</strong></p>
+<hr />
+<p>Full Go implementation of DSPy concepts including GEPA optimization.</p>
+<p><strong>Features:</strong></p>
+<ul>
+<li>Native Go implementation</li>
+<li>MIT licensed</li>
+<li>Includes CLI tools and examples</li>
+</ul>
+<p><a href="https://github.com/XiaoConstantine/dspy-go"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> View on GitHub</a></p>
+</li>
+<li>
+<p><strong>Observable JavaScript</strong></p>
+<hr />
+<p><img alt="Observable JavaScript" class="card-image" src="../../static/img/use-cases/observable_js.jpeg" /></p>
+<p>Interactive JavaScript notebooks exploring GEPA for web-based optimization.</p>
+<p><strong>By Tom Larkworthy</strong> (Tech Lead, formerly Firebase/Google)</p>
+<p>Explore reflective prompt evolution directly in your browser.</p>
+<p><a href="https://observablehq.com/@tomlarkworthy/gepa"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Try it on Observable</a></p>
+</li>
+<li>
+<p><strong>Context Compression</strong></p>
+<hr />
+<p>Experiments using GEPA for <strong>context compression</strong> to reduce token usage while maintaining quality.</p>
+<p>Explore novel approaches to efficient prompt engineering.</p>
+<p><a href="https://github.com/Laurian/context-compression-experiments-2508"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> View experiments</a></p>
+</li>
+<li>
+<p><strong>bandit_dspy</strong></p>
+<hr />
+<p>DSPy library for <strong>security-aware LLM development</strong> using Bandit principles.</p>
+<p>Part of the EvalOps ecosystem for AI evaluation and development tools.</p>
+<p><a href="https://github.com/evalops/bandit_dspy"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Explore on GitHub</a></p>
+</li>
+<li>
+<p><strong>SuperOptiX-AI</strong></p>
+<hr />
+<p>SuperOptiX uses GEPA as its <strong>framework-agnostic optimizer</strong> across multiple agent frameworks including DSPy, OpenAI SDK, CrewAI, Google ADK, and more.</p>
+<p><a href="https://superagenticai.github.io/superoptix-ai/guides/gepa-optimization/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Explore SuperOptiX</a></p>
+<p><a href="https://super-agentic.ai/resources/super-posts/gepa-dspy-optimizer-superoptix-revolutionizing-ai-agent-optimization"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the blog post</a></p>
+</li>
+</ul>
+</div>
+<hr />
+<h2 id="infrastructure-devops"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6.5 20q-2.28 0-3.89-1.57Q1 16.85 1 14.58q0-1.95 1.17-3.48 1.18-1.53 3.08-1.95.63-2.3 2.5-3.72Q9.63 4 12 4q2.93 0 4.96 2.04Q19 8.07 19 11q1.73.2 2.86 1.5 1.14 1.28 1.14 3 0 1.88-1.31 3.19T18.5 20m-12-2h12q1.05 0 1.77-.73.73-.72.73-1.77t-.73-1.77Q19.55 13 18.5 13H17v-2q0-2.07-1.46-3.54Q14.08 6 12 6 9.93 6 8.46 7.46 7 8.93 7 11h-.5q-1.45 0-2.47 1.03Q3 13.05 3 14.5T4.03 17q1.02 1 2.47 1m5.5-6"/></svg></span> Infrastructure &amp; DevOps<a class="headerlink" href="#infrastructure-devops" title="Permanent link">&para;</a></h2>
+<div class="grid cards">
+<ul>
+<li>
+<p><strong>Multi-Cloud Data Transfer Cost Optimization</strong></p>
+<hr />
+<p><img alt="Multi-Cloud Data Transfer" class="card-image" src="../../static/img/use-cases/multi_cloud_transfer.jpeg" /></p>
+<p>The ADRS team used GEPA to minimize multi-cloud data transfer costs.</p>
+<p><strong>Results:</strong></p>
+<ul>
+<li>GEPA autonomously evolved a naive replication strategy into a sophisticated "shared-tree" topology</li>
+<li><strong>31% cost reduction</strong> with just $5 of optimization spend</li>
+<li>Demonstrates GEPA's ability to optimize complex infrastructure configurations</li>
+</ul>
+<p><a href="https://x.com/LakshyAAAgrawal/status/2014459447364694154"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> View research</a></p>
+</li>
+<li>
+<p><strong>Sales Support Multi-Agent Routing</strong></p>
+<hr />
+<p><img alt="Databricks Sales Support" class="card-image" src="../../static/img/use-cases/sales_support_routing.jpeg" /></p>
+<p>Databricks used GEPA to optimize a sales-support multi-agent system's routing component.</p>
+<p><strong>Key Results:</strong></p>
+<ul>
+<li><strong>75% relative gains</strong> in routing accuracy</li>
+<li>Demonstrates multi-agent orchestration optimization</li>
+<li>Production-ready deployment patterns</li>
+</ul>
+<p><a href="https://medium.com/@AI-on-Databricks/multi-ai-powered-sales-support-databricks-with-langchain-gepa-prompt-optimization-8104654bb538"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the blog</a></p>
+</li>
+<li>
+<p><strong>Self-Improving Agent Systems (GEPA + TRM)</strong></p>
+<hr />
+<p>Building self-improving AI agents that combine GEPA with TRM (Test-time Reasoning Modification) for both orchestration optimization and reasoning enhancement.</p>
+<p><strong>Architecture:</strong></p>
+<ul>
+<li>GEPA for orchestration/prompt optimization</li>
+<li>TRM for reasoning enhancement</li>
+<li>Continuous monitoring and feedback loops</li>
+<li>Automated retraining without human intervention</li>
+</ul>
+<p><a href="https://medium.com/@bindupriya117/building-self-improving-ai-agents-gepa-for-orchestration-trm-for-reasoning-1602e96f3e2b"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the guide</a></p>
+</li>
+</ul>
+</div>
+<hr />
+<h2 id="creative-generative-applications"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 5a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4m0 10c2.67 0 8 1.34 8 4v2H1v-2c0-2.66 5.33-4 8-4m7.76-9.64c2.02 2.2 2.02 5.25 0 7.27l-1.68-1.69c.84-1.18.84-2.71 0-3.89zM20.07 2c3.93 4.05 3.9 10.11 0 14l-1.63-1.63c2.77-3.18 2.77-7.72 0-10.74z"/></svg></span> Creative &amp; Generative Applications<a class="headerlink" href="#creative-generative-applications" title="Permanent link">&para;</a></h2>
+<div class="grid cards">
+<ul>
+<li>
+<p><strong>AI Voice/Persona Discovery</strong></p>
+<hr />
+<p>GEPA's multi-objective guided optimization can find an authentic "AI voice" using an 8-dimensional score representing different voice characteristics.</p>
+<p><strong>Dimensions Optimized:</strong></p>
+<ul>
+<li>Point of view</li>
+<li>Authority level</li>
+<li>Cadence and rhythm</li>
+<li>And 5 more characteristics</li>
+</ul>
+<p><a href="https://augchan42.github.io/2025/09/02/dspy-voice-evolution-authenticity/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the guide</a></p>
+</li>
+<li>
+<p><strong>Human-Like Response Generation</strong></p>
+<hr />
+<p>GEPA+DSPy can optimize AI to generate human-like responses, passing sophisticated detection systems.</p>
+<p><strong>Application:</strong></p>
+<ul>
+<li>More natural conversational AI</li>
+<li>Better user engagement</li>
+<li>Authentic persona maintenance</li>
+</ul>
+<p><em>Community-reported application</em></p>
+</li>
+<li>
+<p><strong>Non-Obvious GEPA Insights</strong></p>
+<hr />
+<p><img alt="Non-Obvious GEPA Insights" class="card-image" src="../../static/img/use-cases/non_obvious_insights.png" /></p>
+<p>Deep dive into non-obvious lessons learned from practical GEPA usage, covering edge cases, unexpected behaviors, and advanced patterns.</p>
+<p><a href="https://www.elicited.blog/posts/non-obvious-things-about-gepa"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the blog</a></p>
+</li>
+</ul>
+</div>
+<hr />
+<h2 id="data-processing-synthesis"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 12v1.5a4 4 0 0 1 4 4c0 .82-.25 1.58-.67 2.21l-1.09-1.09c.17-.34.26-.72.26-1.12A2.5 2.5 0 0 0 19 15v1.5l-2.25-2.25zm0 11v-1.5a4 4 0 0 1-4-4c0-.82.25-1.58.67-2.21l1.09 1.09c-.17.34-.26.72-.26 1.12A2.5 2.5 0 0 0 19 20v-1.5l2.25 2.25zM12 3c4.42 0 8 1.79 8 4s-3.58 4-8 4-8-1.79-8-4 3.58-4 8-4M4 9c0 2.21 3.58 4 8 4 1.11 0 2.17-.11 3.14-.32-.95.86-1.64 1.99-1.96 3.28L12 16c-4.42 0-8-1.79-8-4zm16 0v2h-.5l-.6.03c.7-.6 1.1-1.29 1.1-2.03M4 14c0 2.21 3.58 4 8 4l1-.03c.09 1.06.42 2.03.95 2.91L12 21c-4.42 0-8-1.79-8-4z"/></svg></span> Data Processing &amp; Synthesis<a class="headerlink" href="#data-processing-synthesis" title="Permanent link">&para;</a></h2>
+<div class="grid cards">
+<ul>
+<li>
+<p><strong>Synthetic Data Generation</strong></p>
+<hr />
+<p>Use GEPA to optimize query generation pipelines for creating high-quality synthetic datasets.</p>
+<p><strong>Example: Sanskrit NLP</strong></p>
+<ul>
+<li>GEPA+DSPy optimizes a query generation pipeline</li>
+<li>Differentiates between document pairs</li>
+<li>Generated 50k samples for Gemma embedding fine-tuning</li>
+</ul>
+<p><a href="https://github.com/ganarajpr/rgfe"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> View project</a></p>
+</li>
+<li>
+<p><strong>Text2SQL Optimization</strong></p>
+<hr />
+<p>GEPA has been successfully used for Text2SQL tasks with a system prompt/user prompt breakdown.</p>
+<p><strong>Pattern:</strong></p>
+<ul>
+<li>System prompt specifies the task (evolved by GEPA)</li>
+<li>User prompt contains dynamic content</li>
+<li>Alternatively: use DSPy signature for text2sql</li>
+</ul>
+<p><a href="https://www.rajapatnaik.com/blog/2025/10/20/sql-generator"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> See SQL Generator tutorial</a></p>
+</li>
+<li>
+<p><strong>Enterprise Agents Blog</strong></p>
+<hr />
+<p><img alt="Enterprise Agents" class="card-image" src="../../static/img/use-cases/enterprise_agents_blog.jpg" /></p>
+<p>Building enterprise agents for real-world workflows with GEPA: tackling unstructured data, task decomposition, and context blowup.</p>
+<p><strong>Key Topics:</strong></p>
+<ul>
+<li>Modular agent design</li>
+<li>Low-data optimization strategies</li>
+<li>Cost-effective deployment</li>
+</ul>
+<p><a href="https://slavozard.bearblog.dev/experiences-from-building-enterprise-agents-with-dspy-and-gepa/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the blog</a></p>
+</li>
+</ul>
+</div>
+<hr />
+<h2 id="community-tutorials-guides"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.5c-1.35-.85-3.8-1.5-5.5-1.5-1.65 0-3.35.3-4.75 1.05-.1.05-.15.05-.25.05-.25 0-.5-.25-.5-.5V6c.6-.45 1.25-.75 2-1 1.11-.35 2.33-.5 3.5-.5 1.95 0 4.05.4 5.5 1.5 1.45-1.1 3.55-1.5 5.5-1.5 1.17 0 2.39.15 3.5.5.75.25 1.4.55 2 1v14.6c0 .25-.25.5-.5.5-.1 0-.15 0-.25-.05-1.4-.75-3.1-1.05-4.75-1.05-1.7 0-4.15.65-5.5 1.5M12 8v11.5c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5V7c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5m1 3.5c1.11-.68 2.6-1 4.5-1 .91 0 1.76.09 2.5.28V9.23c-.87-.15-1.71-.23-2.5-.23q-2.655 0-4.5.84zm4.5.17c-1.71 0-3.21.26-4.5.79v1.69c1.11-.65 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24v-1.5c-.87-.16-1.71-.23-2.5-.23m2.5 2.9c-.87-.16-1.71-.24-2.5-.24-1.83 0-3.33.27-4.5.8v1.69c1.11-.66 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24z"/></svg></span> Community Tutorials &amp; Guides<a class="headerlink" href="#community-tutorials-guides" title="Permanent link">&para;</a></h2>
+<div class="grid cards">
+<ul>
+<li>
+<p><strong>DSPy 3 + GEPA: Advanced RAG Framework</strong></p>
+<hr />
+<p>Comprehensive guide on building powerful AI agents with DSPy 3 and GEPA.</p>
+<p><strong>What's Covered:</strong></p>
+<ul>
+<li>Auto reasoning and prompting</li>
+<li>Step-by-step agent building</li>
+<li>Professional-level RAG optimization</li>
+</ul>
+<p><a href="https://gaodalie.substack.com/p/dspy-3-gepa-the-most-advanced-rag"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the guide</a></p>
+</li>
+<li>
+<p><strong>MarkTechPost: Reflective Prompt Optimization with GEPA</strong></p>
+<hr />
+<p>Sana Hassan's hands-on walkthrough on <strong>MarkTechPost</strong> showing how to build a full GEPA optimization loop on arithmetic word problems — from installing <code>gepa</code> with LiteLLM, through structured evaluators with actionable feedback, to comparing baseline vs. optimized prompts on a held-out validation set.</p>
+<p><strong>What's Covered:</strong></p>
+<ul>
+<li>Installing and configuring GEPA with LiteLLM backends</li>
+<li>Building deterministic benchmark datasets</li>
+<li>Writing structured evaluators that return actionable feedback</li>
+<li>Multi-component prompts (instructions + format rules)</li>
+<li>Held-out validation and evolution-history analysis</li>
+</ul>
+<p><a href="https://www.marktechpost.com/2026/06/07/building-reflective-prompt-optimization-with-gepa-multi-component-prompts-structured-feedback-and-held-out-validation/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the tutorial</a></p>
+</li>
+<li>
+<p><strong>Teaching AI to Spot Fake XKCD Comics</strong></p>
+<hr />
+<p><img alt="Teaching AI to Spot Fake XKCD" class="card-image" src="../../static/img/use-cases/xkcd_fake_detection.png" /></p>
+<p>Fun, accessible explanation of GEPA concepts with XKCD-inspired visualizations.</p>
+<p><a href="https://danprice.ai/blog/xkcd-dspy-gepa"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the blog</a></p>
+</li>
+<li>
+<p><strong>20% Improvement in Structured Extraction with DSPy + GEPA</strong></p>
+<hr />
+<p><img alt="DSPy Optimization" class="card-image" src="../../static/img/use-cases/dspy_structured_extraction.png" /></p>
+<p>Achieving <strong>20+ percentage-point improvement</strong> in exact match accuracy for structured extraction tasks using DSPy and GEPA.</p>
+<p><strong>Key Insight:</strong></p>
+<p>The benefit is not only improved performance, but that optimization allows transferring capability to cheaper models while retaining acceptable accuracy, improving the cost profile of applications.</p>
+<p><a href="https://kmad.ai/DSPy-Optimization"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the guide</a></p>
+</li>
+<li>
+<p><strong>GEPA Impact Analysis: 81% → 90% Accuracy</strong></p>
+<hr />
+<p>Practical analysis achieving <strong>81% → 90% accuracy</strong> on sales call transcript analysis in just 3 hours and ~$0.50.</p>
+<p><strong>Key Insight:</strong></p>
+<blockquote>
+<p>"I stopped thinking of prompts as things I <em>write</em> and started thinking of them as things I <em>evolve</em>. My job shifted from 'craft the perfect prompt' to 'define what good looks like and let the system find it.'"</p>
+</blockquote>
+<p>GEPA's genetic mutations work best with precise feedback—targeted feedback like "you're conflating greetings with rapport" produces targeted fixes.</p>
+<p><a href="https://risheekkumar.in/posts/gepa-impact/gepa_impact_final.html"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the analysis</a></p>
+</li>
+<li>
+<p><strong>Lakshya's GEPA Blog</strong></p>
+<hr />
+<p>Personal blog post explaining GEPA concepts and applications.</p>
+<p><a href="https://lakshyaag.com/blogs/gepa"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the blog</a></p>
+</li>
+<li>
+<p><strong>GEPA for De-identification</strong></p>
+<hr />
+<p>Tutorial on using GEPA for PII de-identification tasks with DSPy.</p>
+<p><a href="https://www.rajapatnaik.com/blog/2025/10/14/dspy-gepa-deidentification"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the tutorial</a></p>
+</li>
+<li>
+<p><strong>SQL Generator with GEPA</strong></p>
+<hr />
+<p>Building optimized Text2SQL systems with DSPy and GEPA.</p>
+<p><a href="https://www.rajapatnaik.com/blog/2025/10/20/sql-generator"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the tutorial</a></p>
+</li>
+<li>
+<p><strong>Optimizing GEPA for Production (Decagon)</strong></p>
+<hr />
+<p>Decagon's test-driven approach to deploying GEPA in production, with 19+ ablation experiments on a classification task. Covers data efficiency sweet spots (20-100 examples outperform larger datasets), reflection model selection, and length regularization for 4x prompt compression.</p>
+<p><a href="https://decagon.ai/blog/optimizing-gepa-for-production"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the blog</a></p>
+</li>
+<li>
+<p><strong>$0 Reproducible GEPA Examples: How a 1.2B Model Got +25 Points</strong></p>
+<hr />
+<p>Three end-to-end GEPA runs (RAG QA with citations, multi-step math reasoning, typed invoice extraction) entirely on OpenRouter's free tier — zero spend, single-seed reproducibility. Demonstrates a surprising saturation lesson: larger task LMs often leave GEPA with nothing to optimize because every minibatch is already all-correct. Using a 1.2B task LM (Liquid LFM 2.5) lifted math reasoning from <strong>45% → 70%</strong> through 5 accepted mutations.</p>
+<p><strong>Key insights:</strong></p>
+<ul>
+<li><strong>Baseline saturation:</strong> GLM 4.5 Air (32B) and Ministral 8B both accept zero mutations on grade-school math — no failure signal means no reflection</li>
+<li><strong>Task-LM matching matters:</strong> Pick a model that fails on enough examples to generate signal, not the largest available</li>
+<li><strong>Format problems vs knowledge problems:</strong> On RAG QA, GEPA's +18.85pt gain came from teaching consistent citation emission, not new knowledge</li>
+</ul>
+<p><a href="https://codeandcontext.ai/inside-the-examples-how-gepa-lifted-a-1-2b-model-by-25-points/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the writeup</a></p>
+<p><a href="https://github.com/intertwine/dspy-agent-skills"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Clone and reproduce</a></p>
+</li>
+<li>
+<p><strong>Exploring GEPA: Context Management at the Static vs Runtime Layer (Quarq Labs)</strong></p>
+<hr />
+<p>Quarq Labs frames GEPA and Recursive Language Models (RLMs) as complementary thrusts on the same problem — LLMs are passive consumers of context. GEPA optimizes the <em>static</em> layer (instructions, retrieval queries, agent scaffolding) ahead of time; RLMs handle the <em>dynamic</em> layer at runtime. Together they suggest a shift from "stuff everything into the context window" to systems that actively curate and manage context.</p>
+<p><strong>Highlights:</strong></p>
+<ul>
+<li>Argues that ASI (Actionable Side Information) plays the role of a gradient, but expressed in text rather than numbers</li>
+<li>GEPA's Pareto front prevents premature convergence on a single solution</li>
+<li>Cites GEPA's efficiency: +6-19pp over GRPO with 35x fewer rollouts; +10pp over MIPROv2 (+12pp on AIME-2025)</li>
+<li>Discusses MCP, DSPy full-program, and generic RAG adapters as evidence that GEPA generalizes beyond simple system prompts</li>
+</ul>
+<p><a href="https://x.com/LakshyAAAgrawal/status/2048855588298240059"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Read the post</a></p>
+</li>
+</ul>
+</div>
+<hr />
+<h2 id="international-coverage"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17.9 17.39c-.26-.8-1.01-1.39-1.9-1.39h-1v-3a1 1 0 0 0-1-1H8v-2h2a1 1 0 0 0 1-1V7h2a2 2 0 0 0 2-2v-.41a7.984 7.984 0 0 1 2.9 12.8M11 19.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.22.21-1.79L9 15v1a2 2 0 0 0 2 2m1-16A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg></span> International Coverage<a class="headerlink" href="#international-coverage" title="Permanent link">&para;</a></h2>
+<p>GEPA has gained significant attention in the global AI community, with tutorials, blogs, and discussions in multiple languages.</p>
+<div class="grid cards">
+<ul>
+<li>
+<p><strong>Japanese AI Community</strong></p>
+<hr />
+<p>GEPA has seen strong adoption in the Japanese AI community with multiple tutorials and explanations.</p>
+<p><strong>Resources:</strong></p>
+<ul>
+<li><a href="https://youtu.be/P5mW0IbotlY">GEPA Explained (Japanese)</a> - Video explaining GEPA's reflective learning approach</li>
+<li><a href="https://qiita.com/isanakamishiro2/items/f15c4c4c79bd22222ccf">MLflow + GEPA on Databricks Free Edition</a> - Qiita tutorial</li>
+<li><a href="https://zenn.dev/cybernetics/articles/39fb763aca746c">Naruto-Style Dialogues with GEPA</a> - Creative application</li>
+<li><a href="https://recruit.group.gmo/engineer/jisedai/blog/gepa-prompt-optimizer/">GMO: GEPA Prompt Optimizer</a> - Tutorial with DSPy ReAct agent example by GMO Internet Group AI Lab</li>
+<li>Multiple AI Daily News Japan features</li>
+</ul>
+</li>
+<li>
+<p><strong>Chinese AI Community</strong></p>
+<hr />
+<p>GEPA has been featured in Chinese AI publications and discussions.</p>
+<p><strong>Resources:</strong></p>
+<ul>
+<li><a href="https://jieyibu.net/a/65905">GEPA Revolutionary Breakthrough</a> - 35x efficiency improvement explained</li>
+<li>Technical translations and explanations</li>
+</ul>
+</li>
+</ul>
+</div>
+<hr />
+<h2 id="get-started"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m13.13 22.19-1.63-3.83c1.57-.58 3.04-1.36 4.4-2.27zM5.64 12.5l-3.83-1.63 6.1-2.77C7 9.46 6.22 10.93 5.64 12.5M21.61 2.39S16.66.269 11 5.93c-2.19 2.19-3.5 4.6-4.35 6.71-.28.75-.09 1.57.46 2.13l2.13 2.12c.55.56 1.37.74 2.12.46A19.1 19.1 0 0 0 18.07 13c5.66-5.66 3.54-10.61 3.54-10.61m-7.07 7.07c-.78-.78-.78-2.05 0-2.83s2.05-.78 2.83 0c.77.78.78 2.05 0 2.83s-2.05.78-2.83 0m-5.66 7.07-1.41-1.41zM6.24 22l3.64-3.64c-.34-.09-.67-.24-.97-.45L4.83 22zM2 22h1.41l4.77-4.76-1.42-1.41L2 20.59zm0-2.83 4.09-4.08c-.21-.3-.36-.62-.45-.97L2 17.76z"/></svg></span> Get Started<a class="headerlink" href="#get-started" title="Permanent link">&para;</a></h2>
+<p>Ready to optimize your own AI systems with GEPA?</p>
+<div class="grid cards">
+<ul>
+<li>
+<p><strong>Quick Start Guide</strong></p>
+<hr />
+<p>Get up and running with GEPA in minutes.</p>
+<p><a href="../quickstart/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Start here</a></p>
+</li>
+<li>
+<p><strong>Create Custom Adapters</strong></p>
+<hr />
+<p>Integrate GEPA with your specific system.</p>
+<p><a href="../adapters/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Learn adapters</a></p>
+</li>
+<li>
+<p><strong>API Reference</strong></p>
+<hr />
+<p>Complete documentation of all GEPA components.</p>
+<p><a href="../../api/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> View API</a></p>
+</li>
+<li>
+<p><strong>Join the Community</strong></p>
+<hr />
+<p>Connect with other GEPA users and contributors.</p>
+<p><a href="https://discord.gg/WXFSeVGdbW"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Discord</a> <a href="https://join.slack.com/t/gepa-ai/shared_invite/zt-3o352xhyf-QZDfwmMpiQjsvoSYo7M1_w"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg></span> Slack</a></p>
+</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+        
+          
+          <a href="../../about/" class="md-footer__link md-footer__link--next" aria-label="Next: About">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                About
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2026 <a href="https://github.com/gepa-ai" target="_blank" rel="noopener">GEPA</a>
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/gepa-ai/gepa" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://discord.gg/WXFSeVGdbW" target="_blank" rel="noopener" title="discord.gg" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://join.slack.com/t/gepa-ai/shared_invite/zt-3o352xhyf-QZDfwmMpiQjsvoSYo7M1_w" target="_blank" rel="noopener" title="join.slack.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M94.1 315.1c0 25.9-21.2 47.1-47.1 47.1S0 341 0 315.1 21.2 268 47.1 268h47.1v47.1zm23.7 0c0-25.9 21.2-47.1 47.1-47.1s47.1 21.2 47.1 47.1v117.8c0 25.9-21.2 47.1-47.1 47.1s-47.1-21.2-47.1-47.1zm47.1-189c-25.9 0-47.1-21.2-47.1-47.1s21.2-47 47.1-47S212 53.2 212 79.1v47.1h-47.1zm0 23.7c25.9 0 47.1 21.2 47.1 47.1S190.8 244 164.9 244H47.1C21.2 244 0 222.8 0 196.9s21.2-47.1 47.1-47.1zm189 47.1c0-25.9 21.2-47.1 47.1-47.1s47 21.2 47 47.1-21.2 47.1-47.1 47.1h-47.1v-47.1zm-23.7 0c0 25.9-21.2 47.1-47.1 47.1S236 222.8 236 196.9V79.1c0-25.9 21.2-47.1 47.1-47.1s47.1 21.2 47.1 47.1zm-47.1 189c25.9 0 47.1 21.2 47.1 47.1s-21.2 47-47.1 47-47.1-21.2-47.1-47.1v-47.1h47.1zm0-23.7c-25.9 0-47.1-21.2-47.1-47.1s21.2-47.1 47.1-47.1h117.8c25.9 0 47.1 21.2 47.1 47.1s-21.2 47.1-47.1 47.1z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://x.com/LakshyAAAgrawal" target="_blank" rel="noopener" title="x.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M357.2 48h70.6L273.6 224.2 455 464H313L201.7 318.6 74.5 464H3.8l164.9-188.5L-5.2 48h145.6l100.5 132.9zm-24.8 373.8h39.1L119.1 88h-42z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.path", "navigation.indexes", "navigation.expand", "toc.follow", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy", "navigation.footer", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../../javascripts/details-anchor.js"></script>
+      
+        <script src="../../javascripts/toc-drawer.js"></script>
+      
+    
+  </body>
+</html>

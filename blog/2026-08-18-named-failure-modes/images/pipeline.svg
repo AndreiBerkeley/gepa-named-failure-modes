@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 330" width="1040" height="330" font-family="Arial" role="img">
+  <style>
+    .band  { fill: #f5f6f8; }
+    .card  { fill: #ffffff; stroke: #c9ccd4; stroke-width: 1.5; }
+    .input { fill: #eef0fe; stroke: #4F46E5; stroke-width: 1.5; }
+    .rule  { stroke: #d9dbe2; stroke-width: 1; }
+    .ln    { stroke: #8b909b; stroke-width: 2; fill: none; }
+    .arrow { fill: #8b909b; }
+    .phase { fill: #6b7280; font-size: 12px; font-weight: 700; letter-spacing: .1em; }
+    .step  { fill: #4F46E5; font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+    .ttl   { fill: #1f2430; font-size: 16px; font-weight: 650; }
+    .sub   { fill: #5b6270; font-size: 12.5px; }
+    .note  { fill: #5b6270; font-size: 12.5px; font-weight: 550; }
+    @media (prefers-color-scheme: dark) {
+      .band { fill: #191c27; }
+      .card { fill: #1c2030; stroke: #3a4055; }
+      .input { fill: #23244a; stroke: #8b8bf0; }
+      .rule { stroke: #3a4055; }
+      .ln { stroke: #7d8494; }
+      .arrow { fill: #7d8494; }
+      .phase, .sub, .note { fill: #a8aebb; }
+      .step { fill: #8b8bf0; }
+      .ttl { fill: #eef0f4; }
+    }
+  </style>
+  <rect class="band" x="16" y="16" width="1008" height="298" rx="10"/>
+  <text class="phase" x="40" y="43">ONE REFLECTION STEP</text>
+  <text class="note" x="1000" y="43" text-anchor="end">Review criteria generated automatically and frozen</text>
+
+  <rect class="card" x="40" y="82" width="220" height="154" rx="10"/>
+  <text class="step" x="62" y="111">CURRENT MINIBATCH</text>
+  <text class="ttl" x="62" y="140">Run current candidate</text>
+  <text class="sub" x="62" y="168">Task output</text>
+  <text class="sub" x="62" y="190">Component traces</text>
+
+  <rect class="input" x="310" y="64" width="390" height="190" rx="10"/>
+  <text class="step" x="332" y="92">TWO INDEPENDENT REVIEWERS</text>
+  <line class="rule" x1="332" y1="106" x2="678" y2="106"/>
+
+  <text class="ttl" x="332" y="133">Task feedback</text>
+  <text class="sub" x="332" y="155">Evaluator reports output performance</text>
+
+  <line class="rule" x1="332" y1="172" x2="678" y2="172"/>
+  <text class="ttl" x="332" y="200">Process report</text>
+  <text class="sub" x="332" y="222">Second reviewer surfaces hidden patterns</text>
+  <text class="sub" x="332" y="241">The second reviewer sees no task outcome</text>
+
+  <rect class="card" x="750" y="82" width="250" height="154" rx="10"/>
+  <text class="step" x="772" y="111">STATELESS REFLECTION</text>
+  <text class="ttl" x="772" y="140">Propose revised text</text>
+  <text class="sub" x="772" y="168">Current candidate</text>
+  <text class="sub" x="772" y="190">Current minibatch only</text>
+
+  <line class="ln" x1="262" y1="159" x2="298" y2="159"/>
+  <path class="arrow" d="M298,154 L307,159 L298,164 Z"/>
+  <line class="ln" x1="702" y1="159" x2="738" y2="159"/>
+  <path class="arrow" d="M738,154 L747,159 L738,164 Z"/>
+
+  <rect class="card" x="40" y="273" width="960" height="25" rx="7"/>
+  <text class="note" x="520" y="290" text-anchor="middle">Candidate acceptance is unchanged: GEPA compares task scores on the same minibatch.</text>
+</svg>

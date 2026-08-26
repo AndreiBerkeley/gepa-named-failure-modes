@@ -1,0 +1,6043 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="ConfidenceAdapter uses token-level log-probabilities to score prompt candidates on a continuous scale instead of binary correct/wrong, producing better disambiguation rules and higher-accuracy prompts for classification tasks.">
+      
+      
+      
+        <link rel="canonical" href="https://gepa-ai.github.io/gepa/blog/2026/03/17/confidence-adapter-benchmark/">
+      
+      
+        <link rel="prev" href="../../../02/18/automatically-learning-skills-for-coding-agents/">
+      
+      
+        <link rel="next" href="../../../04/09/gepa-at-scale-with-combee/">
+      
+      
+        
+      
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../../../../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../../../feed_rss_updated.xml">
+      
+      <link rel="icon" href="../../../../../static/img/gepa_logo.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+  
+    
+      
+        <title>Confidence-Aware Prompt Optimization for LLM Classification - GEPA</title>
+      
+    
+  
+
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../../../../static/css/custom.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+<!-- RSS feed discovery -->
+<link rel="alternate" type="application/rss+xml" title="GEPA Blog" href="https://gepa-ai.github.io/gepa/blog/feed.xml">
+<link rel="alternate" type="application/atom+xml" title="GEPA Blog (updated)" href="https://gepa-ai.github.io/gepa/blog/feed_updated.xml">
+
+<!--
+  NOTE on social_image paths: The blog plugin rewrites page URLs
+  (blog/2026/02/18/slug/) but copies image assets at the original source
+  directory path (blog/2026-02-18-slug/images/). The social_image front matter
+  uses the source path — that's where the image actually lives. Both resolve.
+
+  NOTE on JSON-LD: Conditional fields (description, image, datePublished)
+  always have a non-conditional field after them (publisher, mainEntityOfPage),
+  so commas are never trailing. Validated with Python's strict json parser.
+-->
+
+<!-- Open Graph meta tags -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="GEPA: Confidence-Aware Prompt Optimization for LLM Classification">
+<meta property="og:url" content="https://gepa-ai.github.io/gepa/blog/2026/03/17/confidence-adapter-benchmark/">
+<meta property="og:site_name" content="GEPA">
+<meta property="og:description" content="ConfidenceAdapter uses token-level log-probabilities to score prompt candidates on a continuous scale instead of binary correct/wrong, producing better disambiguation rules and higher-accuracy prompts for classification tasks.">
+
+<meta property="article:published_time" content="2026-03-17 00:00:00+00:00">
+
+<!-- Twitter Card meta tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@LakshyAAAgrawal">
+<meta name="twitter:creator" content="@LakshyAAAgrawal">
+<meta name="twitter:title" content="GEPA: Confidence-Aware Prompt Optimization for LLM Classification">
+<meta name="twitter:description" content="ConfidenceAdapter uses token-level log-probabilities to score prompt candidates on a continuous scale instead of binary correct/wrong, producing better disambiguation rules and higher-accuracy prompts for classification tasks.">
+
+
+
+
+<!-- Structured data (JSON-LD) — uses |tojson to avoid autoescape corruption -->
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["BlogPosting", "Article"],
+  "headline": "GEPA: Confidence-Aware Prompt Optimization for LLM Classification",
+  "url": "https://gepa-ai.github.io/gepa/blog/2026/03/17/confidence-adapter-benchmark/",
+  "description": "ConfidenceAdapter uses token-level log-probabilities to score prompt candidates on a continuous scale instead of binary correct/wrong, producing better disambiguation rules and higher-accuracy prompts for classification tasks.",
+  
+  "datePublished": "2026-03-17T00:00:00+00:00",
+  "dateModified": "2026-03-17T00:00:00+00:00",
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "GEPA",
+    "url": "https://gepa-ai.github.io/gepa/",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://gepa-ai.github.io/gepa/static/img/gepa_logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://gepa-ai.github.io/gepa/blog/2026/03/17/confidence-adapter-benchmark/"
+  }
+}
+</script>
+
+
+
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HGHHSE0CDS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-HGHHSE0CDS');
+</script>
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#confidence-aware-prompt-optimization-for-llm-classification" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../../.." title="GEPA" class="md-header__button md-logo" aria-label="GEPA" data-md-component="logo">
+      <img src="../../../../../static/img/gepa_logo_with_text_white.svg" alt="logo">
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="landing-nav">
+      <a href="../../../../../guides/use-cases/" class="landing-nav__link">Showcase</a>
+      <a href="../../../../" class="landing-nav__link landing-nav__link--highlight landing-nav__link--active">Blog<span class="landing-nav__badge">New</span></a>
+      <a href="../../../../../guides/" class="landing-nav__link">Docs</a>
+      <a href="../../../../../tutorials/" class="landing-nav__link">Tutorials</a>
+      <a href="../../../../../api/" class="landing-nav__link">API</a>
+      <a href="../../../../../about/" class="landing-nav__link">About</a>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/gepa-ai/gepa" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    gepa-ai/gepa
+  </div>
+</a>
+      </div>
+    
+    <button class="toc-toggle md-header__button md-icon" aria-label="Table of contents" title="Table of contents">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2Z"/></svg>
+    </button>
+  </nav>
+</header>
+
+    <div class="md-container" data-md-component="container">
+      
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="GEPA" class="md-nav__button md-logo" aria-label="GEPA" data-md-component="logo">
+      
+  <img src="../../../../../static/img/gepa_logo_with_text_white.svg" alt="logo">
+
+    </a>
+    GEPA
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/gepa-ai/gepa" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    gepa-ai/gepa
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../guides/use-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Showcase
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Blog
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Archive
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Archive
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2026/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2026
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../../guides/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../guides/quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../guides/faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../guides/adapters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Creating Adapters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../guides/confidence-adapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Confidence-Aware Classification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../guides/candidate-selection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Candidate Selection Strategies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../guides/acceptance-criterion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acceptance Criterion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../guides/batch-sampling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Batch Sampling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../guides/parallel-proposals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parallel Proposals
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../guides/combee/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ComBEE (Scalable Reflection)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../guides/callbacks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Using Callbacks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../guides/cost-tracking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cost & Token Tracking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../guides/experiment-tracking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experiment Tracking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../guides/claude-cli-as-proposer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Using Claude Code as a Proposer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../guides/agent-skill/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Using the GEPA Agent Skill
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../guides/gskill/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    gskill
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../guides/contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../../tutorials/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../tutorials/dspy_full_program_evolution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DSPy Full Program Evolution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../tutorials/arc_agi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ARC AGI Example
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../tutorials/3d_unicorn_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3D Unicorn Optimization (Seedless)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../tutorials/confidence_adapter_classification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ConfidenceAdapter AG News Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../tutorials/langchain_adapter_pair_sum_product_walkthrough/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LangChain Adapter Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../../api/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    optimize_anything
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    optimize_anything
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/optimize_anything/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    optimize_anything
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/Task/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Task
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/OptimizeAnythingConfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OptimizeAnythingConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/Engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/Result/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Result
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/EvalServer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EvalServer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/BudgetTracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BudgetTracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/optimize_anything_with_server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    optimize_anything_with_server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/list_engines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    list_engines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/register_engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    register_engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_3" id="__nav_6_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GEPA Engine
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    GEPA Engine
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/GEPAConfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GEPAConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/EngineConfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EngineConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/ReflectionConfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ReflectionConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/MergeConfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MergeConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/RefinerConfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RefinerConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/TrackingConfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TrackingConfig
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/Evaluator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evaluator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/OptimizationState/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OptimizationState
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/LogContext/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LogContext
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    log
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/get_log_context/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    get_log_context
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/set_log_context/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    set_log_context
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/optimize_anything/make_litellm_lm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    make_litellm_lm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_4" id="__nav_6_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Core
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/core/optimize/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    optimize
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/core/GEPAAdapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GEPAAdapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/core/EvaluationBatch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EvaluationBatch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/core/GEPAResult/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GEPAResult
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/core/GEPACallback/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GEPACallback
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/core/DataLoader/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataLoader
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/core/GEPAState/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GEPAState
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/core/EvaluationCache/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EvaluationCache
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Callbacks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Callbacks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/GEPACallback/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GEPACallback
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/CompositeCallback/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CompositeCallback
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/OptimizationStartEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OptimizationStartEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/OptimizationEndEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OptimizationEndEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/IterationStartEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IterationStartEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/IterationEndEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IterationEndEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/CandidateSelectedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CandidateSelectedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/CandidateAcceptedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CandidateAcceptedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/CandidateRejectedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CandidateRejectedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/EvaluationStartEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EvaluationStartEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/EvaluationEndEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EvaluationEndEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/ValsetEvaluatedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ValsetEvaluatedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/ParetoFrontUpdatedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ParetoFrontUpdatedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/MergeAttemptedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MergeAttemptedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/MergeAcceptedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MergeAcceptedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/MergeRejectedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MergeRejectedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/BudgetUpdatedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BudgetUpdatedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/ErrorEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ErrorEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/callbacks/StateSavedEvent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StateSavedEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_6" id="__nav_6_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stop Conditions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Stop Conditions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/stop_conditions/StopperProtocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StopperProtocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/stop_conditions/MaxMetricCallsStopper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MaxMetricCallsStopper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/stop_conditions/TimeoutStopCondition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TimeoutStopCondition
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/stop_conditions/NoImprovementStopper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    NoImprovementStopper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/stop_conditions/ScoreThresholdStopper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ScoreThresholdStopper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/stop_conditions/FileStopper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FileStopper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/stop_conditions/SignalStopper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SignalStopper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/stop_conditions/CompositeStopper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CompositeStopper
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_7" id="__nav_6_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Adapters
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Adapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/adapters/DefaultAdapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DefaultAdapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/adapters/ConfidenceAdapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ConfidenceAdapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/adapters/DSPyAdapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DSPy Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/adapters/DSPyFullProgramAdapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DSPy Full Program Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/adapters/RAGAdapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RAG Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/adapters/MCPAdapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MCP Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/adapters/TerminalBenchAdapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TerminalBench Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/adapters/LangChainAdapter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LangChain Adapter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../../api/proposers/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proposers
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6_8" id="__nav_6_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Proposers
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/proposers/CandidateProposal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CandidateProposal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/proposers/ProposeNewCandidate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ProposeNewCandidate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/proposers/ReflectiveMutationProposer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ReflectiveMutationProposer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/proposers/MergeProposer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MergeProposer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/proposers/Signature/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Signature
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/proposers/LanguageModel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LanguageModel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_9" id="__nav_6_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/logging/LoggerProtocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LoggerProtocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/logging/StdOutLogger/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StdOutLogger
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/logging/Logger/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logger
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/logging/ExperimentTracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ExperimentTracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/logging/create_experiment_tracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    create_experiment_tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_10" id="__nav_6_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategies
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Strategies
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/strategies/BatchSampler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BatchSampler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/strategies/EpochShuffledBatchSampler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EpochShuffledBatchSampler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/strategies/CandidateSelector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CandidateSelector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/strategies/ParetoCandidateSelector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ParetoCandidateSelector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/strategies/CurrentBestCandidateSelector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CurrentBestCandidateSelector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/strategies/EpsilonGreedyCandidateSelector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EpsilonGreedyCandidateSelector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/strategies/ComponentSelector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ComponentSelector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/strategies/RoundRobinComponentSelector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RoundRobinComponentSelector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/strategies/AllComponentSelector/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AllComponentSelector
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/strategies/EvaluationPolicy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EvaluationPolicy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/strategies/FullEvaluationPolicy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FullEvaluationPolicy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../api/strategies/InstructionProposalSignature/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    InstructionProposalSignature
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-problem-why-binary-scoring-falls-short" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Problem: Why Binary Scoring Falls Short
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-solution-confidenceadapter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Solution: ConfidenceAdapter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Solution: ConfidenceAdapter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#structured-output-and-logprobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structured Output and Logprobs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linearblendscoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LinearBlendScoring
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#feedback-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Feedback Design
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-design-decision-threshold-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Design Decision: Threshold Calibration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Design Decision: Threshold Calibration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-calibration-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The calibration problem
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configurable-thresholds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configurable thresholds
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#experiment-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experiment Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Experiment Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Datasets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#models-and-gepa-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Models and GEPA Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reproducibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reproducibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Results
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Results">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#overall-accuracy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overall Accuracy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#precision-recall-and-f1-weighted-average" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Precision, Recall, and F1 (Weighted Average)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ag-news-4-class-per-class-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AG News (4-Class): Per-Class Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#emotion-6-class-per-class-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Emotion (6-Class): Per-Class Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rotten-tomatoes-binary-per-class-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rotten Tomatoes (Binary): Per-Class Analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#confidence-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Confidence Distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#when-to-use-confidenceadapter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to Use ConfidenceAdapter
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusion
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+<div class="md-content md-content--post" data-md-component="content">
+    <article class="md-content__inner md-typeset">
+
+        <header class="blog-post-header">
+            <h1 class="blog-post-title">Confidence-Aware Prompt Optimization for LLM Classification</h1>
+
+            <div class="blog-post-byline">
+                
+                    <span class="blog-post-date">
+                        <time datetime="2026-03-17T00:00:00+00:00">
+                            March 17, 2026
+                        </time>
+                    </span>
+                
+
+                
+                    <span class="blog-post-authors"><a href="https://github.com/rodolfonobrega">Rodolfo Nobrega</a>
+                    </span>
+                
+            </div>
+        </header>
+
+        
+        <div class="blog-post-body">
+            
+                <h1 id="confidence-aware-prompt-optimization-for-llm-classification">Confidence-Aware Prompt Optimization for LLM Classification<a class="headerlink" href="#confidence-aware-prompt-optimization-for-llm-classification" title="Permanent link">&para;</a></h1>
+<p>ConfidenceAdapter is a custom GEPA adapter that uses token-level log-probabilities from LLM structured output to score prompt candidates on a continuous scale instead of binary correct/wrong. By feeding the reflection LLM rich feedback about model uncertainty — including probability distributions and top alternatives — it produces better disambiguation rules and converges to higher-accuracy prompts. In experiments across AG News (4-class), Emotion (6-class), and Rotten Tomatoes (binary), ConfidenceAdapter matched or beat DefaultAdapter on all three datasets, with gains of <strong>+2.10pp</strong> and <strong>+1.80pp</strong> on the multiclass tasks.</p>
+<!-- more -->
+
+<hr />
+<h2 id="the-problem-why-binary-scoring-falls-short">The Problem: Why Binary Scoring Falls Short<a class="headerlink" href="#the-problem-why-binary-scoring-falls-short" title="Permanent link">&para;</a></h2>
+<p>GEPA (a prompt optimizer) evaluates candidate prompts on a training set, reflects on errors, and proposes improvements. When using the DefaultAdapter, every evaluation collapses to a binary outcome: correct = 1.0, wrong = 0.0. This creates three fundamental problems.</p>
+<p><strong>First, lucky guesses are rewarded equally with confident correct answers.</strong> A model that answers "Business" at 51% probability — with "Sci/Tech" at 49% — gets the same score as one that answers "Business" at 99%. The first case is a coin flip; the next random seed or slight prompt variation could easily flip the prediction. Binary scoring treats both as perfect.</p>
+<p><strong>Second, high-conviction errors need different feedback than uncertain errors.</strong> When the model answers "Bills/Electricity" at 99% and the correct answer is "Bills/Gas &amp; Oil," the prompt is actively misleading the model. It has no doubt about its wrong answer. Compare that to a model answering "Bills/Electricity" at 51% when the correct answer is "Bills/Gas &amp; Oil" — here the model was nearly split between the two; better prompt guidance could easily fix this. DefaultAdapter gives the same generic feedback in both cases: "Incorrect. Expected X, got Y."</p>
+<p><strong>Third, the optimizer gets no gradient signal.</strong> With only 0 or 1, GEPA cannot distinguish between "almost right" and "completely wrong," or between "confidently correct" and "barely correct." The reflection LLM receives no information about <em>how</em> wrong or <em>how</em> uncertain the model was, so it cannot prioritize the most impactful improvements.</p>
+<hr />
+<h2 id="the-solution-confidenceadapter">The Solution: ConfidenceAdapter<a class="headerlink" href="#the-solution-confidenceadapter" title="Permanent link">&para;</a></h2>
+<p>ConfidenceAdapter uses the model's actual probability distribution over categories to produce both a continuous score and rich, tiered feedback for the reflection LLM.</p>
+<h3 id="structured-output-and-logprobs">Structured Output and Logprobs<a class="headerlink" href="#structured-output-and-logprobs" title="Permanent link">&para;</a></h3>
+<p>When an LLM is called with <code>logprobs=True</code> and structured output (a JSON schema with an <code>enum</code> of valid categories), the API returns token-level log-probabilities for each generated token. These logprobs represent the model's probability distribution over the vocabulary at each decoding step.</p>
+<p>The API returns <strong>log-probabilities</strong> (logprobs), not raw probabilities. A logprob is the natural logarithm of a probability:</p>
+<div class="arithmatex">\[
+\text{logprob} = \ln(p), \qquad p = e^{\text{logprob}}
+\]</div>
+<p>If the model assigns 42% probability to a token, the logprob is <span class="arithmatex">\(\ln(0.42) \approx -0.866\)</span>. To recover the probability: <span class="arithmatex">\(e^{-0.866} \approx 0.42\)</span>.</p>
+<p><strong>Why logprobs instead of probabilities?</strong> The joint probability of a multi-token sequence is the product of per-token probabilities. For a category tokenized into <span class="arithmatex">\(n\)</span> tokens <span class="arithmatex">\(t_1, \dots, t_n\)</span>:</p>
+<div class="arithmatex">\[
+P(\text{category}) = \prod_{i=1}^{n} P(t_i \mid t_1, \dots, t_{i-1})
+\]</div>
+<p>Multiplying probabilities in <span class="arithmatex">\([0, 1]\)</span> approaches zero quickly. For short enum values (1–3 tokens), this is manageable — but LLM APIs return logprobs as the standard representation because they are used across all generation tasks, including long sequences where underflow is a real concern. With IEEE 754 double-precision floating point, the smallest normal positive number is approximately <span class="arithmatex">\(2.2 \times 10^{-308}\)</span>. A sequence of 100 tokens at 0.5 probability each gives <span class="arithmatex">\(0.5^{100} \approx 10^{-30}\)</span>, still representable — but at lower per-token probabilities or longer sequences, the product can <strong>underflow</strong> to exactly 0.0, losing all information.</p>
+<p>The logarithm converts this product into a sum:</p>
+<div class="arithmatex">\[
+\ln P(\text{category}) = \sum_{i=1}^{n} \ln P(t_i \mid t_1, \dots, t_{i-1})
+\]</div>
+<p>Sums of negative numbers stay well within floating-point range — <span class="arithmatex">\(\ln(10^{-30}) = -69\)</span>, a perfectly representable <code>float64</code>. After summing all logprobs, a single <code>exp()</code> call at the end recovers the joint probability. This representation is numerically stable regardless of sequence length, which is why it is the standard across all LLM APIs.</p>
+<p>For classification, <strong>the category name is composed of one or more tokens</strong>. When each category starts with a unique first token — which is the common case for well-chosen enum values — the decision is fully determined at the first token. If two categories share the same first token (e.g., <code>"sports"</code> and <code>"sports_betting"</code>), the model needs additional tokens to disambiguate, and the library accounts for this by computing the joint probability across all tokens of each candidate. In the examples below, all categories have distinct first tokens, so the first token alone determines the classification. Consider this real example classifying the text <em>"i feel like i could mass mass of feelings that are just waiting to be felt"</em> into one of six emotion categories:</p>
+<p>The model returns <code>{"category":"surprise"}</code> and the token-by-token logprobs look like this:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Token   Content      Logprob    Probability   Alternatives (raw tokens)
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>─────   ───────      ───────    ───────────   ─────────────────────────
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  0     {"            0.0000    1.0000        (JSON structure — deterministic)
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  1     category      0.0000    1.0000        (field name — deterministic)
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  2     ":"           0.0000    1.0000        (JSON structure — deterministic)
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  3     sur          -0.8584    0.4238        joy=-1.11 (0.33), f=-1.86 (0.16), sad=-2.61 (0.07), love=-4.11 (0.02), anger=-9.21 (&lt;0.01)
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  4     prise         0.0000    1.0000        (continuation — deterministic once "sur" is chosen)
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  5     "}            0.0000    1.0000        (JSON structure — deterministic)
+</code></pre></div>
+<p>Token 3 is where the model makes its decision. <code>"surprise"</code> is tokenized as <code>"sur"</code> + <code>"prise"</code> — once the model commits to <code>"sur"</code>, the continuation <code>"prise"</code> follows deterministically at 100%. The <strong>joint probability</strong> of the full category is the product of all its token probabilities:</p>
+<p>Applying the formula above: <span class="arithmatex">\(P(\text{"surprise"}) = P(\text{"sur"}) \times P(\text{"prise"}) = 0.4238 \times 1.0 = \mathbf{0.4238}\)</span></p>
+<p>In log space: <span class="arithmatex">\(\ln P(\text{"surprise"}) = \ln(0.4238) + \ln(1.0) = -0.858 + 0.0 = -0.858\)</span>, then <span class="arithmatex">\(e^{-0.858} = 0.4238\)</span>.</p>
+<p>Because the response is constrained to a JSON schema with an <code>enum</code>, the model can only emit tokens that begin a valid category name at this position. The <code>top_logprobs</code> field in the API response lists the most probable alternatives at each position — here, the first tokens of other categories. Notice that these are <strong>raw tokens</strong>, not category names: <code>"f"</code> is the first token of <code>"fear"</code> (tokenized as <code>"f"</code> + <code>"ear"</code>), and <code>"sad"</code> is the first token of <code>"sadness"</code> (tokenized as <code>"sad"</code> + <code>"ness"</code>), while <code>"joy"</code>, <code>"love"</code>, and <code>"anger"</code> happen to be complete single tokens. Each partial token uniquely identifies a category given the enum constraint — once <code>"f"</code> is chosen, only <code>"ear"</code> can follow to form a valid enum value. The library resolves this automatically: it knows the valid enum values from the JSON schema, so it maps each first token back to the full category name and assigns it the first token's probability (since all continuation tokens are deterministic at 100%). This is how we get a complete probability distribution over all classes from a single decision token:</p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Resolved category</th>
+<th>Probability</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sur</code></td>
+<td>surprise</td>
+<td>42.38%</td>
+</tr>
+<tr>
+<td><code>joy</code></td>
+<td>joy</td>
+<td>33.01%</td>
+</tr>
+<tr>
+<td><code>f</code></td>
+<td>fear</td>
+<td>15.59%</td>
+</tr>
+<tr>
+<td><code>sad</code></td>
+<td>sadness</td>
+<td>7.37%</td>
+</tr>
+<tr>
+<td><code>love</code></td>
+<td>love</td>
+<td>1.64%</td>
+</tr>
+<tr>
+<td><code>anger</code></td>
+<td>anger</td>
+<td>0.01%</td>
+</tr>
+</tbody>
+</table>
+<p>This is a genuinely uncertain prediction — binary scoring would give it a perfect 1.0 if it happens to be correct.</p>
+<p>Compare with a more confident prediction — <em>"i feel nostalgic about the times we spent together as children"</em>:</p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Content</th>
+<th>Logprob</th>
+<th>Probability</th>
+<th>Alternatives</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td><code>sad</code></td>
+<td>-0.0267</td>
+<td>0.9737</td>
+<td><code>joy</code>=-4.03 (0.018), <code>love</code>=-4.78 (0.008)</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>ness</code></td>
+<td>0.0000</td>
+<td>1.0000</td>
+<td>(continuation — deterministic)</td>
+</tr>
+</tbody>
+</table>
+<p><span class="arithmatex">\(P(\text{"sadness"}) = P(\text{"sad"}) \times P(\text{"ness"}) = 0.9737 \times 1.0 = \mathbf{0.9737}\)</span></p>
+<p>Here the model is 97.4% confident in <code>"sadness"</code>. This is meaningfully different from the 42.4% case above, but binary scoring treats both identically.</p>
+<p>The <a href="https://github.com/rodolfonobrega/llm-structured-confidence"><code>llm-structured-confidence</code></a> library automates this extraction. Given the raw LLM response, it:</p>
+<ol>
+<li>Identifies which tokens correspond to the target field (<code>category</code>) using the JSON schema</li>
+<li>Computes the <strong>joint probability</strong> across all tokens of the category value (product of per-token probabilities)</li>
+<li>Resolves <strong>top alternatives</strong> — matching partial tokens like <code>"sur"</code> → <code>"surprise"</code> and <code>"f"</code> → <code>"fear"</code> using the enum constraint</li>
+<li>Returns a structured result with the predicted value, its probability, and the ranked alternatives with their probabilities</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">llm_structured_confidence</span><span class="w"> </span><span class="kn">import</span> <span class="n">extract_logprobs</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">conf</span> <span class="o">=</span> <span class="n">extract_logprobs</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">field_path</span><span class="o">=</span><span class="s2">"category"</span><span class="p">,</span> <span class="n">response_schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># conf = {</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1">#   "value": "surprise",</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1">#   "joint_probability": 0.4238,</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1">#   "top_alternative_resolved": "joy",</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="c1">#   "top_alternative_probability": 0.3301,</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="c1">#   "top_logprobs": [("surprise", 0.4238), ("joy", 0.3301), ("fear", 0.1559), ...]</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1"># }</span>
+</code></pre></div>
+<p>This gives ConfidenceAdapter everything it needs: the probability of the chosen category, the top alternative and its probability, and the full ranked distribution.</p>
+<h3 id="linearblendscoring">LinearBlendScoring<a class="headerlink" href="#linearblendscoring" title="Permanent link">&para;</a></h3>
+<p>Instead of binary 0/1, ConfidenceAdapter uses LinearBlendScoring:</p>
+<ul>
+<li><strong>If incorrect:</strong> score = 0.0</li>
+<li><strong>If correct and probability ≥ threshold (0.99):</strong> score = 1.0</li>
+<li><strong>If correct and probability &lt; threshold:</strong> score = min_score + (1.0 − min_score) × (probability / threshold)</li>
+</ul>
+<p>With <code>min_score=0.3</code> and <code>threshold=0.99</code>, a correct answer at 95% probability yields: 0.3 + 0.7 × (0.95/0.99) ≈ 0.972. The optimizer now receives a gradient: higher confidence on correct answers yields higher scores.</p>
+<h3 id="feedback-design">Feedback Design<a class="headerlink" href="#feedback-design" title="Permanent link">&para;</a></h3>
+<p>The reflection LLM receives feedback tailored to the prediction's correctness and confidence:</p>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Example Feedback</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Correct + confident (≥99%)</td>
+<td>"Correct."</td>
+</tr>
+<tr>
+<td>Correct + moderate (90–99%)</td>
+<td>"Correct (95% probability). Close alternatives: 'X' (3%)."</td>
+</tr>
+<tr>
+<td>Correct + uncertain (&lt;90%)</td>
+<td>"Correct but uncertain (73% probability). Model was nearly split with alternatives. Top alternatives: 'X' (24%). The model cannot reliably distinguish between these categories with the current prompt."</td>
+</tr>
+<tr>
+<td>Wrong + low confidence</td>
+<td>"Wrong (60% probability). Expected 'Y' but got 'Z'. The model was uncertain — better prompt guidance could fix this."</td>
+</tr>
+<tr>
+<td>Wrong + high confidence (≥99%)</td>
+<td>"WRONG — model has 99% certainty on 'Z' but the correct answer is 'Y'. The prompt is actively misleading it for this type of input. The prompt must add explicit rules to disambiguate 'Z' vs 'Y'."</td>
+</tr>
+</tbody>
+</table>
+<p>Correct, confident predictions get minimal noise. Errors — especially high-conviction errors — get maximum signal, including probability details and top alternatives, so the reflection LLM can propose targeted disambiguation rules.</p>
+<hr />
+<h2 id="key-design-decision-threshold-calibration">Key Design Decision: Threshold Calibration<a class="headerlink" href="#key-design-decision-threshold-calibration" title="Permanent link">&para;</a></h2>
+<h3 id="the-calibration-problem">The calibration problem<a class="headerlink" href="#the-calibration-problem" title="Permanent link">&para;</a></h3>
+<p>A perfectly calibrated model would assign a probability that matches its actual accuracy: when it says 80%, it should be right 80% of the time. In practice, <strong>LLM calibration varies significantly across models and configurations</strong>. When the response is constrained to an enum, the constrained decoding process concentrates probability mass on the chosen token — but how much it concentrates depends on the model. Architecture, training data, alignment tuning (RLHF/DPO), and the specific constrained decoding implementation all influence the resulting probability distribution.</p>
+<p>Some models produce well-spread distributions where a 70% prediction genuinely reflects uncertainty. Others — like GPT-4.1-mini with structured output, used in our experiments — tend to produce probabilities between 95–100% even for incorrect predictions. <strong>You should not assume any particular distribution; instead, evaluate your model's calibration before choosing thresholds.</strong></p>
+<p>Why this matters: if a model produces consistently high probabilities and you set a threshold at 70%, virtually every prediction would be classified as "high confidence." The scoring would collapse to binary (everything gets a perfect score if correct), and ConfidenceAdapter would behave identically to DefaultAdapter — gaining nothing from the logprob signal. Conversely, setting a 99% threshold on a model that rarely exceeds 85% would penalize every prediction, losing the ability to distinguish confident from uncertain answers.</p>
+<h3 id="configurable-thresholds">Configurable thresholds<a class="headerlink" href="#configurable-thresholds" title="Permanent link">&para;</a></h3>
+<p>ConfidenceAdapter addresses this with two configurable thresholds that should be tuned for the model in use:</p>
+<ul>
+<li><strong>high_confidence_threshold = 0.99</strong> — only predictions above 99% probability receive a full score of 1.0. Below this, the score decreases proportionally via LinearBlendScoring.</li>
+<li><strong>low_confidence_threshold = 0.90</strong> — correct predictions below 90% probability are flagged as "unreliable" in the reflection feedback, prompting the reflection LLM to address the ambiguity.</li>
+</ul>
+<p>The effect on scoring gradients:</p>
+<table>
+<thead>
+<tr>
+<th>Probability</th>
+<th>Score (threshold=0.99)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.999</td>
+<td>1.000</td>
+</tr>
+<tr>
+<td>0.99</td>
+<td>1.000</td>
+</tr>
+<tr>
+<td>0.95</td>
+<td>0.972</td>
+</tr>
+<tr>
+<td>0.90</td>
+<td>0.936</td>
+</tr>
+<tr>
+<td>0.80</td>
+<td>0.866</td>
+</tr>
+<tr>
+<td>0.50</td>
+<td>0.654</td>
+</tr>
+</tbody>
+</table>
+<p>With a 0.99 threshold, a correct answer at 95% probability scores 0.972 instead of 1.0. This small penalty accumulates across the evaluation set, giving GEPA a clear signal to prefer prompts that produce more confident correct answers.</p>
+<p><strong>Choosing the right thresholds:</strong> Run a small sample of predictions with your model and look at the probability distribution. If most correct predictions are above 99%, set <code>high_confidence_threshold=0.99</code>. If your model produces more spread-out probabilities (e.g., correct answers commonly between 70–90%), a lower threshold like 0.85 may be more appropriate. The goal is to place the threshold where the model's "confident" and "uncertain" predictions naturally separate.</p>
+<hr />
+<h2 id="experiment-setup">Experiment Setup<a class="headerlink" href="#experiment-setup" title="Permanent link">&para;</a></h2>
+<h3 id="datasets">Datasets<a class="headerlink" href="#datasets" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>Type</th>
+<th>Classes</th>
+<th>Train/Class</th>
+<th>Val/Class</th>
+<th>Test Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AG News</td>
+<td>Multiclass</td>
+<td>4 (World, Sports, Business, Sci/Tech)</td>
+<td>120</td>
+<td>40</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>Emotion</td>
+<td>Multiclass</td>
+<td>6 (sadness, joy, love, anger, fear, surprise)</td>
+<td>120</td>
+<td>40</td>
+<td>1390*</td>
+</tr>
+<tr>
+<td>Rotten Tomatoes</td>
+<td>Binary</td>
+<td>2 (positive, negative)</td>
+<td>120</td>
+<td>40</td>
+<td>1066*</td>
+</tr>
+</tbody>
+</table>
+<p>*The test set target was 2000 examples (balanced across classes). AG News has a large enough test split to reach this target (500 per class). Emotion and Rotten Tomatoes have smaller HuggingFace test splits, so we used as many balanced examples as available: 1390 for Emotion (limited by minority classes like surprise with only 66 examples) and 1066 for Rotten Tomatoes (533 per class).</p>
+<p>The training set is intentionally larger than the validation set. In LLM classification, the model doesn't "learn" from training examples the way a fine-tuned model would — they only feed the reflection loop. Each iteration, GEPA randomly samples a minibatch (20 per class) from the training set and evaluates the current prompt to find errors. A larger pool (120 per class) ensures that each minibatch exposes the reflection LLM to different combinations of errors across iterations, improving the diversity of feedback. The validation set (40 per class) is evaluated in full every iteration and is used to rank prompt candidates — 40 per class is sufficient for reliable ranking without being the bottleneck.</p>
+<h3 id="models-and-gepa-configuration">Models and GEPA Configuration<a class="headerlink" href="#models-and-gepa-configuration" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Task model:</strong> GPT-4.1-mini (<code>temperature=0</code>, no reasoning/chain-of-thought)</li>
+<li><strong>Reflection model:</strong> Claude Sonnet 4.6 (thinking enabled, <code>budget_tokens=1024</code>)</li>
+<li><strong>GEPA:</strong> ~10 iterations, same budget for both adapters</li>
+<li><strong>Reflection minibatch:</strong> 20 examples per class per iteration</li>
+<li><strong>Structured output:</strong> JSON schema with enum constraint on the category field</li>
+</ul>
+<h3 id="reproducibility">Reproducibility<a class="headerlink" href="#reproducibility" title="Permanent link">&para;</a></h3>
+<p>All random operations use <strong>seed=42</strong>: dataset shuffling and stratified splits (<code>random.Random(42)</code>), NumPy (<code>np.random.seed(42)</code>), LLM calls (<code>seed=42</code> parameter), and GEPA optimization (<code>seed=42</code>). The seed prompt is: <em>"Classify the following text into one of the given categories."</em></p>
+<p>The full experiment script is available at <a href="https://github.com/gepa-ai/gepa/tree/main/examples/confidence_adapter"><code>examples/confidence_adapter/main.py</code></a>.</p>
+<hr />
+<h2 id="results">Results<a class="headerlink" href="#results" title="Permanent link">&para;</a></h2>
+<h3 id="overall-accuracy">Overall Accuracy<a class="headerlink" href="#overall-accuracy" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>Baseline</th>
+<th>DefaultAdapter</th>
+<th>ConfidenceAdapter</th>
+<th>Delta (Conf − Default)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AG News</td>
+<td>83.70%</td>
+<td>85.80%</td>
+<td><strong>87.90%</strong></td>
+<td><strong>+2.10pp</strong></td>
+</tr>
+<tr>
+<td>Emotion</td>
+<td>54.03%</td>
+<td>58.42%</td>
+<td><strong>60.22%</strong></td>
+<td><strong>+1.80pp</strong></td>
+</tr>
+<tr>
+<td>Rotten Tomatoes</td>
+<td>91.46%</td>
+<td>93.15%</td>
+<td>93.15%</td>
+<td>0.00pp</td>
+</tr>
+</tbody>
+</table>
+<figure>
+  <img alt="Accuracy comparison across datasets" src="../../../../2026-03-17-confidence-adapter-benchmark/images/accuracy_comparison.png" />
+<br />
+<figcaption>Figure 1 — Test accuracy (%) for Baseline, DefaultAdapter, and ConfidenceAdapter across all three datasets.</figcaption>
+</figure>
+<h3 id="precision-recall-and-f1-weighted-average">Precision, Recall, and F1 (Weighted Average)<a class="headerlink" href="#precision-recall-and-f1-weighted-average" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>Condition</th>
+<th>Precision</th>
+<th>Recall</th>
+<th>F1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AG News</td>
+<td>Baseline</td>
+<td>86.47%</td>
+<td>83.70%</td>
+<td>83.02%</td>
+</tr>
+<tr>
+<td></td>
+<td>DefaultAdapter</td>
+<td>87.31%</td>
+<td>85.80%</td>
+<td>85.59%</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>ConfidenceAdapter</strong></td>
+<td><strong>87.83%</strong></td>
+<td><strong>87.90%</strong></td>
+<td><strong>87.84%</strong></td>
+</tr>
+<tr>
+<td>Emotion</td>
+<td>Baseline</td>
+<td>56.05%</td>
+<td>54.03%</td>
+<td>53.03%</td>
+</tr>
+<tr>
+<td></td>
+<td>DefaultAdapter</td>
+<td>58.66%</td>
+<td>58.42%</td>
+<td>58.16%</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>ConfidenceAdapter</strong></td>
+<td><strong>61.75%</strong></td>
+<td><strong>60.22%</strong></td>
+<td><strong>60.30%</strong></td>
+</tr>
+<tr>
+<td>Rotten Tomatoes</td>
+<td>Baseline</td>
+<td>91.55%</td>
+<td>91.46%</td>
+<td>91.46%</td>
+</tr>
+<tr>
+<td></td>
+<td>DefaultAdapter</td>
+<td>93.16%</td>
+<td>93.15%</td>
+<td>93.15%</td>
+</tr>
+<tr>
+<td></td>
+<td>ConfidenceAdapter</td>
+<td>93.19%</td>
+<td>93.15%</td>
+<td>93.15%</td>
+</tr>
+</tbody>
+</table>
+<p>ConfidenceAdapter leads in all weighted metrics on AG News and Emotion. The F1 gains are +2.25pp on AG News and +2.14pp on Emotion over DefaultAdapter. On Rotten Tomatoes, performance is effectively tied.</p>
+<figure>
+  <img alt="Precision, Recall, and F1 weighted averages" src="../../../../2026-03-17-confidence-adapter-benchmark/images/metrics_comparison.png" />
+<br />
+<figcaption>Figure 2 — Weighted-average Precision, Recall, and F1 for all conditions and datasets.</figcaption>
+</figure>
+<hr />
+<h3 id="ag-news-4-class-per-class-analysis">AG News (4-Class): Per-Class Analysis<a class="headerlink" href="#ag-news-4-class-per-class-analysis" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Condition</th>
+<th>Precision</th>
+<th>Recall</th>
+<th>F1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Sci/Tech</strong></td>
+<td>Baseline</td>
+<td>94.29%</td>
+<td>52.80%</td>
+<td>67.69%</td>
+</tr>
+<tr>
+<td></td>
+<td>Default</td>
+<td>95.63%</td>
+<td>65.60%</td>
+<td>77.82%</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>Confidence</strong></td>
+<td><strong>85.21%</strong></td>
+<td><strong>81.80%</strong></td>
+<td><strong>83.47%</strong></td>
+</tr>
+<tr>
+<td><strong>Business</strong></td>
+<td>Baseline</td>
+<td>67.33%</td>
+<td>95.20%</td>
+<td>78.87%</td>
+</tr>
+<tr>
+<td></td>
+<td>Default</td>
+<td>74.39%</td>
+<td>91.20%</td>
+<td>81.94%</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>Confidence</strong></td>
+<td><strong>84.92%</strong></td>
+<td><strong>82.20%</strong></td>
+<td><strong>83.54%</strong></td>
+</tr>
+<tr>
+<td>Sports</td>
+<td>Baseline</td>
+<td>95.73%</td>
+<td>98.60%</td>
+<td>97.14%</td>
+</tr>
+<tr>
+<td></td>
+<td>Default</td>
+<td>95.95%</td>
+<td>94.80%</td>
+<td>95.37%</td>
+</tr>
+<tr>
+<td></td>
+<td>Confidence</td>
+<td>95.70%</td>
+<td>98.00%</td>
+<td>96.84%</td>
+</tr>
+<tr>
+<td>World</td>
+<td>Baseline</td>
+<td>88.55%</td>
+<td>88.20%</td>
+<td>88.38%</td>
+</tr>
+<tr>
+<td></td>
+<td>Default</td>
+<td>83.27%</td>
+<td>91.60%</td>
+<td>87.24%</td>
+</tr>
+<tr>
+<td></td>
+<td>Confidence</td>
+<td>85.50%</td>
+<td>89.60%</td>
+<td>87.50%</td>
+</tr>
+</tbody>
+</table>
+<p>The most striking change is the <strong>Sci/Tech vs Business tradeoff</strong>. With the baseline, the model had a strong bias: it predicted "Business" aggressively (95.2% recall) but at the expense of Sci/Tech (only 52.8% recall). Many technology articles about companies like Oracle, Microsoft, or Intel were misclassified as Business because they mentioned financial aspects. DefaultAdapter improved this but maintained the bias. ConfidenceAdapter resolved it: Sci/Tech recall jumped from 52.8% to 81.8%, and Business precision rose from 67.3% to 84.9%. The F1 scores converged — Business went from 78.9% to 83.5%, Sci/Tech from 67.7% to 83.5% — producing a much more balanced classifier.</p>
+<p>Sports and World maintained F1 close to the Baseline (96.8% vs 97.1% for Sports, 87.5% vs 88.4% for World), confirming that the large gains on the confusable Sci/Tech–Business axis did not come at the expense of the already well-separated classes.</p>
+<p>This rebalancing is a direct result of the confidence-aware feedback. When the model confidently misclassified a tech article as Business, ConfidenceAdapter flagged it with: <em>"WRONG — model has 99% certainty on 'Business' but the correct answer is 'Sci/Tech'. The prompt must add explicit disambiguation rules."</em> The reflection LLM responded by adding rules like: <em>"Technology company news about SOFTWARE, HARDWARE, or TECH PRODUCTS → Sci/Tech, NOT Business, even if financial aspects are mentioned."</em></p>
+<figure>
+  <img alt="AG News optimization convergence" src="../../../../2026-03-17-confidence-adapter-benchmark/images/convergence_ag_news.png" />
+<br />
+<figcaption>Figure 3 — Optimization convergence for AG News. Each point is one candidate prompt scored on the validation set. The star marks the best candidate selected by GEPA.</figcaption>
+</figure>
+<figure>
+  <img alt="AG News per-class precision" src="../../../../2026-03-17-confidence-adapter-benchmark/images/per_class_precision_ag_news.png" />
+<br />
+<figcaption>Figure 4 — Per-class precision for AG News. ConfidenceAdapter raises Business precision from 67% to 85%.</figcaption>
+</figure>
+<figure>
+  <img alt="AG News per-class recall" src="../../../../2026-03-17-confidence-adapter-benchmark/images/per_class_recall_ag_news.png" />
+<br />
+<figcaption>Figure 5 — Per-class recall for AG News. ConfidenceAdapter rebalances Sci/Tech vs Business.</figcaption>
+</figure>
+<figure>
+  <img alt="AG News per-class F1 score" src="../../../../2026-03-17-confidence-adapter-benchmark/images/per_class_f1_ag_news.png" />
+<br />
+<figcaption>Figure 6 — Per-class F1 for AG News. Both confusable classes converge to ~83.5%.</figcaption>
+</figure>
+<hr />
+<h3 id="emotion-6-class-per-class-analysis">Emotion (6-Class): Per-Class Analysis<a class="headerlink" href="#emotion-6-class-per-class-analysis" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Condition</th>
+<th>Precision</th>
+<th>Recall</th>
+<th>F1</th>
+<th>n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sadness</td>
+<td>Baseline</td>
+<td>48.47%</td>
+<td>76.28%</td>
+<td>59.28%</td>
+<td>333</td>
+</tr>
+<tr>
+<td></td>
+<td>Default</td>
+<td>59.04%</td>
+<td>66.67%</td>
+<td>62.62%</td>
+<td>333</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>Confidence</strong></td>
+<td><strong>61.13%</strong></td>
+<td><strong>71.77%</strong></td>
+<td><strong>66.02%</strong></td>
+<td>333</td>
+</tr>
+<tr>
+<td>joy</td>
+<td>Baseline</td>
+<td>59.88%</td>
+<td>61.86%</td>
+<td>60.86%</td>
+<td>333</td>
+</tr>
+<tr>
+<td></td>
+<td>Default</td>
+<td>58.29%</td>
+<td>65.47%</td>
+<td>61.67%</td>
+<td>333</td>
+</tr>
+<tr>
+<td></td>
+<td>Confidence</td>
+<td>67.47%</td>
+<td>50.45%</td>
+<td>57.73%</td>
+<td>333</td>
+</tr>
+<tr>
+<td>love</td>
+<td>Baseline</td>
+<td>43.44%</td>
+<td>33.33%</td>
+<td>37.72%</td>
+<td>159</td>
+</tr>
+<tr>
+<td></td>
+<td>Default</td>
+<td>46.83%</td>
+<td>37.11%</td>
+<td>41.40%</td>
+<td>159</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>Confidence</strong></td>
+<td><strong>46.50%</strong></td>
+<td><strong>58.49%</strong></td>
+<td><strong>51.81%</strong></td>
+<td>159</td>
+</tr>
+<tr>
+<td>anger</td>
+<td>Baseline</td>
+<td>72.14%</td>
+<td>36.73%</td>
+<td>48.67%</td>
+<td>275</td>
+</tr>
+<tr>
+<td></td>
+<td>Default</td>
+<td>69.95%</td>
+<td>54.18%</td>
+<td>61.07%</td>
+<td>275</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>Confidence</strong></td>
+<td><strong>71.62%</strong></td>
+<td><strong>57.82%</strong></td>
+<td><strong>63.98%</strong></td>
+<td>275</td>
+</tr>
+<tr>
+<td>fear</td>
+<td>Baseline</td>
+<td>55.66%</td>
+<td>52.68%</td>
+<td>54.13%</td>
+<td>224</td>
+</tr>
+<tr>
+<td></td>
+<td>Default</td>
+<td>58.12%</td>
+<td>60.71%</td>
+<td>59.39%</td>
+<td>224</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>Confidence</strong></td>
+<td><strong>58.33%</strong></td>
+<td><strong>62.50%</strong></td>
+<td><strong>60.34%</strong></td>
+<td>224</td>
+</tr>
+<tr>
+<td>surprise</td>
+<td>Baseline</td>
+<td>39.58%</td>
+<td>28.79%</td>
+<td>33.33%</td>
+<td>66</td>
+</tr>
+<tr>
+<td></td>
+<td>Default</td>
+<td>41.79%</td>
+<td>42.42%</td>
+<td>42.11%</td>
+<td>66</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>Confidence</strong></td>
+<td><strong>43.18%</strong></td>
+<td><strong>57.58%</strong></td>
+<td><strong>49.35%</strong></td>
+<td>66</td>
+</tr>
+</tbody>
+</table>
+<p>Emotion is the hardest dataset with 6 classes, several of which are inherently confusable (joy vs love, sadness vs fear, anger vs sadness). ConfidenceAdapter improved F1 on 5 of the 6 classes, with the largest gains on the minority classes: <strong>love</strong> (+10.4pp over Default), <strong>surprise</strong> (+7.2pp), and <strong>anger</strong> (+2.9pp).</p>
+<p>The one class where ConfidenceAdapter scored lower was <strong>joy</strong> (F1: 61.7% → 57.7%). Looking at the precision/recall breakdown, ConfidenceAdapter made joy much more precise (67.5% vs 58.3%) but at the cost of recall (50.5% vs 65.5%). This happened because the optimizer learned to be more careful about what it labels "joy" — many texts that superficially look joyful actually express love, surprise, or even sadness. The confidence signal pushed the prompt toward stricter joy criteria, which reduced false positives but also caught fewer true positives.</p>
+<p>This is a <strong>generalization tradeoff</strong> worth noting: ConfidenceAdapter tends to produce more balanced classifiers that don't over-predict dominant classes. The overall F1 improved (+2.14pp), but individual classes can shift. This is a desirable property for most applications — a balanced classifier is more useful than one that over-predicts popular classes — but it's worth validating per-class performance for your specific use case.</p>
+<figure>
+  <img alt="Emotion optimization convergence" src="../../../../2026-03-17-confidence-adapter-benchmark/images/convergence_emotion.png" />
+<br />
+<figcaption>Figure 7 — Optimization convergence for Emotion.</figcaption>
+</figure>
+<figure>
+  <img alt="Emotion per-class precision" src="../../../../2026-03-17-confidence-adapter-benchmark/images/per_class_precision_emotion.png" />
+<br />
+<figcaption>Figure 8 — Per-class precision for Emotion.</figcaption>
+</figure>
+<figure>
+  <img alt="Emotion per-class recall" src="../../../../2026-03-17-confidence-adapter-benchmark/images/per_class_recall_emotion.png" />
+<br />
+<figcaption>Figure 9 — Per-class recall for Emotion. ConfidenceAdapter redistributes recall from dominant classes (joy, sadness) toward minority classes (fear, surprise).</figcaption>
+</figure>
+<figure>
+  <img alt="Emotion per-class F1 score" src="../../../../2026-03-17-confidence-adapter-benchmark/images/per_class_f1_emotion.png" />
+<br />
+<figcaption>Figure 10 — Per-class F1 for Emotion.</figcaption>
+</figure>
+<hr />
+<h3 id="rotten-tomatoes-binary-per-class-analysis">Rotten Tomatoes (Binary): Per-Class Analysis<a class="headerlink" href="#rotten-tomatoes-binary-per-class-analysis" title="Permanent link">&para;</a></h3>
+<p>Both adapters tied at 93.15% test accuracy (+1.69pp over baseline). Best validation results were nearly identical: 0.9625 (DefaultAdapter) vs 0.9616 (ConfidenceAdapter).</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Condition</th>
+<th>Precision</th>
+<th>Recall</th>
+<th>F1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>negative</td>
+<td>Baseline</td>
+<td>89.61%</td>
+<td>93.81%</td>
+<td>91.66%</td>
+</tr>
+<tr>
+<td></td>
+<td>Default</td>
+<td>92.44%</td>
+<td>94.00%</td>
+<td>93.21%</td>
+</tr>
+<tr>
+<td></td>
+<td>Confidence</td>
+<td>91.97%</td>
+<td>94.56%</td>
+<td>93.25%</td>
+</tr>
+<tr>
+<td>positive</td>
+<td>Baseline</td>
+<td>93.50%</td>
+<td>89.12%</td>
+<td>91.26%</td>
+</tr>
+<tr>
+<td></td>
+<td>Default</td>
+<td>93.89%</td>
+<td>92.31%</td>
+<td>93.09%</td>
+</tr>
+<tr>
+<td></td>
+<td>Confidence</td>
+<td>94.40%</td>
+<td>91.74%</td>
+<td>93.05%</td>
+</tr>
+</tbody>
+</table>
+<p>The per-class metrics reveal a subtle difference hidden by the accuracy tie. ConfidenceAdapter slightly favors negative recall (94.56% vs 94.00%) while DefaultAdapter slightly favors positive recall (92.31% vs 91.74%). Both are well-balanced with nearly identical F1 scores across classes. For binary classification with clearly distinct categories (positive vs negative sentiment), the confidence signal has limited room to differentiate — the model already reaches high probabilities on both classes, and the reflection LLM gets less actionable information from the alternatives since there is only one alternative category.</p>
+<figure>
+  <img alt="Rotten Tomatoes optimization convergence" src="../../../../2026-03-17-confidence-adapter-benchmark/images/convergence_rotten_tomatoes.png" />
+<br />
+<figcaption>Figure 11 — Optimization convergence for Rotten Tomatoes.</figcaption>
+</figure>
+<p>The ROC curve provides a better view for binary classification, showing the trade-off between true positive and false positive rates at different decision thresholds. All three conditions achieve AUC above 0.95, confirming strong discriminative ability.</p>
+<figure>
+  <img alt="ROC curve for Rotten Tomatoes" src="../../../../2026-03-17-confidence-adapter-benchmark/images/roc_rotten_tomatoes.png" />
+<br />
+<figcaption>Figure 12 — ROC curve for Rotten Tomatoes binary classification. All conditions achieve AUC &gt; 0.95.</figcaption>
+</figure>
+<hr />
+<h3 id="confidence-distribution">Confidence Distribution<a class="headerlink" href="#confidence-distribution" title="Permanent link">&para;</a></h3>
+<p>The ECDF (empirical cumulative distribution function) below shows the predicted probability (from logprobs) for both adapters, split by correct vs incorrect predictions. Both adapters use the same model — the difference comes from the optimized prompt.</p>
+<p><strong>How to read this chart:</strong> a well-calibrated model would show a large gap between the green and red curves — correct predictions clustered at high probability, incorrect predictions at low probability. That would mean the model "knows when it doesn't know," and you could trust the probability to flag uncertain predictions for human review. What we see instead is a <strong>small gap</strong>: even 70–78% of incorrect predictions have ≥99% probability. GPT-4.1-mini with structured output is poorly calibrated — it is nearly as confident on wrong answers as on right ones. This is exactly why the 0.99 threshold is necessary; anything lower would treat most errors as "high confidence" and flatten the optimization signal.</p>
+<p>Comparing the two rows reveals that <strong>the confidence distributions are nearly identical between the two adapters.</strong> This is the most important takeaway: ConfidenceAdapter's advantage does not come from making the model "more confident overall" — it comes from making the model get the right answer on more examples, through better disambiguation rules in the prompt. The underlying model is the same; what changes is which examples fall on the correct side.</p>
+<figure>
+  <img alt="Confidence ECDF comparison" src="../../../../2026-03-17-confidence-adapter-benchmark/images/confidence_distribution.png" />
+<br />
+<figcaption>Figure 13 — Predicted probability ECDF: DefaultAdapter (top row) vs ConfidenceAdapter (bottom row). Green = correct predictions, red = incorrect. A large gap between curves indicates better calibration.</figcaption>
+</figure>
+<p>The numerical breakdown reinforces this:</p>
+<table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>Adapter</th>
+<th>Correct (n)</th>
+<th>Incorrect (n)</th>
+<th>≥99% correct</th>
+<th>≥99% incorrect</th>
+<th>Gap</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AG News</td>
+<td>Default</td>
+<td>1716</td>
+<td>284</td>
+<td>94.4%</td>
+<td>69.7%</td>
+<td>+24.7pp</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>Confidence</strong></td>
+<td><strong>1758</strong></td>
+<td><strong>242</strong></td>
+<td><strong>95.3%</strong></td>
+<td><strong>69.8%</strong></td>
+<td><strong>+25.4pp</strong></td>
+</tr>
+<tr>
+<td>Emotion</td>
+<td>Default</td>
+<td>812</td>
+<td>578</td>
+<td>89.8%</td>
+<td>71.5%</td>
+<td>+18.3pp</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>Confidence</strong></td>
+<td><strong>837</strong></td>
+<td><strong>553</strong></td>
+<td><strong>90.7%</strong></td>
+<td><strong>76.5%</strong></td>
+<td><strong>+14.2pp</strong></td>
+</tr>
+<tr>
+<td>Rotten Tomatoes</td>
+<td>Default</td>
+<td>993</td>
+<td>73</td>
+<td>98.1%</td>
+<td>78.1%</td>
+<td>+20.0pp</td>
+</tr>
+<tr>
+<td></td>
+<td>Confidence</td>
+<td>993</td>
+<td>73</td>
+<td>97.9%</td>
+<td>78.1%</td>
+<td>+19.8pp</td>
+</tr>
+</tbody>
+</table>
+<p>On AG News, ConfidenceAdapter gets 42 more predictions right while maintaining a slightly wider confidence gap. On Emotion, it gets 25 more right, but the remaining errors are <em>more</em> confident (76.5% vs 71.5% above 99%) — the prompt eliminated the uncertain errors, leaving behind the high-conviction mistakes that are hardest to fix. On Rotten Tomatoes, the distributions are indistinguishable.</p>
+<p>This confirms that ConfidenceAdapter works by leveraging the confidence signal <em>during optimization</em> to produce better prompts — not by changing how the model distributes confidence at inference time.</p>
+<hr />
+<h2 id="when-to-use-confidenceadapter">When to Use ConfidenceAdapter<a class="headerlink" href="#when-to-use-confidenceadapter" title="Permanent link">&para;</a></h2>
+<p><strong>Use ConfidenceAdapter when:</strong></p>
+<ul>
+<li>You have a classification task with enum-constrained structured output</li>
+<li>Your model exposes logprobs (e.g., OpenAI gpt-4.1-*, Gemini)</li>
+<li>The task has many confusable categories (e.g., emotions, fine-grained topics)</li>
+<li>You want the optimizer to generate targeted disambiguation rules</li>
+</ul>
+<p><strong>Stick with DefaultAdapter when:</strong></p>
+<ul>
+<li>The task is very simple (e.g., straightforward binary sentiment)</li>
+<li>Your model does not support logprobs</li>
+<li>You need minimal API overhead and do not require confidence-based feedback</li>
+</ul>
+<hr />
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
+<p>ConfidenceAdapter consistently matched or beat DefaultAdapter across all three datasets. The largest gains came on the hardest task (Emotion: +1.80pp) and the most structured multiclass task (AG News: +2.10pp). On Rotten Tomatoes, both adapters tied, showing that ConfidenceAdapter does not hurt performance on simpler tasks.</p>
+<p>Two factors drive these results. First, <strong>continuous scoring via LinearBlendScoring</strong> gives the optimizer a gradient to work with: it can distinguish "confidently correct" from "barely correct," penalizing lucky guesses and rewarding prompts that produce genuinely certain predictions. Second, <strong>rich, tiered feedback</strong> — especially the strong signal on high-conviction errors — helps the reflection LLM write targeted disambiguation rules instead of generic corrections. The combination produces prompts that are both more accurate and more robust across classes.</p>
+<p>For practitioners using GEPA for classification tasks with structured output, ConfidenceAdapter is a direct upgrade: same API surface, same budget, better results — particularly when categories are ambiguous or confusable.</p>
+<p><strong>Getting started:</strong></p>
+<ul>
+<li><a href="../../../../../guides/confidence-adapter/">Confidence-Aware Classification Guide</a> — step-by-step usage guide with code examples</li>
+<li><a href="../../../../../api/adapters/ConfidenceAdapter/">ConfidenceAdapter API Reference</a> — full parameter documentation</li>
+<li><a href="../../../../../tutorials/confidence_adapter_classification/">Hands-on AG News Tutorial Notebook</a> — compare <code>DefaultAdapter</code> and <code>ConfidenceAdapter</code> end-to-end and inspect confidence plots</li>
+<li><a href="https://github.com/gepa-ai/gepa/tree/main/examples/confidence_adapter">Reproducible experiment script</a> — the code and data used in this benchmark</li>
+</ul>
+            
+        </div>
+    </article>
+</div>
+
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+        
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../../02/18/automatically-learning-skills-for-coding-agents/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Automatically Learning Skills for Coding Agents">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Automatically Learning Skills for Coding Agents
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../../04/09/gepa-at-scale-with-combee/" class="md-footer__link md-footer__link--next" aria-label="Next: Scaling GEPA with Combee: Parallel Prompt Learning for Self-Improving Agents">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Scaling GEPA with Combee: Parallel Prompt Learning for Self-Improving Agents
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2026 <a href="https://github.com/gepa-ai" target="_blank" rel="noopener">GEPA</a>
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/gepa-ai/gepa" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://discord.gg/WXFSeVGdbW" target="_blank" rel="noopener" title="discord.gg" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://join.slack.com/t/gepa-ai/shared_invite/zt-3o352xhyf-QZDfwmMpiQjsvoSYo7M1_w" target="_blank" rel="noopener" title="join.slack.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M94.1 315.1c0 25.9-21.2 47.1-47.1 47.1S0 341 0 315.1 21.2 268 47.1 268h47.1v47.1zm23.7 0c0-25.9 21.2-47.1 47.1-47.1s47.1 21.2 47.1 47.1v117.8c0 25.9-21.2 47.1-47.1 47.1s-47.1-21.2-47.1-47.1zm47.1-189c-25.9 0-47.1-21.2-47.1-47.1s21.2-47 47.1-47S212 53.2 212 79.1v47.1h-47.1zm0 23.7c25.9 0 47.1 21.2 47.1 47.1S190.8 244 164.9 244H47.1C21.2 244 0 222.8 0 196.9s21.2-47.1 47.1-47.1zm189 47.1c0-25.9 21.2-47.1 47.1-47.1s47 21.2 47 47.1-21.2 47.1-47.1 47.1h-47.1v-47.1zm-23.7 0c0 25.9-21.2 47.1-47.1 47.1S236 222.8 236 196.9V79.1c0-25.9 21.2-47.1 47.1-47.1s47.1 21.2 47.1 47.1zm-47.1 189c25.9 0 47.1 21.2 47.1 47.1s-21.2 47-47.1 47-47.1-21.2-47.1-47.1v-47.1h47.1zm0-23.7c-25.9 0-47.1-21.2-47.1-47.1s21.2-47.1 47.1-47.1h117.8c25.9 0 47.1 21.2 47.1 47.1s-21.2 47.1-47.1 47.1z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://x.com/LakshyAAAgrawal" target="_blank" rel="noopener" title="x.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M357.2 48h70.6L273.6 224.2 455 464H313L201.7 318.6 74.5 464H3.8l164.9-188.5L-5.2 48h145.6l100.5 132.9zm-24.8 373.8h39.1L119.1 88h-42z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.tabs", "navigation.path", "navigation.indexes", "navigation.expand", "toc.follow", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy", "navigation.footer", "content.action.edit"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../../../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../../../../../javascripts/details-anchor.js"></script>
+      
+        <script src="../../../../../javascripts/toc-drawer.js"></script>
+      
+    
+  </body>
+</html>
