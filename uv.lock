@@ -682,6 +682,7 @@ dependencies = [
     { name = "pystemmer" },
     { name = "scipy" },
     { name = "syllapy" },
+    { name = "tenacity" },
 ]
 
 [package.optional-dependencies]
@@ -711,6 +712,7 @@ requires-dist = [
     { name = "scipy", specifier = ">=1.18.0" },
     { name = "swebench", marker = "extra == 'swebench'", specifier = "==4.1.0" },
     { name = "syllapy", specifier = ">=0.8.0" },
+    { name = "tenacity", specifier = ">=8.0" },
 ]
 provides-extras = ["swebench"]
 

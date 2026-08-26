@@ -9,6 +9,9 @@ dependencies = [
     # gepa is pinned to the exact baseline release; see docs/findings/phase0-gepa-pin.md
     "gepa==0.1.4",
     "litellm>=1.95.0",
+    # litellm imports tenacity lazily inside its retry wrapper; without this
+    # pin, reflection fails at runtime with a bare ImportError.
+    "tenacity>=8.0",
     # HotpotQA retrieval: local BM25 over the 2017 Wikipedia abstracts corpus,
     # matching the retrieval backend the published GEPA/DSPy programs use.
     "bm25s>=0.2.0",
