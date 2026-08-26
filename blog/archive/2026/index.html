@@ -5198,30 +5198,62 @@
 </details>
 <h4 id="one-paired-trace-confidence-versus-grounding"><a class="toclink" href="../../2026/08/18/named-failure-modes/#one-paired-trace-confidence-versus-grounding">One paired trace: confidence versus grounding</a></h4>
 <p>A paired trace comparison from HotpotQA seed 1 illustrates how the information presented to reflection differed. Both arms rewrote the same component from the same seed text at the same transition. The starting instruction for <code>summarize1</code> was the DSPy default:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Given the fields question, passages, produce the fields summary.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Given the fields question, passages, produce the fields summary.
 </code></pre></div>
 <p>The baseline arm, with no diagnoses, rewrote toward confidence:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Directly answer the question... Do not hedge or say the answer cannot be
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>determined if you can reasonably infer it from context or general knowledge
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>combined with the passages.
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>...
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>Do not over-qualify: Avoid adding unnecessary caveats about what passages
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>do or don't contain.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>Directly answer the question... Do not hedge or say the answer cannot be
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>determined if you can reasonably infer it from context or general knowledge
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>combined with the passages.
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>...
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>Do not over-qualify: Avoid adding unnecessary caveats about what passages
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>do or don't contain.
 </code></pre></div>
 <p>At the same transition, the taxonomy arm saw the failure modes <code>Spurious_Fact_Introduced_At_Summarization</code> and <code>Dual_Summary_Aggregation_Failure</code> in the reflection minibatch. It instead rewrote toward grounding:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Ground every claim strictly in the provided passages: Do NOT introduce any
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>facts, inferences, or details that are not explicitly stated in the passages.
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>...
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>Do not add colloquial nicknames, historical context, or additional facts
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>unless they are directly quoted or stated in one of the provided passages.
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>...
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>Key Principle ... When in doubt, omit rather than invent.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>Ground every claim strictly in the provided passages: Do NOT introduce any
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>facts, inferences, or details that are not explicitly stated in the passages.
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>...
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>Do not add colloquial nicknames, historical context, or additional facts
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>unless they are directly quoted or stated in one of the provided passages.
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>...
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>Key Principle ... When in doubt, omit rather than invent.
 </code></pre></div>
 <p>Same component, same starting text, same step of the search, opposite conclusions: the baseline moves toward confidence, while the taxonomy arm moves toward grounding. This paired trace is illustrative rather than a causal attribution to a single label, but it shows the concrete distinction between the information available to the two reflection calls. On this benchmark, the judge's most frequently assigned code is the introduction of unsupported facts during summarization.</p>
 <p>The evidence span also aligns closely with the rewrite. For that run, the judge attached <code>Spurious_Fact_Introduced_At_Summarization</code> to <code>summarize1</code> with the evidence "Kapolei is colloquially known as being part of the leeward coast of Oahu." The rewritten prompt targets the behavior down to the word <em>colloquially</em>.</p>
 <h3 id="integration-point"><a class="toclink" href="../../2026/08/18/named-failure-modes/#integration-point">Integration point</a></h3>
 <p>The integration sits inside GEPA's reflective proposal path rather than inside a task adapter. After the adapter creates its ordinary reflection records for the current minibatch, an optional reviewer examines the captured trajectories and adds the process report before GEPA requests a revision. The adapter remains the same object throughout, so existing DSPy, LangChain, OpenAI, and custom adapter behavior is unchanged.</p>
 <p>Taxonomy generation remains a separate preparation phase. A single launcher can harvest the seed program's traces, generate and freeze the taxonomy, and then start optimization without human intervention, but the GEPA run begins only after the taxonomy artifact has been written. During optimization, the reviewer uses the same model configured for reflection.</p>
+<h4 id="using-the-hook"><a class="toclink" href="../../2026/08/18/named-failure-modes/#using-the-hook">Using the hook</a></h4>
+<p>The integration is one optional argument on <code>gepa.optimize</code>. The enricher receives the candidate, the captured evaluation batch, the components under revision, and the adapter's reflective dataset, and returns the enriched dataset:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gepa</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">failure_taxonomy</span><span class="w"> </span><span class="kn">import</span> <span class="n">LLMFailureJudge</span><span class="p">,</span> <span class="n">TaxonomyFeedbackEnricher</span><span class="p">,</span> <span class="n">load_taxonomy</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">taxonomy</span> <span class="o">=</span> <span class="n">load_taxonomy</span><span class="p">(</span><span class="s2">"results/taxonomy/hover-auto-v1/taxonomy.json"</span><span class="p">)</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="n">enricher</span> <span class="o">=</span> <span class="n">TaxonomyFeedbackEnricher</span><span class="p">(</span><span class="n">judge</span><span class="o">=</span><span class="n">LLMFailureJudge</span><span class="p">(</span><span class="n">taxonomy</span><span class="o">=</span><span class="n">taxonomy</span><span class="p">,</span> <span class="n">lm</span><span class="o">=</span><span class="n">reflection_lm</span><span class="p">))</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="n">result</span> <span class="o">=</span> <span class="n">gepa</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>    <span class="n">seed_candidate</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>    <span class="n">adapter</span><span class="o">=</span><span class="n">my_adapter</span><span class="p">,</span>  <span class="c1"># DSPy, LangChain, OpenAI, or custom, unchanged</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>    <span class="n">trainset</span><span class="o">=</span><span class="n">trainset</span><span class="p">,</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>    <span class="n">valset</span><span class="o">=</span><span class="n">valset</span><span class="p">,</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>    <span class="n">reflection_lm</span><span class="o">=</span><span class="n">reflection_lm</span><span class="p">,</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>    <span class="n">reflective_dataset_enricher</span><span class="o">=</span><span class="n">enricher</span><span class="p">,</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="p">)</span>
+</code></pre></div>
+<p>Each diagnosed example gains a single <code>failure_modes</code> field naming the fired codes and their evidence spans. Everything else in the reflective dataset is exactly what the adapter produced, and leaving the argument out gives ordinary GEPA.</p>
+<h4 id="setup"><a class="toclink" href="../../2026/08/18/named-failure-modes/#setup">Setup</a></h4>
+<p>The integration, the pipeline, and the experiment scripts live in the <a href="https://github.com/AndreiBerkeley/gepa-named-failure-modes">companion repository</a>. The optimizer-side hook is a small additive patch against GEPA v0.1.4, kept in <code>patches/</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/AndreiBerkeley/gepa-named-failure-modes.git
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nb">cd</span><span class="w"> </span>gepa-named-failure-modes
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>uv<span class="w"> </span>sync
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>git<span class="w"> </span>clone<span class="w"> </span>--branch<span class="w"> </span>v0.1.4<span class="w"> </span>https://github.com/gepa-ai/gepa.git<span class="w"> </span>../gepa-taxonomy-hook
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>git<span class="w"> </span>-C<span class="w"> </span>../gepa-taxonomy-hook<span class="w"> </span>apply<span class="w"> </span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">/patches/gepa-reflective-dataset-enricher.patch"</span>
+</code></pre></div>
+<p>One command then runs the full treatment workflow for a benchmark. It evaluates the base program on the held-out validation split, saves the captured traces, generates and freezes the taxonomy, and starts taxonomy-conditioned GEPA:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>uv<span class="w"> </span>run<span class="w"> </span>gepa-taxonomy<span class="w"> </span>hover<span class="w"> </span>--seed<span class="w"> </span><span class="m">1</span><span class="w"> </span>--budget<span class="w"> </span><span class="m">60</span><span class="w"> </span>--gepa-root<span class="w"> </span>../gepa-taxonomy-hook
+</code></pre></div>
+<p>Bring an existing taxonomy with <code>--taxonomy path/to/taxonomy.json</code> to skip preparation, or pass <code>--dry-run</code> to print every phase without making a model call. The supported benchmarks are <code>hotpotqa</code>, <code>ifbench</code>, <code>hover</code>, <code>livebench-math</code>, and <code>appworld</code>.</p>
 <h3 id="next-steps"><a class="toclink" href="../../2026/08/18/named-failure-modes/#next-steps">Next steps</a></h3>
 <p>A natural next step is to test whether structured diagnoses can replace, rather than augment, the evaluator used during optimization. We are exploring whether the taxonomy judge can serve both as the source of reflective feedback and as the rubric for ranking and accepting candidates, without exposing gold labels or manually authored correctness feedback anywhere in the optimization loop. If successful, this would make GEPA applicable to settings where reliable gold feedback is expensive, unavailable, or impossible to construct. Early results are promising, but the procedure still requires refinement and broader evaluation, particularly on tasks where gold feedback is unavailable during optimization.</p>
 <div class="footnote">
