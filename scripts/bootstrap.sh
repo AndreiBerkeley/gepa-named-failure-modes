@@ -36,7 +36,7 @@ if [ ! -d "$ADAMAST" ]; then
     https://github.com/multi-agent-systems-failure-taxonomy/AdaMAST.git "$ADAMAST"
 fi
 if [ ! -x "$ADAMAST/.venv/bin/python" ]; then
-  (cd "$ADAMAST" && uv venv --python 3.12 && uv pip install -e ".[bedrock]")
+  (cd "$ADAMAST" && uv venv --python 3.12 && uv pip install -e ".[bedrock,google]")
   echo "    AdaMAST environment built"
 else
   echo "    AdaMAST environment already present"

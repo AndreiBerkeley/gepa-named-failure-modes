@@ -60,7 +60,7 @@ baseline seeds run from. One-time setup:
 
 ```bash
 git clone --branch agent/baseline-taxonomy-generation https://github.com/multi-agent-systems-failure-taxonomy/AdaMAST.git ../adamast-public
-cd ../adamast-public && uv venv --python 3.12 && uv pip install -e ".[bedrock]"
+cd ../adamast-public && uv venv --python 3.12 && uv pip install -e ".[bedrock,google]"
 ```
 
 The `[bedrock]` extra is required; without it AdaMAST imports cleanly and then
