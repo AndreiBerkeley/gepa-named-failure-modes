@@ -29,6 +29,7 @@ from typing import Any
 
 from failure_taxonomy.cache import candidate_key
 from failure_taxonomy.judge import FailureJudge, Occurrence
+from failure_taxonomy.reduce import assert_generation_disjoint
 from failure_taxonomy.trace import build_trace
 
 #: Key added to reflective-dataset examples. The single point of difference
@@ -88,6 +89,10 @@ class TaxonomyFeedbackEnricher:
         "no failure mode applies" becomes an answer it is never able to give.
         """
         traces = [build_trace(traj, trace_id=self._trace_id(traj, index)) for index, traj in enumerate(trajectories)]
+        generation_ids = getattr(self.judge, "taxonomy", None)
+        generation_ids = getattr(generation_ids, "generation_trace_ids", frozenset())
+        if generation_ids:
+            assert_generation_disjoint(generation_ids, [t.trace_id for t in traces], context="minibatch")
         if not any(t.is_segmented for t in traces):
             self._warn(
                 "no trajectory exposes 'module_calls'; judging whole trajectories and "

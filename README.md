@@ -70,12 +70,19 @@ independent discovery and voting calls concurrently instead of serially,
 roughly a 4x speedup of the agreement rounds. Runs that bring an existing taxonomy via
 `--taxonomy` never touch AdaMAST.
 
-Generation defaults to the study's quality controls: the drafting prompt
-demands trace evidence for every failure mode (no stock failure-type list),
-and the deduplicated taxonomy is capped at 25 codes. Both are overridable
-(`--no-trace-grounded`, `--max-codes 0`), but loosening them is how
-inapplicable codes and overlapping near-duplicates enter the taxonomy and
-sink the agreement gate.
+Generation runs stock AdaMAST, with no caps and no prompt overrides; quality
+control happens afterwards, from evidence. The pipeline judges the generated
+taxonomy over its own generation corpus (a billed pass on the same model as
+generation), measures each code's support as the number of distinct traces
+citing it, drops codes below `--min-support` (default 2), and applies
+`--max-codes` (default 25) only as a safety net by support ranking. Every
+generated code is accounted for in `reduction_report.json` as retained,
+ungrounded, or over cap; the full draft survives as `taxonomy.full.json`, so
+changing thresholds is an offline re-run of `scripts/reduce_taxonomy.py` over
+stored artifacts, never another billed generation. The reduced taxonomy also
+records its generation trace ids, and the enricher refuses at run time to
+diagnose an instance the taxonomy was generated from: freeze discipline is
+asserted in code, not by convention.
 
 ## Stage boundaries
 

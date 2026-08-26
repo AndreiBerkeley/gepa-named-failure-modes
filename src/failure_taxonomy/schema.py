@@ -89,6 +89,10 @@ class Taxonomy:
     codes: tuple[FailureCode, ...]
     fingerprint: str
     source: str | None = None
+    #: Trace ids of the generation corpus, when the file records them (written
+    #: by evidence-based reduction). Consumers use this to assert, in code, that
+    #: the taxonomy never scores a trace it was generated from.
+    generation_trace_ids: frozenset[str] = frozenset()
 
     def __post_init__(self) -> None:
         if not self.codes:
@@ -195,4 +199,8 @@ def load_taxonomy(path: str | Path) -> Taxonomy:
         raise TaxonomyError(f"taxonomy file not found: {p}") from exc
     except json.JSONDecodeError as exc:
         raise TaxonomyError(f"taxonomy {p} is not valid JSON: {exc}") from exc
-    return Taxonomy.from_codes(_codes_from_document(document), source=str(p))
+    taxonomy = Taxonomy.from_codes(_codes_from_document(document), source=str(p))
+    source_ids = (document.get("reduction") or {}).get("source_trace_ids") or ()
+    if source_ids:
+        object.__setattr__(taxonomy, "generation_trace_ids", frozenset(str(i) for i in source_ids))
+    return taxonomy

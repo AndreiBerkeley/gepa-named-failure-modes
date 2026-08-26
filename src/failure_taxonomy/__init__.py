@@ -19,6 +19,13 @@ from failure_taxonomy.cache import JudgeCache, candidate_key
 from failure_taxonomy.enricher import FAILURE_MODES_KEY, TaxonomyFeedbackEnricher
 from failure_taxonomy.generation import harvest_traces, trace_report, write_generation_traces
 from failure_taxonomy.judge import GENERAL, FailureJudge, LLMFailureJudge, Occurrence
+from failure_taxonomy.reduce import (
+    FrozenTraceLeakError,
+    ReductionResult,
+    assert_generation_disjoint,
+    measure_support,
+    reduce_taxonomy,
+)
 from failure_taxonomy.schema import FailureCode, Taxonomy, TaxonomyError, load_taxonomy
 from failure_taxonomy.trace import ComponentCall, SegmentedTrace, build_trace, extract_calls
 
@@ -28,18 +35,23 @@ __all__ = [
     "ComponentCall",
     "FailureCode",
     "FailureJudge",
+    "FrozenTraceLeakError",
     "JudgeCache",
     "LLMFailureJudge",
     "Occurrence",
+    "ReductionResult",
     "SegmentedTrace",
     "Taxonomy",
     "TaxonomyError",
     "TaxonomyFeedbackEnricher",
+    "assert_generation_disjoint",
     "build_trace",
     "candidate_key",
     "extract_calls",
     "harvest_traces",
     "load_taxonomy",
+    "measure_support",
+    "reduce_taxonomy",
     "trace_report",
     "write_generation_traces",
 ]

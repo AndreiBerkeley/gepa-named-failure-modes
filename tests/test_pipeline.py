@@ -30,11 +30,15 @@ def test_dry_run_orders_prepare_then_optimize(tmp_path, monkeypatch):
     assert [Path(command[1]).name for command in commands] == [
         "build_hotpotqa_base_val.py",
         "generate_taxonomy.py",
+        "judge_corpus.py",
+        "reduce_taxonomy.py",
         "run_hotpotqa_seed.py",
     ]
     generation = commands[1]
-    run = commands[2]
+    corpus_judge = commands[2]
+    run = commands[-1]
     assert generation[generation.index("--model") + 1] == "us.anthropic.claude-sonnet-4-6"
+    assert corpus_judge[corpus_judge.index("--model") + 1] == "us.anthropic.claude-sonnet-4-6"
     assert run[run.index("--reflection-model") + 1] == "us.anthropic.claude-sonnet-4-6"
 
 

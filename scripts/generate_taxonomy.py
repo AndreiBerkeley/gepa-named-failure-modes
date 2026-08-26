@@ -44,51 +44,15 @@ ADAMAST_PYTHON = next(
     ADAMAST_ROOT / ".venv" / "bin" / "python",
 )
 
-#: Replaces AdaMAST's ``A_FAILURE_CATEGORIES`` when --trace-grounded is passed.
-#:
-#: The stock block enumerates generic failure categories for the model to
-#: "consider" -- including "EXECUTION ERRORS: timeouts, crashes, API errors,
-#: rate limiting, resource exhaustion". That is a prior, not an observation, and
-#: it is exactly where HotpotQA's ``Process_Crash_From_Memory_Exhaustion`` came
-#: from: a four-LLM-call pipeline has no process to crash, but the prompt invited
-#: the category and the model supplied a code for it (F055).
-#:
-#: This replacement removes the enumeration and requires evidence. It cannot stop
-#: a model inventing, but it stops us *suggesting*.
-TRACE_GROUNDED_A = """
-When generating Category A (System Failure) codes, work ONLY from what the traces
-actually show. Do not work from a list of failure types that systems in general
-might exhibit.
-
-Rules:
-- Every code MUST correspond to a failure you can point to in at least one trace.
-  If you cannot quote the trace text that demonstrates it, do not emit the code.
-- Do NOT propose codes for failure modes this architecture cannot exhibit. A
-  system with no process to crash cannot crash; a fixed-length pipeline cannot
-  loop; a system with no tool calls cannot have tool errors.
-- Prefer FEWER, broader codes over many narrow ones. Two codes that a judge
-  reading a trace could not reliably tell apart are one code.
-- Name what went wrong, not what category it belongs to.
-"""
-
 WORKER = """
 import json, sys
 from adamast import generate_taxonomy, load_trace_bundle
 
 req = json.load(sys.stdin)
 
-# Applied BEFORE generation. Both are module-level knobs AdaMAST's own CLI sets,
-# so this changes configuration rather than patching behaviour -- the sibling
-# checkout stays pristine and the deviation is recorded in provenance.json.
-if req.get("max_codes"):
-    from adamast.pipeline.draft import Config as DraftConfig
-    DraftConfig.MAX_CODES = int(req["max_codes"])
-    print(f"MAX_CODES capped at {req['max_codes']}", file=sys.stderr, flush=True)
-
-if req.get("trace_grounded_a"):
-    import adamast.pipeline.draft as _draft
-    _draft.A_FAILURE_CATEGORIES = req["trace_grounded_a"]
-    print("A-category prompt replaced with the trace-grounded variant", file=sys.stderr, flush=True)
+# Stock configuration on purpose: reduction happens AFTER generation, from
+# measured trace support (scripts/reduce_taxonomy.py), never by asking the
+# generator to compress into a count it has no evidence for.
 
 bundle = load_trace_bundle(req["traces"])
 report = bundle.report()
@@ -127,24 +91,6 @@ def main() -> int:
     parser.add_argument("--max-output-tokens", type=int, default=8192)
     parser.add_argument("--aws-region", default="us-east-1")
     parser.add_argument(
-        "--max-codes",
-        type=int,
-        default=25,
-        help="cap total codes after dedup (default 25; 0 = AdaMAST's default, uncapped). "
-        "IFBench generated 43 codes with 38 overlapping pairs and FAILED AdaMAST's "
-        "own acceptance gate at kappa 0.472; HotpotQA passed at 28 (F059). More "
-        "codes buys less agreement, so capping is the first lever to try.",
-    )
-    parser.add_argument(
-        "--trace-grounded",
-        action=argparse.BooleanOptionalAction,
-        default=True,
-        help="replace the Category A prompt's enumerated failure-type list with one "
-        "that demands trace evidence per code. The stock list invites categories the "
-        "architecture cannot exhibit -- it is where Process_Crash_From_Memory_Exhaustion "
-        "came from on a pipeline with no process to crash (F055).",
-    )
-    parser.add_argument(
         "--idle-timeout",
         type=float,
         default=1800,
@@ -163,7 +109,7 @@ def main() -> int:
             "Clone and install it as a sibling (D047):\n"
             "  git clone --branch agent/baseline-taxonomy-generation "
             "https://github.com/multi-agent-systems-failure-taxonomy/AdaMAST.git ../adamast-public\n"
-            '  cd ../adamast-public && uv venv --python 3.12 && uv pip install -e ".[bedrock]"\n'
+            '  cd ../adamast-public && uv venv --python 3.12 && uv pip install -e ".[bedrock,google]"\n'
             "The [bedrock] extra is REQUIRED. Without it AdaMAST imports cleanly and then\n"
             "raises ProviderConfigurationError on the first provider call -- AFTER trace\n"
             "validation has already passed, so the failure looks like a data problem."
@@ -193,14 +139,12 @@ def main() -> int:
         "coverage_floor": args.coverage_floor,
         "max_output_tokens": args.max_output_tokens,
         "aws_region": args.aws_region,
-        "max_codes": args.max_codes,
-        "trace_grounded_a": TRACE_GROUNDED_A if args.trace_grounded else None,
     }
 
     print(f"AdaMAST : {ADAMAST_ROOT} @ {provenance[:12]}")
     print(f"traces  : {args.traces}")
     print(f"model   : {args.model}  kappa>={args.kappa_target}  rounds<={args.max_rounds}")
-    print(f"deviations: max_codes={args.max_codes or 'uncapped'}  trace_grounded_a={args.trace_grounded}")
+    print("configuration: stock AdaMAST; reduction happens after generation from measured support")
     print("generating; streaming AdaMAST progress ...", flush=True)
 
     # Stream the worker's output live, so every draft step and agreement round

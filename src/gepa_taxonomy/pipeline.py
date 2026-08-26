@@ -90,6 +90,18 @@ def _parser() -> argparse.ArgumentParser:
         help="existing taxonomy.json; skips trace harvest and taxonomy generation",
     )
     parser.add_argument(
+        "--min-support",
+        type=int,
+        default=2,
+        help="reduction: drop codes cited in fewer distinct generation traces than this",
+    )
+    parser.add_argument(
+        "--max-codes",
+        type=int,
+        default=25,
+        help="reduction safety net applied after --min-support, by support ranking",
+    )
+    parser.add_argument(
         "--taxonomy-version",
         default="auto-v1",
         help="artifact directory name for a newly generated taxonomy",
@@ -170,6 +182,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         else:
             print(f"\nreuse traces: {traces}")
 
+        provider, bare_model = _adamast_model(args.reflection_model)
         if not taxonomy_path.exists():
             command = [
                 python,
@@ -179,13 +192,59 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "--out",
                 str(taxonomy_dir),
                 "--model",
-                _adamast_model(args.reflection_model)[1],
+                bare_model,
                 "--provider",
-                _adamast_model(args.reflection_model)[0],
+                provider,
             ]
             if args.adamast_python:
                 command.extend(["--adamast-python", str(args.adamast_python.resolve())])
             _run(command, dry_run=args.dry_run, pythonpath=pythonpath)
+
+        # Reduction: generation ran stock, so the frozen artifact is produced
+        # here, from measured support. Idempotent: a reduced taxonomy carries a
+        # "reduction" marker and is reused as-is.
+        if taxonomy_path.exists():
+            needs_reduction = "reduction" not in json.loads(taxonomy_path.read_text(encoding="utf-8-sig"))
+        else:
+            needs_reduction = True  # dry run: generation wrote nothing; show the full plan
+        if needs_reduction:
+            judgements = taxonomy_dir / "judgements.jsonl"
+            if not judgements.exists():
+                command = [
+                    python,
+                    str(REPO / "scripts" / "judge_corpus.py"),
+                    "--taxonomy",
+                    str(taxonomy_path),
+                    "--traces",
+                    str(traces),
+                    "--out",
+                    str(judgements),
+                    "--model",
+                    bare_model,
+                    "--provider",
+                    provider,
+                    "--workers",
+                    str(args.workers),
+                ]
+                if args.adamast_python:
+                    command.extend(["--adamast-python", str(args.adamast_python.resolve())])
+                _run(command, dry_run=args.dry_run, pythonpath=pythonpath)
+            _run(
+                [
+                    python,
+                    str(REPO / "scripts" / "reduce_taxonomy.py"),
+                    "--taxonomy",
+                    str(taxonomy_path),
+                    "--judgements",
+                    str(judgements),
+                    "--min-support",
+                    str(args.min_support),
+                    "--max-codes",
+                    str(args.max_codes),
+                ],
+                dry_run=args.dry_run,
+                pythonpath=pythonpath,
+            )
         else:
             print(f"reuse taxonomy: {taxonomy_path}")
     elif not taxonomy_path.exists() and not args.dry_run:
