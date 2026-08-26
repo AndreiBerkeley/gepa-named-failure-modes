@@ -39,6 +39,24 @@ evaluation actually runs:
 uv sync --extra swebench
 ```
 
+## Taxonomy generation requires AdaMAST
+
+Stage 4 (generating a taxonomy from traces) shells out to the public
+[AdaMAST](https://github.com/multi-agent-systems-failure-taxonomy/AdaMAST)
+pipeline, running in its own sibling checkout with its own interpreter. It is
+deliberately not a dependency of this project: it pins its own `openai` and
+`pydantic` floors, and installing it here would re-resolve the environment the
+baseline seeds run from. One-time setup:
+
+```bash
+git clone --branch agent/baseline-taxonomy-generation https://github.com/multi-agent-systems-failure-taxonomy/AdaMAST.git ../adamast-public
+cd ../adamast-public && uv venv --python 3.12 && uv pip install -e ".[bedrock]"
+```
+
+The `[bedrock]` extra is required; without it AdaMAST imports cleanly and then
+fails on its first provider call. Runs that bring an existing taxonomy via
+`--taxonomy` never touch AdaMAST.
+
 ## Stage boundaries
 
 Every stage is standalone and communicates through a documented artifact, so a user
