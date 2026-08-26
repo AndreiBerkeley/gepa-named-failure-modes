@@ -52,6 +52,4 @@ echo "==> [4/4] offline checks (free, no model calls)"
 PYTHONPATH="$HOOK/src" uv run pytest -q
 uv run gepa-taxonomy hotpotqa --seed 1 --budget 1 --gepa-root "$HOOK" --dry-run >/dev/null
 echo
-echo "bootstrap complete. Billed runs need credentials for whichever provider"
-echo "your model ids route to: AWS_BEARER_TOKEN_BEDROCK for the default Bedrock"
-echo "ids, GEMINI_API_KEY for gemini/-prefixed ids."
+echo "bootstrap complete."
