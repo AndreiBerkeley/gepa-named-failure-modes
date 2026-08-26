@@ -113,6 +113,13 @@ def main() -> int:
 
     if not results:
         raise SystemExit("every judge call failed; no judgements to write")
+    coverage = len(results) / len(rows)
+    if coverage < 0.9:
+        raise SystemExit(
+            f"REFUSING: only {len(results)}/{len(rows)} traces were judged "
+            f"({coverage:.0%}). Support measured from a heavily partial judging "
+            "pass would silently bias the reduction; fix the failures and rerun."
+        )
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     with args.out.open("w", encoding="utf-8") as fh:

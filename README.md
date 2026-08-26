@@ -134,7 +134,7 @@ on Gemini, harvest plus taxonomy generation, is therefore one command with two
 model settings:
 
 ```bash
-uv run gepa-taxonomy ifbench --seed 1 --budget 2 --solver-model gemini/gemini-3-flash-preview --reflection-model gemini/gemini-3-flash-preview --prepare-only
+uv run gepa-taxonomy ifbench --seed 1 --budget 2 --solver-model gemini/gemini-2.5-flash-lite --reflection-model gemini/gemini-3.5-flash --prepare-only
 ```
 
 Use `--dry-run` to print all phases without making calls or writing artifacts.
