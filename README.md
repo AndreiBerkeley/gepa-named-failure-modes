@@ -109,6 +109,17 @@ Bring an existing taxonomy to skip preparation entirely:
 uv run gepa-taxonomy hotpotqa --seed 1 --budget 60 --taxonomy path/to/taxonomy.json
 ```
 
+Model ids are litellm ids. A bare id is pinned to Bedrock (the study
+configuration); an explicit provider prefix routes there deliberately, and
+taxonomy generation maps the prefix to the matching AdaMAST provider
+automatically (`gemini/` becomes `google`). A complete from-zero preparation
+on Gemini, harvest plus taxonomy generation, is therefore one command with two
+model settings:
+
+```bash
+uv run gepa-taxonomy ifbench --seed 1 --budget 2 --solver-model gemini/gemini-3-flash-preview --reflection-model gemini/gemini-3-flash-preview --prepare-only
+```
+
 Use `--dry-run` to print all phases without making calls or writing artifacts.
 The supported benchmarks are `hotpotqa`, `ifbench`, `hover`, `livebench-math`,
 and `appworld`.

@@ -53,16 +53,22 @@ def test_prefix_is_idempotent():
     assert once.count(BEDROCK_PREFIX) == 1
 
 
-def test_rejects_direct_anthropic_routing():
-    """The core guard: an id that would hit api.anthropic.com is a hard error."""
-    for bad in ("anthropic/claude-sonnet-5", "claude-sonnet-5", "openai/gpt-4"):
+def test_rejects_bare_non_bedrock_ids():
+    """The core guard: a bare id that is not a Bedrock Anthropic id is a hard error."""
+    for bad in ("claude-sonnet-5", "gpt-4", "gemini-2.5-flash"):
         with pytest.raises(RoutingError):
             bedrock_model_id(bad)
 
 
-def test_rejects_other_provider_prefixes():
+def test_explicit_provider_prefix_passes_through():
+    """An explicit prefix is a deliberate routing choice and reaches litellm verbatim."""
+    for model in ("gemini/gemini-2.5-flash", "openai/gpt-4", "anthropic/claude-sonnet-5"):
+        assert bedrock_model_id(model) == model
+
+
+def test_rejects_prefix_nested_inside_bedrock():
     with pytest.raises(RoutingError):
-        bedrock_model_id("vertex_ai/claude-sonnet-5")
+        bedrock_model_id("bedrock/openai/gpt-4")
 
 
 def test_litellm_resolves_prefixed_ids_to_bedrock():
@@ -73,7 +79,7 @@ def test_litellm_resolves_prefixed_ids_to_bedrock():
         assert provider == "bedrock", f"{model} resolved to {provider!r}, not bedrock"
 
 
-@pytest.mark.parametrize("bare_name", ["claude-sonnet-5", "claude-haiku-4-5", "anthropic/claude-sonnet-5"])
+@pytest.mark.parametrize("bare_name", ["claude-sonnet-5", "claude-haiku-4-5"])
 def test_bare_model_names_would_bypass_bedrock(bare_name):
     """Demonstrates *why* the routing guard exists.
 

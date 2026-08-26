@@ -57,6 +57,28 @@ def _run(command: list[str], *, dry_run: bool, pythonpath: str | None = None) ->
     subprocess.run(command, cwd=REPO, env=environment, check=True)
 
 
+ADAMAST_PROVIDER_BY_PREFIX = {
+    "bedrock": "bedrock",
+    "gemini": "google",
+    "openai": "openai",
+    "anthropic": "anthropic",
+}
+
+
+def _adamast_model(reflection_model: str) -> tuple[str, str]:
+    """Map a litellm reflection-model id to AdaMAST's (provider, model)."""
+    if "/" in reflection_model:
+        prefix, bare = reflection_model.split("/", 1)
+        provider = ADAMAST_PROVIDER_BY_PREFIX.get(prefix)
+        if provider is None:
+            known = ", ".join(sorted(ADAMAST_PROVIDER_BY_PREFIX))
+            raise SystemExit(
+                f"cannot map provider prefix {prefix!r} to an AdaMAST provider; known prefixes: {known}"
+            )
+        return provider, bare
+    return "bedrock", reflection_model
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("benchmark", choices=sorted(BENCHMARKS))
@@ -157,7 +179,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "--out",
                 str(taxonomy_dir),
                 "--model",
-                args.reflection_model,
+                _adamast_model(args.reflection_model)[1],
+                "--provider",
+                _adamast_model(args.reflection_model)[0],
             ]
             if args.adamast_python:
                 command.extend(["--adamast-python", str(args.adamast_python.resolve())])

@@ -66,13 +66,17 @@ def bedrock_model_id(model: str) -> str:
     """
     if model.startswith(BEDROCK_PREFIX):
         bare = model[len(BEDROCK_PREFIX) :]
+    elif "/" in model:
+        # An explicit provider prefix is a deliberate routing choice: litellm
+        # receives it verbatim (e.g. "gemini/..."). Only bare ids are pinned
+        # to Bedrock below, so a stray bare id still cannot reach another
+        # provider by accident.
+        return model
     else:
         bare = model
 
     if "/" in bare:
-        raise RoutingError(
-            f"model id {model!r} carries a non-Bedrock provider prefix. All calls must route to Bedrock."
-        )
+        raise RoutingError(f"model id {model!r} nests a second provider prefix inside 'bedrock/'.")
     if not any(
         bare.startswith(p)
         for p in ("anthropic.", "us.anthropic.", "global.anthropic.", "eu.anthropic.", "apac.anthropic.")
