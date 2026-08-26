@@ -207,7 +207,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             "--taxonomy",
             str(taxonomy_path),
             "--base-val-cache",
-            str(base_cache),
+            # The shared base evaluation exists only when this pipeline ran the
+            # harvest. A user bringing their own taxonomy has no cache to
+            # replay, and that is fine: the run evaluates the base program
+            # itself instead of replaying a shared measurement.
+            str(base_cache) if base_cache.exists() else "none",
             "--out",
             str(run_dir),
             "--workers",
