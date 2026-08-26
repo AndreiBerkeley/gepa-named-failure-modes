@@ -128,15 +128,16 @@ def main() -> int:
     parser.add_argument(
         "--max-codes",
         type=int,
-        default=0,
-        help="cap total codes after dedup (0 = AdaMAST's default, uncapped). "
+        default=25,
+        help="cap total codes after dedup (default 25; 0 = AdaMAST's default, uncapped). "
         "IFBench generated 43 codes with 38 overlapping pairs and FAILED AdaMAST's "
         "own acceptance gate at kappa 0.472; HotpotQA passed at 28 (F059). More "
         "codes buys less agreement, so capping is the first lever to try.",
     )
     parser.add_argument(
         "--trace-grounded",
-        action="store_true",
+        action=argparse.BooleanOptionalAction,
+        default=True,
         help="replace the Category A prompt's enumerated failure-type list with one "
         "that demands trace evidence per code. The stock list invites categories the "
         "architecture cannot exhibit -- it is where Process_Crash_From_Memory_Exhaustion "

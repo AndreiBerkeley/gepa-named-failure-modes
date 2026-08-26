@@ -67,6 +67,13 @@ The `[bedrock]` extra is required; without it AdaMAST imports cleanly and then
 fails on its first provider call. Runs that bring an existing taxonomy via
 `--taxonomy` never touch AdaMAST.
 
+Generation defaults to the study's quality controls: the drafting prompt
+demands trace evidence for every failure mode (no stock failure-type list),
+and the deduplicated taxonomy is capped at 25 codes. Both are overridable
+(`--no-trace-grounded`, `--max-codes 0`), but loosening them is how
+inapplicable codes and overlapping near-duplicates enter the taxonomy and
+sink the agreement gate.
+
 ## Stage boundaries
 
 Every stage is standalone and communicates through a documented artifact, so a user
