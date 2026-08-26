@@ -64,7 +64,10 @@ cd ../adamast-public && uv venv --python 3.12 && uv pip install -e ".[bedrock]"
 ```
 
 The `[bedrock]` extra is required; without it AdaMAST imports cleanly and then
-fails on its first provider call. Runs that bring an existing taxonomy via
+fails on its first provider call. `bootstrap.sh` also applies
+`patches/adamast-parallel-annotators.patch`, which runs the four annotators'
+independent discovery and voting calls concurrently instead of serially,
+roughly a 4x speedup of the agreement rounds. Runs that bring an existing taxonomy via
 `--taxonomy` never touch AdaMAST.
 
 Generation defaults to the study's quality controls: the drafting prompt

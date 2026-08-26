@@ -41,6 +41,12 @@ if [ ! -x "$ADAMAST/.venv/bin/python" ]; then
 else
   echo "    AdaMAST environment already present"
 fi
+if ! grep -q "_discover_one" "$ADAMAST/adamast/pipeline/agreement.py"; then
+  git -C "$ADAMAST" apply "$PWD/patches/adamast-parallel-annotators.patch"
+  echo "    parallel-annotator patch applied (4x faster agreement rounds)"
+else
+  echo "    parallel-annotator patch already present"
+fi
 
 echo "==> [4/4] offline checks (free, no model calls)"
 PYTHONPATH="$HOOK/src" uv run pytest -q

@@ -1,0 +1,76 @@
+diff --git a/adamast/pipeline/agreement.py b/adamast/pipeline/agreement.py
+index d7e8127..012595f 100644
+--- a/adamast/pipeline/agreement.py
++++ b/adamast/pipeline/agreement.py
+@@ -1010,20 +1010,28 @@ class ErrorDiscovery:
+         trace_summary = self._format_trace(parsed_trace)
+         taxonomy_summary = self._format_taxonomy_summary(taxonomy)
+ 
+-        proposals = {}
+-        for memory in self.annotator_memories:
+-            try:
+-                result = self._annotator_discover(memory, trace_summary, taxonomy_summary)
+-                proposals[memory.annotator_id] = result.get('errors', [])
++        # Annotators are independent here: each call reads shared knowledge and
++        # writes only its own memory, so the discovery calls run concurrently.
++        # Results are collected in annotator order, keeping downstream
++        # aggregation deterministic regardless of completion order.
++        def _discover_one(memory: AnnotatorMemory) -> List[Dict]:
++            result = self._annotator_discover(memory, trace_summary, taxonomy_summary)
++            memory.add_annotation(
++                parsed_trace.get('problem_id', 'unknown'),
++                "error_discovery",
++                result
++            )
++            return result.get('errors', [])
+ 
+-                memory.add_annotation(
+-                    parsed_trace.get('problem_id', 'unknown'),
+-                    "error_discovery",
+-                    result
+-                )
+-            except Exception as e:
+-                progress(f"  [!] {memory.annotator_id} discovery error: {e}")
+-                proposals[memory.annotator_id] = []
++        proposals = {}
++        with ThreadPoolExecutor(max_workers=len(self.annotator_memories)) as pool:
++            futures = [(m, pool.submit(_discover_one, m)) for m in self.annotator_memories]
++            for memory, future in futures:
++                try:
++                    proposals[memory.annotator_id] = future.result()
++                except Exception as e:
++                    progress(f"  [!] {memory.annotator_id} discovery error: {e}")
++                    proposals[memory.annotator_id] = []
+ 
+         return {
+             "proposals": proposals,
+@@ -1164,16 +1172,20 @@ class ErrorReconciliation:
+             }
+ 
+         # Step 2: Show all annotators the full list and have them vote
++        # Votes are likewise independent per annotator and run concurrently,
++        # collected in annotator order for a deterministic tally.
+         votes = {}
+-        for memory in self.annotator_memories:
+-            try:
+-                vote_result = self._annotator_vote(
+-                    memory, all_proposed_errors, proposals, parsed_trace
+-                )
+-                votes[memory.annotator_id] = vote_result
+-            except Exception as e:
+-                progress(f"  [!] {memory.annotator_id} vote error: {e}")
+-                votes[memory.annotator_id] = {"accepted": [], "rejected": []}
++        with ThreadPoolExecutor(max_workers=len(self.annotator_memories)) as pool:
++            futures = [
++                (m, pool.submit(self._annotator_vote, m, all_proposed_errors, proposals, parsed_trace))
++                for m in self.annotator_memories
++            ]
++            for memory, future in futures:
++                try:
++                    votes[memory.annotator_id] = future.result()
++                except Exception as e:
++                    progress(f"  [!] {memory.annotator_id} vote error: {e}")
++                    votes[memory.annotator_id] = {"accepted": [], "rejected": []}
+ 
+         # Step 3: Tally votes and determine agreed errors
+         agreed_errors, rejected_errors = self._tally_votes(all_proposed_errors, votes)
