@@ -77,6 +77,31 @@ uv run gepa-taxonomy ifbench --seed 1 --budget 5 --gepa-root ../gepa-taxonomy-ho
 Use `--dry-run` to print every phase without spending, and `--prepare-only`
 to stop once the taxonomy is frozen.
 
+## Using the method on your own task
+
+The demo is IFBench end to end, but the method does not depend on it. With
+your own GEPA setup (any adapter, any task), three steps apply it:
+
+1. **Harvest traces.** Run your program over a held-out split and write one
+   JSON line per rollout with `problem_id`, `task`, `raw_trajectory`, and
+   `metadata`. `failure_taxonomy.harvest_traces` and
+   `write_generation_traces` produce exactly this from GEPA trajectories.
+2. **Generate and reduce.** `scripts/generate_taxonomy.py`,
+   `scripts/judge_corpus.py`, and `scripts/reduce_taxonomy.py` consume a
+   trace file, not a benchmark; point them at your bundle and they produce a
+   frozen, evidence-reduced `taxonomy.json`.
+3. **Optimize.** In your own `gepa.optimize` call, pass
+   `reflective_dataset_enricher=TaxonomyFeedbackEnricher(judge=LLMFailureJudge(taxonomy=load_taxonomy("taxonomy.json"), lm=reflection_lm))`.
+   Your adapter is unchanged.
+
+The IFBench-named files (`src/gepa_taxonomy/ifbench/`, the build and run
+scripts, `manifests/ifbench/`) are a complete worked example of those three
+steps wired into the one-command pipeline. Copy them as a template only if
+you want the same orchestration for your benchmark: implement your program
+and grader in a new `src/gepa_taxonomy/<yours>/` package, write a split
+manifest, adapt the two scripts, and add one entry to `BENCHMARKS` in
+`pipeline.py`.
+
 ## Observability
 
 Every run writes its own audit trail into the run directory:
