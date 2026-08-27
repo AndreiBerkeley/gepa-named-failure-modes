@@ -173,6 +173,8 @@ def main() -> int:
     # on-disk record exhaustive, and the heartbeat keeps quiet phases visible.
     for _meter in (solver_meter, reflection_meter, judge_meter):
         atexit.register(_meter.flush)
+    from gepa_taxonomy.progress import report_spend
+
     report_spend((solver_meter, reflection_meter, judge_meter))
 
     program = SolveReviewProgram(
