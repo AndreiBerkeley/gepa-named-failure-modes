@@ -20,3 +20,21 @@ def report_rollouts(adapter, total: int, *, label: str = "harvest", interval: fl
 
     threading.Thread(target=_loop, daemon=True).start()
     return stop
+
+
+def report_spend(meters, *, label: str = "spend so far", interval: float = 60.0) -> threading.Event:
+    """Print total metered spend every ``interval`` seconds until stopped.
+
+    A run-long heartbeat: phases that write no log lines (the base-program
+    evaluation before iteration 0, a slow single-worker stretch) still show
+    movement, because spend always moves when rollouts do.
+    """
+    stop = threading.Event()
+
+    def _loop() -> None:
+        while not stop.wait(interval):
+            total = sum(getattr(m, "budgeted_usd", 0.0) + getattr(m, "excluded_usd", 0.0) for m in meters)
+            print(f"{label}: ${total:.3f}", flush=True)
+
+    threading.Thread(target=_loop, daemon=True).start()
+    return stop

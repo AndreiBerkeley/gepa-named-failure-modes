@@ -20,6 +20,7 @@ identical across arms. With the flag absent, no enricher or judge is constructed
 from __future__ import annotations
 
 import argparse
+import atexit
 import json
 import time
 from pathlib import Path
@@ -174,6 +175,13 @@ def main() -> int:
     solver_meter = CostMeter(spend_log=out / "spend.solver.json")
     reflection_meter = CostMeter(spend_log=out / "spend.reflection.json")
     judge_meter = CostMeter(spend_log=out / "spend.judge.json")
+
+    # Meters snapshot to disk every 25 records; a short run can end before the
+    # first snapshot, leaving spend files missing. Exit-time flush makes the
+    # on-disk record exhaustive, and the heartbeat keeps quiet phases visible.
+    for _meter in (solver_meter, reflection_meter, judge_meter):
+        atexit.register(_meter.flush)
+    report_spend((solver_meter, reflection_meter, judge_meter))
 
     program = GenerateEnsureProgram(
         lm=BedrockLM(model=args.solver_model, max_retries=args.max_retries),
