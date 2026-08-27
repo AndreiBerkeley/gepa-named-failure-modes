@@ -134,9 +134,7 @@ uv run gepa-taxonomy hotpotqa --seed 1 --budget 60 --taxonomy path/to/taxonomy.j
 Model ids are litellm ids. A bare id is pinned to Bedrock (the study
 configuration); an explicit provider prefix routes there deliberately, and
 taxonomy generation maps the prefix to the matching AdaMAST provider
-automatically (`gemini/` becomes `google`). Billed runs read the matching
-credential from the environment: `AWS_BEARER_TOKEN_BEDROCK` for Bedrock ids,
-`GEMINI_API_KEY` for `gemini/`-prefixed ids. A complete from-zero preparation
+automatically (`gemini/` becomes `google`). A complete from-zero preparation
 on Gemini, harvest plus taxonomy generation, is therefore one command with two
 model settings:
 
