@@ -32,7 +32,7 @@ DEFAULT_OUT = REPO / "results" / "ifbench_base_val"
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
-    parser.add_argument("--manifests", type=Path, default=REPO / "manifests" / "ifbench")
+    parser.add_argument("--manifests", type=Path, default=REPO / "demo" / "manifests")
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--max-tokens", type=int, default=4096)
     parser.add_argument("--solver-model", default="us.anthropic.claude-haiku-4-5-20251001-v1:0")

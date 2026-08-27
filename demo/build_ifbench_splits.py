@@ -18,7 +18,7 @@ import json
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-DEFAULT_OUT = REPO / "manifests" / "ifbench"
+DEFAULT_OUT = REPO / "demo" / "manifests"
 
 
 def main() -> int:

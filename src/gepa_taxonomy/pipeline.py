@@ -32,8 +32,10 @@ class BenchmarkPipeline:
     base_dir_name: str
 
 
+#: Stage scripts live where the benchmark does: generic stages in scripts/,
+#: each benchmark's harvest and run in its own demo/template directory.
 BENCHMARKS = {
-    "ifbench": BenchmarkPipeline("build_ifbench_base_val.py", "run_ifbench_seed.py", "ifbench_base_val"),
+    "ifbench": BenchmarkPipeline("demo/build_ifbench_base_val.py", "demo/run_ifbench_seed.py", "ifbench_base_val"),
 }
 
 
@@ -160,7 +162,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             _run(
                 [
                     python,
-                    str(REPO / "scripts" / pipeline.build_script),
+                    str(REPO / pipeline.build_script),
                     "--out",
                     str(base_dir),
                     "--workers",
@@ -252,7 +254,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         run_dir = results / "runs" / f"{args.benchmark}-taxonomy-seed{seed}"
         command = [
             python,
-            str(REPO / "scripts" / pipeline.run_script),
+            str(REPO / pipeline.run_script),
             "--seed",
             str(seed),
             "--budget",

@@ -73,7 +73,7 @@ def main() -> int:
         "mostly binary and a small minibatch ties often -- and a tie is a wasted "
         "iteration, since gepa accepts on STRICT improvement only.",
     )
-    parser.add_argument("--manifests", type=Path, default=REPO / "manifests" / "ifbench")
+    parser.add_argument("--manifests", type=Path, default=REPO / "demo" / "manifests")
     parser.add_argument("--out", type=Path, default=None)
     parser.add_argument("--solver-model", default="us.anthropic.claude-haiku-4-5-20251001-v1:0")
     parser.add_argument("--reflection-model", default="us.anthropic.claude-sonnet-4-6")

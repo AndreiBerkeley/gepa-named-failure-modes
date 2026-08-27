@@ -12,9 +12,12 @@ the `reflective_dataset_enricher` argument on `gepa.optimize`.
 src/failure_taxonomy/   the method: taxonomy schema, outcome-blind judge,
                         reflective-dataset enricher, evidence-based reduction
 src/gepa_taxonomy/      pipeline, model routing, cost metering, AdaMAST
-                        transport, observability, and the IFBench demo program
-scripts/                bootstrap plus one entry point per pipeline stage
-manifests/ifbench/      committed train/val/test split definitions for the demo
+                        transport, observability, and the demo's program code
+scripts/                the generic pieces: bootstrap plus the three
+                        benchmark-agnostic taxonomy stages
+demo/                   the IFBench worked example: split builder, harvest,
+                        run, test eval, grader vendoring, and its committed
+                        train/val/test manifests
 patches/                the gepa hook and the AdaMAST parallel-annotator patch,
                         applied by bootstrap until each lands upstream
 tests/                  free, offline suite
@@ -94,13 +97,13 @@ your own GEPA setup (any adapter, any task), three steps apply it:
    `reflective_dataset_enricher=TaxonomyFeedbackEnricher(judge=LLMFailureJudge(taxonomy=load_taxonomy("taxonomy.json"), lm=reflection_lm))`.
    Your adapter is unchanged.
 
-The IFBench-named files (`src/gepa_taxonomy/ifbench/`, the build and run
-scripts, `manifests/ifbench/`) are a complete worked example of those three
+The `demo/` directory (with its program code in
+`src/gepa_taxonomy/ifbench/`) is a complete worked example of those three
 steps wired into the one-command pipeline. Copy them as a template only if
 you want the same orchestration for your benchmark: implement your program
 and grader in a new `src/gepa_taxonomy/<yours>/` package, write a split
-manifest, adapt the two scripts, and add one entry to `BENCHMARKS` in
-`pipeline.py`.
+manifest, adapt the demo's harvest and run scripts, and add one entry to
+`BENCHMARKS` in `pipeline.py`.
 
 ## Observability
 

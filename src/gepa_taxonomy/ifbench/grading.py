@@ -1,7 +1,7 @@
 """IFBench scoring, driving AllenAI's vendored verifiers.
 
 The verifiers themselves are copied verbatim (``_vendor/``, refreshed by
-``scripts/vendor_ifbench.py``); this module only decides *which number GEPA
+``demo/vendor_ifbench.py``); this module only decides *which number GEPA
 optimises* and *what the reflective feedback says*.
 
 Which metric

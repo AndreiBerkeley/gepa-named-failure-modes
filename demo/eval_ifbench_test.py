@@ -137,7 +137,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run", type=Path, default=None)
     parser.add_argument("--all", action="store_true", help="every ifbench run with a summary.json")
-    parser.add_argument("--manifests", type=Path, default=REPO / "manifests" / "ifbench")
+    parser.add_argument("--manifests", type=Path, default=REPO / "demo" / "manifests")
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--max-tokens", type=int, default=4096)
     parser.add_argument("--solver-model", default="us.anthropic.claude-haiku-4-5-20251001-v1:0")

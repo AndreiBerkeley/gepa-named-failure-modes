@@ -27,7 +27,7 @@ from gepa_taxonomy.ifbench.splits import (
     n_constraints_of,
 )
 
-MANIFESTS = Path(__file__).resolve().parents[1] / "manifests" / "ifbench"
+MANIFESTS = Path(__file__).resolve().parents[1] / "demo" / "manifests"
 
 
 def _pool(n: int = 2000):

@@ -1,1 +1,1 @@
-"""Vendored constraint verifiers. See scripts/vendor_ifbench.py."""
+"""Vendored constraint verifiers. See demo/vendor_ifbench.py."""
