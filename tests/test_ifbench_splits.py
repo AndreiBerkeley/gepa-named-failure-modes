@@ -118,10 +118,12 @@ class TestCommittedManifests:
         assert self._load("val")["dataset"] == TRAIN_DATASET
         assert self._load("test")["dataset"] == TEST_DATASET
 
-    def test_sizes_match_the_published_setup(self):
-        assert self._load("train")["n"] == 150
-        assert self._load("val")["n"] == 300
-        assert self._load("test")["n"] == 300  # paper reports 294; we keep all 300
+    def test_sizes_match_the_demo_setup(self):
+        # The committed manifests are the runnable demo: 10/10/10, small enough
+        # that the from-zero pipeline costs cents. The study used 150/300/300.
+        assert self._load("train")["n"] == 10
+        assert self._load("val")["n"] == 10
+        assert self._load("test")["n"] == 10
 
     def test_train_and_val_are_disjoint(self):
         train, val = set(self._load("train")["example_ids"]), set(self._load("val")["example_ids"])

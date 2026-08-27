@@ -41,44 +41,38 @@ pipeline into its own sibling environment (`../adamast-public`, with the
 
 ## Run the demo
 
-```bash
-uv run gepa-taxonomy ifbench --seed 1 --budget 5 --gepa-root ../gepa-taxonomy-hook
-```
+`demo/` ships everything needed: a 10/10/10 IFBench split (small enough that
+the whole pipeline costs cents) and `demo/taxonomy.json`, a real
+evidence-reduced taxonomy. Two ways to run it:
 
-One command runs the whole method:
-
-1. **Harvest** — evaluate the base program over the validation split and keep
-   its component-level traces.
-2. **Generate** — run stock AdaMAST over the traces to draft a failure
-   taxonomy through iterative agreement rounds.
-3. **Judge the corpus** — apply the drafted taxonomy back over the same
-   traces to measure each code's support (distinct traces citing it).
-4. **Reduce** — keep the codes the evidence supports: drop below
-   `--min-support` (default 2), apply `--max-codes` (default 25) only as a
-   safety net, and account for every code in `reduction_report.json`. The
-   full draft survives as `taxonomy.full.json`, so re-capping is offline.
-5. **Optimize** — launch GEPA with the frozen taxonomy: an outcome-blind
-   judge diagnoses each rollout and the enricher adds the named failure
-   modes to reflection, alongside the adapter's ordinary feedback.
-
-Artifacts are reused on re-runs. Bring your own taxonomy to skip steps 1-4:
+**1. From zero** -- generate the taxonomy yourself, then optimize with it:
 
 ```bash
-uv run gepa-taxonomy ifbench --seed 1 --budget 5 --taxonomy path/to/taxonomy.json --gepa-root ../gepa-taxonomy-hook
+uv run gepa-taxonomy ifbench --seed 1 --budget 2 --gepa-root ../gepa-taxonomy-hook
 ```
 
-Model ids are litellm ids: a bare id routes to Bedrock, an explicit provider
-prefix routes there instead, and taxonomy generation maps the prefix to the
-matching AdaMAST provider automatically (`gemini/` becomes `google`). Example
-with a cheap solver and a stronger model for generation, reflection, and the
-judge:
+One command runs the whole method: harvest the base program's traces over the
+demo validation split, generate a taxonomy with stock AdaMAST, judge it back
+over the same traces to measure each code's support, reduce it to the codes
+the evidence supports (`--min-support`, default 2; `--max-codes`, default 25,
+as a safety net; every code accounted for in `reduction_report.json`), and
+launch GEPA with the frozen taxonomy: an outcome-blind judge diagnoses each
+rollout and the enricher adds the named failure modes to reflection.
+
+**2. With the provided taxonomy** -- skip generation entirely:
 
 ```bash
-uv run gepa-taxonomy ifbench --seed 1 --budget 5 --gepa-root ../gepa-taxonomy-hook --solver-model gemini/gemini-2.5-flash-lite --reflection-model gemini/gemini-3.5-flash
+uv run gepa-taxonomy ifbench --seed 1 --budget 1 --taxonomy demo/taxonomy.json --gepa-root ../gepa-taxonomy-hook
 ```
 
-Use `--dry-run` to print every phase without spending, and `--prepare-only`
-to stop once the taxonomy is frozen.
+Artifacts are reused on re-runs. Model ids are litellm ids: a bare id routes
+to Bedrock, an explicit provider prefix routes there instead, and taxonomy
+generation maps the prefix to the matching AdaMAST provider automatically
+(`gemini/` becomes `google`); for example
+`--solver-model gemini/gemini-2.5-flash-lite --reflection-model gemini/gemini-3.5-flash`
+puts a cheap model on rollouts and a stronger one on generation, reflection,
+and the judge. Use `--dry-run` to print every phase without spending, and
+`--prepare-only` to stop once the taxonomy is frozen.
 
 ## Using the method on your own task
 
