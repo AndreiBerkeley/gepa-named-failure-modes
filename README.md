@@ -1,184 +1,112 @@
 # Taxonomy-conditioned GEPA
 
 Companion repository for the study
-[Named Failure Modes: Diagnosing the Program, Not Just the Output](https://andreiberkeley.github.io/gepa-named-failure-modes/blog/2026/08/18/named-failure-modes/):
-the failure-taxonomy components, the experiment pipeline, split manifests, run
-scripts, and offline tests. The optimizer-side hook itself
-lives in [gepa](https://github.com/gepa-ai/gepa) as the
-`reflective_dataset_enricher` argument on `gepa.optimize`.
+[Named Failure Modes: Diagnosing the Program, Not Just the Output](https://andreiberkeley.github.io/gepa-named-failure-modes/blog/2026/08/18/named-failure-modes/).
+It contains the method, its pipeline, and one runnable benchmark demo. The
+optimizer-side hook itself lives in [gepa](https://github.com/gepa-ai/gepa) as
+the `reflective_dataset_enricher` argument on `gepa.optimize`.
 
 ## Layout
 
 ```
-manifests/          committed split manifests, a stage boundary artifact
-scripts/            standalone stage entrypoints
-src/failure_taxonomy/  taxonomy schema, judge, and enricher
-src/gepa_taxonomy/  benchmark programs, adapters, and run machinery
-tests/              free, offline tests
-results/            per-run outputs, written at run time
-patches/            the gepa enricher hook and the AdaMAST parallel-annotator patch
+src/failure_taxonomy/   the method: taxonomy schema, outcome-blind judge,
+                        reflective-dataset enricher, evidence-based reduction
+src/gepa_taxonomy/      pipeline, model routing, cost metering, AdaMAST
+                        transport, observability, and the IFBench demo program
+scripts/                bootstrap plus one entry point per pipeline stage
+manifests/ifbench/      committed train/val/test split definitions for the demo
+patches/                the gepa hook and the AdaMAST parallel-annotator patch,
+                        applied by bootstrap until each lands upstream
+tests/                  free, offline suite
+results/                created at run time; never committed
 ```
 
 ## Setup
 
-One command prepares everything, including the sibling checkouts described
-below, and finishes with the free offline checks. It is idempotent, so rerun
-it after any failure:
+One idempotent command prepares everything, including the sibling checkouts,
+and finishes with the free offline checks:
 
 ```bash
 ./scripts/bootstrap.sh
 ```
 
-The pieces it sets up, for reference or manual installation:
-
-```bash
-uv sync
-```
-
-Taxonomy-conditioned runs use GEPA's optimizer-side
-`reflective_dataset_enricher` hook. The hook runs after an adapter creates its
-normal reflection records and before GEPA requests a revision. It does not
-wrap, replace, or proxy the adapter, so DSPy, LangChain, OpenAI, and custom
-adapters keep their normal behavior.
-
-The SWE-Bench harness is optional (it pulls docker + modal) and only needed where
-evaluation actually runs:
-
-```bash
-uv sync --extra swebench
-```
-
-## Taxonomy generation requires AdaMAST
-
-Stage 4 (generating a taxonomy from traces) shells out to the public
+It installs the project (`uv sync`), clones gepa v0.1.4 and applies the hook
+patch, and clones the public
 [AdaMAST](https://github.com/multi-agent-systems-failure-taxonomy/AdaMAST)
-pipeline, running in its own sibling checkout with its own interpreter. It is
-deliberately not a dependency of this project: it pins its own `openai` and
-`pydantic` floors, and installing it here would re-resolve the environment the
-baseline seeds run from. One-time setup:
+pipeline into its own sibling environment (`../adamast-public`, with the
+`[bedrock,google]` extras) for taxonomy generation.
+
+## Run the demo
 
 ```bash
-git clone --branch agent/baseline-taxonomy-generation https://github.com/multi-agent-systems-failure-taxonomy/AdaMAST.git ../adamast-public
-cd ../adamast-public && uv venv --python 3.12 && uv pip install -e ".[bedrock,google]"
+uv run gepa-taxonomy ifbench --seed 1 --budget 5 --gepa-root ../gepa-taxonomy-hook
 ```
 
-The `[bedrock]` extra is required; without it AdaMAST imports cleanly and then
-fails on its first provider call. `bootstrap.sh` also applies
-`patches/adamast-parallel-annotators.patch`, which runs the four annotators'
-independent discovery and voting calls concurrently instead of serially,
-roughly a 4x speedup of the agreement rounds. Runs that bring an existing taxonomy via
-`--taxonomy` never touch AdaMAST.
+One command runs the whole method:
 
-Generation runs stock AdaMAST, with no caps and no prompt overrides; quality
-control happens afterwards, from evidence. The pipeline judges the generated
-taxonomy over its own generation corpus (a billed pass on the same model as
-generation), measures each code's support as the number of distinct traces
-citing it, drops codes below `--min-support` (default 2), and applies
-`--max-codes` (default 25) only as a safety net by support ranking. Every
-generated code is accounted for in `reduction_report.json` as retained,
-ungrounded, or over cap; the full draft survives as `taxonomy.full.json`, so
-changing thresholds is an offline re-run of `scripts/reduce_taxonomy.py` over
-stored artifacts, never another billed generation. The reduced taxonomy also
-records its generation trace ids, and the enricher refuses at run time to
-diagnose an instance the taxonomy was generated from: freeze discipline is
-asserted in code, not by convention.
+1. **Harvest** — evaluate the base program over the validation split and keep
+   its component-level traces.
+2. **Generate** — run stock AdaMAST over the traces to draft a failure
+   taxonomy through iterative agreement rounds.
+3. **Judge the corpus** — apply the drafted taxonomy back over the same
+   traces to measure each code's support (distinct traces citing it).
+4. **Reduce** — keep the codes the evidence supports: drop below
+   `--min-support` (default 2), apply `--max-codes` (default 25) only as a
+   safety net, and account for every code in `reduction_report.json`. The
+   full draft survives as `taxonomy.full.json`, so re-capping is offline.
+5. **Optimize** — launch GEPA with the frozen taxonomy: an outcome-blind
+   judge diagnoses each rollout and the enricher adds the named failure
+   modes to reflection, alongside the adapter's ordinary feedback.
 
-## Stage boundaries
-
-Every stage is standalone and communicates through a documented artifact, so a user
-who brings their own taxonomy can skip stages 1–3:
-
-| Stage | Consumes | Produces |
-|---|---|---|
-| 1. Splits | benchmark dataset | `manifests/<benchmark>/*.json` |
-| 2. Baseline GEPA | manifests, program def | optimized candidate + run state |
-| 3. Trace harvest | candidate, generation manifest | trace bundle (JSONL) |
-| 4. Taxonomy | trace bundle | `taxonomy.full.json`, `judgements.jsonl`, reduced `taxonomy.json`, `reduction_report.json` |
-| 5. Conditioned GEPA | manifests, program def, **`taxonomy.json`** | optimized candidate |
-
-Stage 5 depends on the taxonomy *file*, not on stages 1–4 having run.
-
-## One-command taxonomy run
-
-The stage boundaries remain available, but the normal treatment workflow can be
-started with one command:
+Artifacts are reused on re-runs. Bring your own taxonomy to skip steps 1-4:
 
 ```bash
-uv run gepa-taxonomy hotpotqa --seed 1 --budget 60
+uv run gepa-taxonomy ifbench --seed 1 --budget 5 --taxonomy path/to/taxonomy.json --gepa-root ../gepa-taxonomy-hook
 ```
 
-That command reuses existing artifacts when present. Otherwise it evaluates the
-base program on the study's held-out validation set, saves the captured
-traces, generates the taxonomy, judges it over those same traces, reduces it
-to the codes the corpus supports, and then starts GEPA. The frozen, reduced
-taxonomy exists before optimization begins. The runtime judge and GEPA's
-reflector use the same `--reflection-model` value.
-
-Repeat `--seed` to prepare once and launch several runs:
+Model ids are litellm ids: a bare id routes to Bedrock, an explicit provider
+prefix routes there instead, and taxonomy generation maps the prefix to the
+matching AdaMAST provider automatically (`gemini/` becomes `google`). Example
+with a cheap solver and a stronger model for generation, reflection, and the
+judge:
 
 ```bash
-uv run gepa-taxonomy hotpotqa --seed 1 --seed 2 --seed 3 --budget 60
+uv run gepa-taxonomy ifbench --seed 1 --budget 5 --gepa-root ../gepa-taxonomy-hook --solver-model gemini/gemini-2.5-flash-lite --reflection-model gemini/gemini-3.5-flash
 ```
 
-Bring an existing taxonomy to skip preparation entirely:
-
-```bash
-uv run gepa-taxonomy hotpotqa --seed 1 --budget 60 --taxonomy path/to/taxonomy.json
-```
-
-Model ids are litellm ids. A bare id is pinned to Bedrock (the study
-configuration); an explicit provider prefix routes there deliberately, and
-taxonomy generation maps the prefix to the matching AdaMAST provider
-automatically (`gemini/` becomes `google`). A complete from-zero preparation
-on Gemini, harvest plus taxonomy generation, is therefore one command with two
-model settings:
-
-```bash
-uv run gepa-taxonomy ifbench --seed 1 --budget 2 --solver-model gemini/gemini-2.5-flash-lite --reflection-model gemini/gemini-3.5-flash --prepare-only
-```
-
-Use `--dry-run` to print all phases without making calls or writing artifacts.
-The supported benchmarks are `hotpotqa`, `ifbench`, `hover`, `livebench-math`,
-and `appworld`.
+Use `--dry-run` to print every phase without spending, and `--prepare-only`
+to stop once the taxonomy is frozen.
 
 ## Observability
 
 Every run writes its own audit trail into the run directory:
 
-* `reflection_datasets.jsonl` -- one record per reflection round, exactly the
+* `reflection_datasets.jsonl` — one record per reflection round, exactly the
   dataset reflection consumed, including each example's injected
-  `failure_modes`. On by default; `--no-log-reflection-datasets` disables it.
-* `judge_cache.jsonl` -- every judge diagnosis, keyed by taxonomy fingerprint
-  and candidate, with code, name, evidence span, and component.
-* `spend.solver.json`, `spend.reflection.json`, `spend.judge.json` -- live
-  per-stream spend snapshots, flushed at exit so short runs still record them,
-  plus a once-a-minute `spend so far` heartbeat on stdout so phases that log
-  nothing (the base evaluation before iteration 0) still show movement.
-* `reduction_report.json` (in the taxonomy directory) -- every generated code
-  accounted for as retained, ungrounded, or over cap.
+  `failure_modes` (disable with `--no-log-reflection-datasets`);
+* `judge_cache.jsonl` — every judge diagnosis: code, name, evidence span,
+  component;
+* `spend.solver.json`, `spend.reflection.json`, `spend.judge.json` — live
+  per-stream spend, flushed at exit, plus a once-a-minute heartbeat;
+* `reduction_report.json` — every generated code as retained, ungrounded, or
+  over cap.
+
+The taxonomy also records the trace ids it was generated from, and the
+enricher refuses at run time to diagnose an instance from that corpus.
 
 ## Tests
-
-The suite is free and offline:
 
 ```bash
 uv run pytest
 ```
 
-Three `test_patch_gate.py` tests additionally need the optional SWE-Bench
-harness (`uv sync --extra swebench`).
+The suite is free and offline. Tests that exercise the optimizer hook need
+the patched checkout on the path:
+`PYTHONPATH=../gepa-taxonomy-hook/src uv run pytest`.
 
 ## Until the hook is in a gepa release
 
-The pinned `gepa==0.1.4` from PyPI predates the hook. Until a release includes
-it, apply the committed patch to a v0.1.4 checkout and point runs and tests at
-it:
-
-```bash
-git clone --branch v0.1.4 https://github.com/gepa-ai/gepa.git ../gepa-taxonomy-hook
-git -C ../gepa-taxonomy-hook apply "$PWD/patches/gepa-reflective-dataset-enricher.patch"
-```
-
-Add `--gepa-root ../gepa-taxonomy-hook` to `gepa-taxonomy` commands, and run
-the tests with `PYTHONPATH=../gepa-taxonomy-hook/src uv run pytest`. This
-section disappears once the released gepa carries the hook.
+The pinned `gepa==0.1.4` predates the hook, so bootstrap applies
+`patches/gepa-reflective-dataset-enricher.patch` to the sibling checkout and
+runs point at it with `--gepa-root ../gepa-taxonomy-hook`. This section and
+the patch disappear once a released gepa carries the hook.

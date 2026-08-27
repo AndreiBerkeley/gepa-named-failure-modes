@@ -14,7 +14,7 @@ def test_dry_run_orders_prepare_then_optimize(tmp_path, monkeypatch):
     assert (
         pipeline.main(
             [
-                "hotpotqa",
+                "ifbench",
                 "--seed",
                 "1",
                 "--budget",
@@ -28,11 +28,11 @@ def test_dry_run_orders_prepare_then_optimize(tmp_path, monkeypatch):
     )
 
     assert [Path(command[1]).name for command in commands] == [
-        "build_hotpotqa_base_val.py",
+        "build_ifbench_base_val.py",
         "generate_taxonomy.py",
         "judge_corpus.py",
         "reduce_taxonomy.py",
-        "run_hotpotqa_seed.py",
+        "run_ifbench_seed.py",
     ]
     generation = commands[1]
     corpus_judge = commands[2]

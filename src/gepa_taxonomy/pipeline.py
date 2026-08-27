@@ -33,13 +33,7 @@ class BenchmarkPipeline:
 
 
 BENCHMARKS = {
-    "hotpotqa": BenchmarkPipeline("build_hotpotqa_base_val.py", "run_hotpotqa_seed.py", "base_val"),
     "ifbench": BenchmarkPipeline("build_ifbench_base_val.py", "run_ifbench_seed.py", "ifbench_base_val"),
-    "hover": BenchmarkPipeline("build_hover_base_val.py", "run_hover_seed.py", "hover_base_val"),
-    "livebench-math": BenchmarkPipeline(
-        "build_livebench_math_base_val.py", "run_livebench_math_seed.py", "livebench_math_base_val"
-    ),
-    "appworld": BenchmarkPipeline("build_appworld_base_val.py", "run_appworld_seed.py", "appworld_base_val"),
 }
 
 

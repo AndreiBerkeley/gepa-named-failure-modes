@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Experiment orchestration for taxonomy-conditioned GEPA (configs, split manifests, run scripts, results)"
 requires-python = ">=3.12"
 dependencies = [
+    # litellm signs Bedrock-routed calls through botocore.
     "boto3>=1.43.67",
     "datasets>=5.0.1",
     # gepa is pinned to the exact baseline release; see docs/findings/phase0-gepa-pin.md
@@ -12,10 +13,6 @@ dependencies = [
     # litellm imports tenacity lazily inside its retry wrapper; without this
     # pin, reflection fails at runtime with a bare ImportError.
     "tenacity>=8.0",
-    # HotpotQA retrieval: local BM25 over the 2017 Wikipedia abstracts corpus,
-    # matching the retrieval backend the published GEPA/DSPy programs use.
-    "bm25s>=0.2.0",
-    "PyStemmer>=2.2.0",
     "emoji>=2.15.0",
     "nltk>=3.10.3",
     "syllapy>=0.8.0",
@@ -33,11 +30,6 @@ dev = [
 
 # SWE-bench evaluation harness. Kept optional: it pulls docker/modal and is only
 # needed on a machine that actually runs the evaluation harness.
-[project.optional-dependencies]
-swebench = [
-    "swebench==4.1.0",
-]
-
 [project.scripts]
 gepa-taxonomy = "gepa_taxonomy.pipeline:main"
 
