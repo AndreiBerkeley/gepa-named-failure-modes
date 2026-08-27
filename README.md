@@ -17,7 +17,7 @@ src/gepa_taxonomy/  benchmark programs, adapters, and run machinery
 tests/              free, offline tests
 results/            per-run outputs (raw/ is gitignored) and frozen taxonomies
 docs/findings/      investigation writeups
-patches/            the enricher hook as a patch, for pre-release gepa
+patches/            the gepa enricher hook and the AdaMAST parallel-annotator patch
 ```
 
 ## Setup
@@ -84,6 +84,10 @@ records its generation trace ids, and the enricher refuses at run time to
 diagnose an instance the taxonomy was generated from: freeze discipline is
 asserted in code, not by convention.
 
+The frozen study taxonomies committed under `results/taxonomy/` predate this
+reduction flow; they were produced with the study's generation-time controls
+and are kept as the artifacts the published results used.
+
 ## Stage boundaries
 
 Every stage is standalone and communicates through a documented artifact, so a user
@@ -94,7 +98,7 @@ who brings their own taxonomy can skip stages 1–3:
 | 1. Splits | benchmark dataset | `manifests/<benchmark>/*.json` |
 | 2. Baseline GEPA | manifests, program def | optimized candidate + run state |
 | 3. Trace harvest | candidate, generation manifest | trace bundle (JSONL) |
-| 4. Taxonomy | trace bundle | `taxonomy.json` |
+| 4. Taxonomy | trace bundle | `taxonomy.full.json`, `judgements.jsonl`, reduced `taxonomy.json`, `reduction_report.json` |
 | 5. Conditioned GEPA | manifests, program def, **`taxonomy.json`** | optimized candidate |
 
 Stage 5 depends on the taxonomy *file*, not on stages 1–4 having run.
@@ -109,9 +113,10 @@ uv run gepa-taxonomy hotpotqa --seed 1 --budget 60
 ```
 
 That command reuses existing artifacts when present. Otherwise it evaluates the
-base candidate on the study's held-out validation set, saves the captured
-traces, generates and freezes the taxonomy, and then starts GEPA. Taxonomy
-generation finishes before optimization begins. The runtime judge and GEPA's
+base program on the study's held-out validation set, saves the captured
+traces, generates the taxonomy, judges it over those same traces, reduces it
+to the codes the corpus supports, and then starts GEPA. The frozen, reduced
+taxonomy exists before optimization begins. The runtime judge and GEPA's
 reflector use the same `--reflection-model` value.
 
 Repeat `--seed` to prepare once and launch several runs:
@@ -142,6 +147,22 @@ uv run gepa-taxonomy ifbench --seed 1 --budget 2 --solver-model gemini/gemini-2.
 Use `--dry-run` to print all phases without making calls or writing artifacts.
 The supported benchmarks are `hotpotqa`, `ifbench`, `hover`, `livebench-math`,
 and `appworld`.
+
+## Observability
+
+Every run writes its own audit trail into the run directory:
+
+* `reflection_datasets.jsonl` -- one record per reflection round, exactly the
+  dataset reflection consumed, including each example's injected
+  `failure_modes`. On by default; `--no-log-reflection-datasets` disables it.
+* `judge_cache.jsonl` -- every judge diagnosis, keyed by taxonomy fingerprint
+  and candidate, with code, name, evidence span, and component.
+* `spend.solver.json`, `spend.reflection.json`, `spend.judge.json` -- live
+  per-stream spend snapshots, flushed at exit so short runs still record them,
+  plus a once-a-minute `spend so far` heartbeat on stdout so phases that log
+  nothing (the base evaluation before iteration 0) still show movement.
+* `reduction_report.json` (in the taxonomy directory) -- every generated code
+  accounted for as retained, ungrounded, or over cap.
 
 ## Tests
 
