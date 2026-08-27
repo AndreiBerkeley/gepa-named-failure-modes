@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Evaluate the AppWorld base candidate on val ONCE. **This spends money.**
 
-Same purpose as the HotpotQA equivalent (D044), for the same reason: without it
+Same purpose as the HotpotQA equivalent, for the same reason: without it
 every run re-samples the starting state, so the baseline and taxonomy arms at
 the same seed would differ by an independent draw as well as by the treatment.
 A multi-step ReAct agent is *more* stochastic than a fixed four-call chain, not
@@ -13,8 +13,8 @@ Two artifacts from one pass:
    start byte-identically. A replayed rollout starts no environment and makes no
    LM call, so it costs nothing.
 2. ``base_val.traces.jsonl`` -- the segmented traces the taxonomy is generated
-   from (D025), with the real component name attached rather than recovered from
-   prose (F018).
+   from, with the real component name attached rather than recovered from
+   prose.
 
     PYTHONUTF8=1 uv run python scripts/build_appworld_base_val.py
 """

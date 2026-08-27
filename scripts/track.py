@@ -65,7 +65,7 @@ def rollouts_of(run: Path) -> int:
 
 #: Spend recorded when the runs were paused. A RESUMED run's ``spend.*.json``
 #: describes only its newest segment, because ``CostMeter`` is process-local and
-#: restarts at zero (F064) -- so the live file alone under-reports a resumed run
+#: restarts at zero -- so the live file alone under-reports a resumed run
 #: by everything it spent before the resume.
 _SNAPSHOT = REPO / "results" / "PAUSE_SNAPSHOT.json"
 
@@ -292,7 +292,7 @@ def rows(budgets: dict[str, float]) -> list[dict]:
 DEFAULT_BUDGETS = {
     "hover-baseline-seed1": 60.0, "hover-baseline-seed2": 60.0, "hover-baseline-seed3": 60.0,
     # Taxonomy arm gets MORE than the baseline so judge spend does not eat
-    # search depth -- the HotpotQA/IFBench precedent (D059). Stopping rule is
+    # search depth -- the HotpotQA/IFBench precedent. Stopping rule is
     # DEPTH (22 candidates), not this number; the budget is the backstop.
     **{f"hover-taxonomy-seed{s}": 60.0 for s in (1, 2, 3)},
     # The pilots. circlepack's $20 is an externally enforced ceiling, below the
@@ -303,7 +303,7 @@ DEFAULT_BUDGETS = {
     # The 3-seed chains. Listed ahead of launch so a seed appears the moment its
     # directory exists rather than when someone remembers to add it.
     **{f"cloudcast-stock-seed{s}": 15.0 for s in (1, 2, 3)},
-    # Taxonomy arm: SAME $15 as stock (D071). Judge spend competes with
+    # Taxonomy arm: SAME $15 as stock. Judge spend competes with
     # reflection for it, so this arm buys fewer candidates -- that trade is
     # what the comparison measures.
     **{f"cloudcast-taxonomy-seed{s}": 15.0 for s in (1, 2, 3)},

@@ -163,7 +163,7 @@ def test_a_full_launch_completes_and_proposes(tmp_path, fake_lm):
 
 
 def test_every_rollout_makes_exactly_two_calls(tmp_path, fake_lm):
-    """Cost predictability is the property that ruled AppWorld out (D049). If a
+    """Cost predictability is the property that ruled AppWorld out. If a
     rollout can vary in call count, seeds under one budget stop being comparable."""
     instances, adapter, *_ = _build(tmp_path)
     batch = adapter.evaluate(instances, dict(SEED_CANDIDATE), capture_traces=True)
@@ -182,7 +182,7 @@ def test_the_review_stage_actually_sees_the_draft(tmp_path, fake_lm):
 
 
 def test_scores_are_assembled_by_index_not_completion_order(tmp_path, fake_lm):
-    """gepa keys val subscores and the Pareto frontier POSITIONALLY (F014), so a
+    """gepa keys val subscores and the Pareto frontier POSITIONALLY, so a
     batch returned in completion order attaches every score to the wrong
     instance -- silently. Run it concurrently, which is when order can drift."""
     instances, adapter, *_ = _build(tmp_path, workers=4)

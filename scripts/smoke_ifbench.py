@@ -4,7 +4,7 @@
 Everything the offline tests cannot check: that Bedrock is reachable, that the
 real model's responses run clean through the vendored verifiers, and what a
 rollout actually costs. The cost number is the point -- the AppWorld estimate was
-87% low (F042) and the LiveBench-Math one 38% high, both from extrapolating the
+87% low and the LiveBench-Math one 38% high, both from extrapolating the
 wrong shape.
 
     PYTHONUTF8=1 uv run python scripts/smoke_ifbench.py

@@ -207,7 +207,7 @@ def test_launch_path_spends_nothing_when_the_seed_cache_covers_val(wired):
 
 def test_seed_scores_reach_gepa_unchanged(wired):
     """gepa must see the replayed scores verbatim, or runs would not start from
-    identical state (D009).
+    identical state.
 
     Note gepa keys ``val_subscores`` by the valset's **positional index**, not by
     our instance id -- a plain-list valset gets integer DataIds. So the mapping

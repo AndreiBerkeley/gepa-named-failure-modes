@@ -198,7 +198,7 @@ def test_every_step_is_a_module_call_under_one_component():
 
 def test_the_judge_sees_one_component_not_three_repeats():
     """Attribution is unary here, which is exactly the ablation against
-    HotpotQA's four components (D046)."""
+    HotpotQA's four components."""
     client = FakeClient(complete_after=3)
     program = _program(["```python\na()\n```", "```python\nb()\n```", "```python\nc()\n```"], client=client)
     trace = build_trace(program.run("t1", SEED_CANDIDATE).to_trace(), trace_id="t1")

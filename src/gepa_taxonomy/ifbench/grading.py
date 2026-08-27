@@ -13,12 +13,12 @@ diagnostic — the same split D041 made on HotpotQA, and for the same reason:
 partial credit is what keeps a minibatch comparison from being a coin flip.
 
 Be clear about how little that buys here, though. **256 of 300 instances carry
-exactly one constraint** (F047), so for 85% of the set the two metrics coincide
+exactly one constraint**, so for 85% of the set the two metrics coincide
 and scoring really is binary. The fraction helps on the 44 two-constraint
 instances and nowhere else. What actually keeps the acceptance gate informative
 is the base rate: IFBench's ~35.7% leaves only ~11% of minibatch-5 draws
 all-zero, against the 18.3% that made SWE-Bench's minibatches tie ~75% of the
-time (F036).
+time.
 
 Strict, not loose
 -----------------
@@ -42,7 +42,7 @@ from gepa_taxonomy.ifbench._vendor.ifevalg import instructions_registry as _ifev
 from gepa_taxonomy.ifbench.tasks import IFBENCH, IFEVALG, Gold, constraint_family
 
 #: The two disjoint constraint vocabularies. Routing is explicit rather than
-#: inferred from the id: train/val and test share no ids at all (D055), so a
+#: inferred from the id: train/val and test share no ids at all, so a
 #: lookup in the wrong registry is a KeyError -- loud, but only if we never guess.
 _REGISTRIES = {
     IFBENCH: _ifbench_registry.INSTRUCTION_DICT,
@@ -166,7 +166,7 @@ def grade(response: str, gold: Gold, *, prompt: str) -> Grade:
 def constraint_feedback(graded: Grade, gold: Gold) -> str:
     """Gold-revealing feedback: names the constraints that failed. TRAIN ids only.
 
-    Deliberately strong, on the same principle as D043. IFBench was ruled out
+    Deliberately strong, IFBench was ruled out
     partly because "the diagnosis is already in the baseline feedback, so a
     taxonomy can only paraphrase it" -- weakening this to make the taxonomy look
     better would be exactly the rigged comparison that objection warns about. The

@@ -63,8 +63,8 @@ echo " workers: ${WORKERS} | minibatch: ${MINIBATCH:-default} | sequential, abor
 echo "=============================================================="
 
 # Step 0: the shared base-candidate val evaluation. Built once and replayed by
-# every seed and both arms, so all runs start from byte-identical state (D009).
-# It also produces the traces the taxonomy is generated from (D025), so this is
+# every seed and both arms, so all runs start from byte-identical state.
+# It also produces the traces the taxonomy is generated from, so this is
 # spend we owe regardless -- paid once here instead of six times.
 # Idempotent: exits immediately if the cache already exists.
 echo ""

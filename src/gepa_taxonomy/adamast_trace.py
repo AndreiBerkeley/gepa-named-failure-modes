@@ -1,7 +1,7 @@
 """Emit generation-grade traces in the format AdaMAST actually ingests.
 
 Verified against ``multi-agent-systems-failure-taxonomy/AdaMAST``
-(``docs/TRACE_FORMATS.md``, read 2026-08-07) rather than assumed.
+(``docs/TRACE_FORMATS.md``) rather than assumed.
 
 The canonical record
 --------------------

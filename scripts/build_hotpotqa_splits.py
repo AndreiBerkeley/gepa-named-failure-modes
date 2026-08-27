@@ -3,7 +3,7 @@
 
 Free and offline apart from the dataset download. Sizes are the published GEPA
 ones (150 train / 300 val / 300 test); the manifests are committed stage
-artifacts (D005), so a third party can reproduce our exact subsets from the
+artifacts, so a third party can reproduce our exact subsets from the
 seed and the dataset revision alone.
 
     uv run python scripts/build_hotpotqa_splits.py

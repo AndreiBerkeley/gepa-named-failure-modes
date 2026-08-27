@@ -10,7 +10,7 @@ Two deliberate departures from the older adapters
    local allow-list of transport substrings. The older adapters classify an
    unmatched exception as a *program* error, which does not count toward the
    abort threshold; IFBench seed 2 accumulated 273 of them and the guard never
-   fired (F056). ``failures`` inverts the default -- anything unrecognised is
+   fired. ``failures`` inverts the default -- anything unrecognised is
    TRANSPORT, so it counts toward the abort -- and it keeps bounded error
    *samples*, which is what F053 asked for: the older adapters record a count
    with no cause, leaving 273 failures in a paid run permanently undiagnosable.
@@ -65,13 +65,13 @@ class HoverAdapter:
     reflection_gold_ids: frozenset[str] | None = None
     #: gepa reads this attribute UNCONDITIONALLY (api.py:224). Omitting it makes
     #: every reflection silently fail, so a run burns its budget and never leaves
-    #: the seed candidate (D016).
+    #: the seed candidate.
     propose_new_texts: None = None
 
     max_transport_errors: int = 25
     max_workers: int = 1
     #: Replay of the base candidate's val evaluation, shared by every seed and
-    #: both arms (D009), so all runs start from byte-identical state.
+    #: both arms, so all runs start from byte-identical state.
     seed_cache: Any | None = None
 
     rollouts: int = 0
@@ -99,7 +99,7 @@ class HoverAdapter:
         """Run ``candidate`` over ``batch``, ``max_workers`` instances at a time.
 
         Results are assembled **by index, not completion order**: gepa keys val
-        subscores and the Pareto frontier positionally (F014).
+        subscores and the Pareto frontier positionally.
         """
         n = len(batch)
         results: list[tuple[Rollout, Grade] | None] = [None] * n
@@ -206,7 +206,7 @@ class HoverAdapter:
         candidate is not replayable, and the base candidate is also legitimately
         evaluated on TRAIN minibatches, which are ordinary billed rollouts.
         Treating that second case as an incomplete cache killed a run once
-        (F016); completeness is asserted once at launch instead.
+       ; completeness is asserted once at launch instead.
         """
         if self.seed_cache is None:
             return None

@@ -5,7 +5,7 @@
     PYTHONUTF8=1 uv run python scripts/run_hover_seed.py --seed 1 --budget 60 --workers 8
     # taxonomy arm
     PYTHONUTF8=1 uv run python scripts/run_hover_seed.py --seed 1 --budget 60 --workers 8 \
-        --taxonomy results/taxonomy/hover_v1/taxonomy.json
+        --taxonomy results/taxonomy/<benchmark>-auto-v1/taxonomy.json
 
 The baseline arm runs the pinned gepa release UNMODIFIED. The only addition is
 the dollar-budget stopper, which observes spend and touches nothing else -- no
@@ -41,7 +41,7 @@ def load_instances(manifest_path: Path, pool_path: Path | None = None):
 
     Order is load-bearing and this is the single definition of it: gepa keys val
     subscores and the Pareto frontier by POSITION, so two loaders that disagreed
-    about ordering would silently mis-attach scores (F014).
+    about ordering would silently mis-attach scores.
     """
     import sys
 
@@ -88,14 +88,14 @@ def main() -> int:
         default=20000,
         help="hard cap on rollouts, independent of spend. NOT redundant with the dollar "
         "budget: when calls fail to reach the model they cost nothing, so the spend "
-        "stopper can never fire and the run loops forever (F063).",
+        "stopper can never fire and the run loops forever.",
     )
     parser.add_argument(
         "--resume",
         action="store_true",
         help="deliberately resume from an existing gepa_state.bin. Without this the run "
         "REFUSES to start when state exists, because gepa resumes silently and would "
-        "inherit stale results (F029). Resume is NOT cost-continuous (F064).",
+        "inherit stale results. Resume is NOT cost-continuous.",
     )
     args = parser.parse_args()
 
@@ -163,7 +163,7 @@ def main() -> int:
         print(f"base-val  : {len(seed_cache.entries)} val instances replayed (no spend)")
     else:
         print(f"base-val  : NONE at {args.base_val_cache} -- this seed will re-evaluate the base candidate")
-        print("            and will NOT share a starting state with other seeds (D009).")
+        print("            and will NOT share a starting state with other seeds.")
 
     adapter = HoverAdapter(
         program=program,
@@ -217,7 +217,7 @@ def main() -> int:
         )
         # Judge spend competes for the SAME budget as rollouts and reflection, so
         # the treatment arm buys fewer iterations for the same money. That trade
-        # is what the comparison measures, not a confound (D032).
+        # is what the comparison measures, not a confound.
         meters.append(judge_meter)
         print(f"taxonomy  : {args.taxonomy} ({len(taxonomy)} codes, fingerprint {taxonomy.fingerprint})")
 
@@ -227,7 +227,7 @@ def main() -> int:
         model=args.reflection_model,
         spend_log=out / "reflection_spend.jsonl",
         # Raw prompt/response archive: nothing else persists reflection bodies,
-        # and auditing injection without them takes triangulation (D074).
+        # and auditing injection without them takes triangulation.
         prompt_log=out / "reflection_prompts.jsonl",
     )
 
@@ -307,6 +307,6 @@ if __name__ == "__main__":
     if os.environ.get("PYTHONUTF8") != "1":
         raise SystemExit(
             "set PYTHONUTF8=1. gepa writes its run log with the platform default encoding, "
-            "and a proposed prompt containing a non-cp1252 character kills the run on Windows (F031)."
+            "and a proposed prompt containing a non-cp1252 character kills the run on Windows."
         )
     raise SystemExit(main())

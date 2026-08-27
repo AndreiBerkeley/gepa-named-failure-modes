@@ -4,16 +4,16 @@
 Two artifacts from one pass, which is why this is not wasted spend:
 
 1. ``base_val_cache.json`` -- the replay store every seed and both arms read, so
-   all six runs start from **byte-identical** state (D009). Without it each run
+   all six runs start from **byte-identical** state. Without it each run
    re-samples the base candidate, and the two arms at one seed would differ by an
    independent 300-rollout draw as well as by the treatment.
 
 2. ``base_val.traces.jsonl`` -- the segmented traces the taxonomy is generated
-   from (D025). The base candidate's val evaluation IS the taxonomy-generation
+   from. The base candidate's val evaluation IS the taxonomy-generation
    trace source, so this pass had to happen regardless.
 
 Replayed rollouts issue no LM call, so they contribute no spend -- satisfying the
-budget exclusion for the shared seed evaluation (D013a) by construction.
+budget exclusion for the shared seed evaluation by construction.
 
     PYTHONUTF8=1 uv run python scripts/build_ifbench_base_val.py
 """
@@ -59,7 +59,7 @@ def main() -> int:
 
     # Imported from the runner so there is ONE definition of how a manifest
     # becomes instances -- two loaders would be two chances to disagree about
-    # ordering, which gepa keys on positionally (F014).
+    # ordering, which gepa keys on positionally.
     import importlib.util
 
     spec = importlib.util.spec_from_file_location("_ifb_runner", REPO / "scripts" / "run_ifbench_seed.py")

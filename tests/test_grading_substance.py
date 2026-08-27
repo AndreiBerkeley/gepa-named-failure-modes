@@ -1,4 +1,4 @@
-"""Harness-artifact enrichment (D028): grading detail carries failing-test
+"""Harness-artifact enrichment: grading detail carries failing-test
 names and the test-output tail, so reflection sees outcome substance.
 
 Artifact shapes are mirrored from a real harness tree

@@ -46,10 +46,10 @@ numbers.
 from __future__ import annotations
 
 import json
-from pathlib import Path
 import threading
 from collections.abc import Iterable
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Literal
 
 # ---------------------------------------------------------------------------
@@ -62,7 +62,7 @@ Phase = Literal["optimization", "seed_val", "final_test", "generation"]
 BUDGETED_PHASES: frozenset[str] = frozenset({"optimization"})
 
 #: Explicit Bedrock price table, USD per token, verified against litellm 1.95.0
-#: on 2026-08-07. Kept explicit rather than trusting ``litellm.completion_cost``
+#: Kept explicit rather than trusting ``litellm.completion_cost``
 #: alone for two reasons:
 #:
 #: 1. ``completion_cost`` returns ``0.0`` for an unknown model rather than
@@ -91,7 +91,6 @@ BEDROCK_PRICES_USD_PER_TOKEN: dict[str, tuple[float, float]] = {
     "global.anthropic.claude-haiku-4-5-20251001-v1:0": (1.00e-6, 5.00e-6),
     "us.anthropic.claude-haiku-4-5-20251001-v1:0": (1.10e-6, 5.50e-6),
     # Opus 4.5 / 4.6 are the strongest models this API key can actually invoke
-    # (verified by invocation probe 2026-08-15, results/access/reflection_model_probe.json;
     # Opus 5/4.8/4.7, Sonnet 5 and Fable 5 all 403). Pinned here rather than
     # left to litellm's fallback table: that table ships with the library and
     # can change under a version bump, which would silently reprice a run and

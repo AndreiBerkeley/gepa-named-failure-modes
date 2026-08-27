@@ -36,7 +36,7 @@ recorded sample -- which is what ``samples`` is for.
 
 Recording the message
 ---------------------
-The old adapters counted failures and discarded the exception text (F053).
+The old adapters counted failures and discarded the exception text.
 When 273 of them appeared in a finished, paid-for seed, the cause was
 unrecoverable: nothing reached the run log either. A bounded sample of the
 messages makes the count explicable without unbounded memory or log spam.

@@ -362,7 +362,7 @@ class ConstrainedResponseChecker(Instruction):
 
     def get_instruction_args(self):
         """Returns the keyward args of `build_description`."""
-        return None
+        return
 
     def get_instruction_args_keys(self):
         """Returns the args keys of `build_description`."""
@@ -879,7 +879,7 @@ class JsonFormat(Instruction):
 
     def get_instruction_args(self):
         """Returns the keyward args of `build_description`."""
-        return None
+        return
 
     def get_instruction_args_keys(self):
         """Returns the args keys of `build_description`."""
@@ -1154,7 +1154,7 @@ class TwoResponsesChecker(Instruction):
 
     def get_instruction_args(self):
         """Returns the keyward args of `build_description`."""
-        return None
+        return
 
     def get_instruction_args_keys(self):
         """Returns the args keys of `build_description`."""
@@ -1483,7 +1483,7 @@ class QuotationChecker(Instruction):
 
     def get_instruction_args(self):
         """Returns the keyword args of build description."""
-        return None
+        return
 
     def get_instruction_args_keys(self):
         """Returns the args keys of `build_description`."""

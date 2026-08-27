@@ -224,7 +224,7 @@ def test_partial_credit_reaches_the_optimizer(tmp_path, fakes):
 
 def test_no_op_passes_do_not_inflate_the_failing_tasks(tmp_path, fakes):
     """Every task passes 'assert no model changes' trivially. If that counted,
-    a failing task would score 0.5 and the floor would rise (F035)."""
+    a failing task would score 0.5 and the floor would rise."""
     tasks, adapter, *_ = _build(tmp_path)
     batch = adapter.evaluate(tasks, dict(SEED_CANDIDATE), capture_traces=True)
     failing = [s for s in batch.scores if s < 1.0]
@@ -237,7 +237,7 @@ def test_each_worker_is_pinned_to_its_own_server_port():
     ``appworld/serve/environment.py`` holds ``world`` as a module-level global
     and rejects requests for any other task, so two workers on one server clobber
     each other -- which killed two of three rollouts in the first real smoke
-    (F040). The superseded version of this test asserted distinct *experiment
+   . The superseded version of this test asserted distinct *experiment
     names* and passed happily against a fake that did not model the constraint.
     """
     from gepa_taxonomy.appworld.adapter import client_factory

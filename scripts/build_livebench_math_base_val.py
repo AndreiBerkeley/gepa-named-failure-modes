@@ -4,18 +4,18 @@
 Two artifacts from one pass, which is why this is not wasted spend:
 
 1. ``base_val_cache.json`` -- the replay store every seed and both arms read, so
-   all six runs start from **byte-identical** state (D009). Without it each run
+   all six runs start from **byte-identical** state. Without it each run
    re-samples the base candidate, and the two arms at one seed would differ by an
    independent 90-rollout draw as well as by the treatment -- noise injected into
    precisely the comparison the experiment exists to make.
 
 2. ``base_val.traces.jsonl`` -- the segmented traces the taxonomy is generated
-   from (D025). The base candidate's val evaluation IS the taxonomy-generation
+   from. The base candidate's val evaluation IS the taxonomy-generation
    trace source, so this pass had to happen regardless; doing it here means it
    happens once instead of six times.
 
 Replayed rollouts issue no LM call, so they contribute no spend -- satisfying the
-budget exclusion for the shared seed evaluation (D013a) by construction rather
+budget exclusion for the shared seed evaluation by construction rather
 than by special-casing the stopper.
 
     PYTHONUTF8=1 uv run python scripts/build_livebench_math_base_val.py
@@ -63,7 +63,7 @@ def main() -> int:
 
     # Imported from the runner so there is ONE definition of how a manifest
     # becomes instances -- two loaders would be two chances to disagree about
-    # ordering, which gepa keys on positionally (F014).
+    # ordering, which gepa keys on positionally.
     import importlib.util
 
     spec = importlib.util.spec_from_file_location("_lbm_runner", REPO / "scripts" / "run_livebench_math_seed.py")
@@ -108,9 +108,9 @@ def main() -> int:
     args.out.mkdir(parents=True, exist_ok=True)
     cache.save(cache_path)
 
-    # The taxonomy-generation trace source (D025), segmented by component name so
+    # The taxonomy-generation trace source, segmented by component name so
     # a generator is handed the real structure rather than recovering it from
-    # prose -- which is how role discovery previously invented agents (F018).
+    # prose -- which is how role discovery previously invented agents.
     from failure_taxonomy import harvest_traces, trace_report, write_generation_traces
 
     traces = harvest_traces(batch, instance_ids=[t["example_id"] for t in batch.trajectories])

@@ -53,13 +53,13 @@ class IFBenchAdapter:
     reflection_gold_ids: frozenset[str] | None = None
     #: gepa reads this attribute UNCONDITIONALLY (api.py:224). Omitting it makes
     #: every reflection silently fail, so a run burns its budget and never leaves
-    #: the seed candidate (D016).
+    #: the seed candidate.
     propose_new_texts: None = None
 
     max_transport_errors: int = 25
     max_workers: int = 1
     #: Replay of the base candidate's val evaluation, shared by every seed and
-    #: both arms (D009), so all runs start from byte-identical state.
+    #: both arms, so all runs start from byte-identical state.
     seed_cache: Any | None = None
 
     rollouts: int = 0
@@ -81,7 +81,7 @@ class IFBenchAdapter:
         """Run ``candidate`` over ``batch``, ``max_workers`` instances at a time.
 
         Results are assembled **by index, not completion order**: gepa keys val
-        subscores and the Pareto frontier positionally (F014).
+        subscores and the Pareto frontier positionally.
         """
         n = len(batch)
         results: list[tuple[Rollout, Grade] | None] = [None] * n
@@ -198,7 +198,7 @@ class IFBenchAdapter:
         Both kinds of miss return None rather than raising: a different candidate
         is not replayable, and the base candidate is legitimately re-evaluated on
         TRAIN minibatches during reflective mutation. Treating that second case
-        as an incomplete cache killed a run once (F016).
+        as an incomplete cache killed a run once.
         """
         if self.seed_cache is None:
             return None

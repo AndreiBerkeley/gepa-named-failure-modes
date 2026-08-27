@@ -25,9 +25,9 @@ from __future__ import annotations
 from pathlib import Path
 from types import SimpleNamespace
 
+import gepa
 import pytest
 
-import gepa
 from gepa_taxonomy.adapter import SweBenchAdapter
 from gepa_taxonomy.bedrock import BedrockLM, MeteredReflectionLM
 from gepa_taxonomy.cost import REFINER_MODEL, SOLVER_MODEL, CostMeter, MaxTotalCostStopper

@@ -14,14 +14,14 @@ Three things make resume non-obvious, and all three have bitten this project:
    immediately -- looking like a crash, having spent a little money. Run this
    with ``--clear-stops`` and it removes them.
 
-2. **Resume is NOT cost-continuous (F064).** ``CostMeter`` lives in the process,
+2. **Resume is NOT cost-continuous.** ``CostMeter`` lives in the process,
    so a resumed run starts counting from zero. Passing the ORIGINAL budget would
    authorise the full amount a second time. The commands below therefore carry a
    REDUCED budget: original minus what was already spent.
 
 3. **``--resume`` is mandatory.** The run scripts refuse to start when
    ``gepa_state.bin`` exists, because gepa would otherwise silently resume and
-   inherit that state without anyone deciding to (F029).
+   inherit that state without anyone deciding to.
 
 Spend is read from the per-stream ``spend.*.json`` snapshots where present, and
 otherwise reconstructed from the rollout count at a rate measured on a finished
@@ -111,7 +111,7 @@ def snapshot_spend(name: str) -> float:
 
     A resumed-then-paused-again run writes fresh ``spend.*.json`` files that
     start from zero, so trusting the live files alone would forget every earlier
-    segment and re-authorise money that was already spent (F064)."""
+    segment and re-authorise money that was already spent."""
     if not SNAPSHOT.exists():
         return 0.0
     try:
@@ -203,7 +203,7 @@ def main() -> int:
 
     print("\n" + "=" * 72)
     print("RESUME COMMANDS -- run from the repo root, after `source ~/.bashrc`")
-    print("Budgets are REDUCED by spend already incurred (F064: the meter restarts).")
+    print("Budgets are REDUCED by spend already incurred (the meter restarts).")
     print("=" * 72)
     for name, remaining, has_state, _ in rows:
         if not has_state:

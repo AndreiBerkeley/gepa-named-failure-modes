@@ -26,7 +26,7 @@ class TestClassify:
 
         Under the old allow-list an unmatched exception was counted as a PROGRAM
         error, which does not count toward the abort threshold. IFBench seed 2
-        accumulated 273 of them and the guard never fired (F056). Transport is
+        accumulated 273 of them and the guard never fired. Transport is
         the safe default: mistaking a program fault for transport costs one loud
         abort; the reverse silently corrupts a paid run.
         """
@@ -37,7 +37,7 @@ class TestClassify:
         [
             RuntimeError("RateLimitError: too many requests"),
             RuntimeError("litellm.APIConnectionError: connection failed"),
-            RuntimeError("Internal Server Error"),  # F040: space, not 'internalserver'
+            RuntimeError("Internal Server Error"),  # the recorded requirement: space, not 'internalserver'
             RuntimeError("httpcore.ConnectError: [Errno 11001] getaddrinfo failed"),
             RuntimeError("ServiceUnavailableError"),
             RuntimeError("litellm.APIError: upstream problem"),

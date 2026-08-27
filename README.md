@@ -3,7 +3,7 @@
 Companion repository for the study
 [Named Failure Modes: Diagnosing the Program, Not Just the Output](https://andreiberkeley.github.io/gepa-named-failure-modes/blog/2026/08/18/named-failure-modes/):
 the failure-taxonomy components, the experiment pipeline, split manifests, run
-scripts, frozen taxonomies, and offline tests. The optimizer-side hook itself
+scripts, and offline tests. The optimizer-side hook itself
 lives in [gepa](https://github.com/gepa-ai/gepa) as the
 `reflective_dataset_enricher` argument on `gepa.optimize`.
 
@@ -15,8 +15,7 @@ scripts/            standalone stage entrypoints
 src/failure_taxonomy/  taxonomy schema, judge, and enricher
 src/gepa_taxonomy/  benchmark programs, adapters, and run machinery
 tests/              free, offline tests
-results/            per-run outputs (raw/ is gitignored) and frozen taxonomies
-docs/findings/      investigation writeups
+results/            per-run outputs, written at run time
 patches/            the gepa enricher hook and the AdaMAST parallel-annotator patch
 ```
 
@@ -83,10 +82,6 @@ stored artifacts, never another billed generation. The reduced taxonomy also
 records its generation trace ids, and the enricher refuses at run time to
 diagnose an instance the taxonomy was generated from: freeze discipline is
 asserted in code, not by convention.
-
-The frozen study taxonomies committed under `results/taxonomy/` predate this
-reduction flow; they were produced with the study's generation-time controls
-and are kept as the artifacts the published results used.
 
 ## Stage boundaries
 

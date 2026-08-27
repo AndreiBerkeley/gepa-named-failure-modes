@@ -68,7 +68,7 @@ what ``scripts/seed_watchdog.sh`` sums.
 
 Gold blindness
 --------------
-Unchanged and absolute (D008). The program receives a ``Task``, which cannot
+Unchanged and absolute. The program receives a ``Task``, which cannot
 carry gold, and every rollout goes through the adapter's own ``_audit`` -- the
 same code path, not a restatement of it. Gold reaches only the grader.
 """

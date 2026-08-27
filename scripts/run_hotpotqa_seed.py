@@ -14,7 +14,7 @@ identical across arms. With the flag absent, no enricher or judge is constructed
 
     # treatment, same budget, same seed
     uv run python scripts/run_hotpotqa_seed.py --seed 1 --budget 25 \
-        --taxonomy results/taxonomy/hotpotqa_v1/taxonomy.pruned.json
+        --taxonomy results/taxonomy/<benchmark>-auto-v1/taxonomy.json
 """
 
 from __future__ import annotations
@@ -41,7 +41,7 @@ def load_instances(manifest_path: Path):
     if missing:
         raise SystemExit(f"{len(missing)} manifest ids missing from the dataset, e.g. {sorted(missing)[:3]}")
     # Manifest order, which is sorted: gepa keys val subscores and the Pareto
-    # frontier POSITIONALLY (F014), so this ordering is load-bearing.
+    # frontier POSITIONALLY, so this ordering is load-bearing.
     return [by_id[i] for i in sorted(wanted)]
 
 
@@ -94,7 +94,7 @@ def main() -> int:
         type=int,
         default=20000,
         help="hard cap on rollouts, independent of spend. NOT redundant with the "
-        "dollar budget: on 2026-08-14 the network failed mid-run, every rollout "
+        "dollar budget: if the network fails mid-run, every rollout "
         "errored before reaching the model, spend froze near $0 -- so the budget "
         "stopper could never fire -- and the run spun to iteration 7,490 over 8.5 "
         "hours (expected ~57). A run that cannot spend cannot be stopped by a "
@@ -113,7 +113,7 @@ def main() -> int:
         type=Path,
         default=REPO / "results" / "base_val" / "base_val_cache.json",
         help="shared base-candidate val evaluation, replayed so every seed and both "
-        "arms start from byte-identical state (D009). Build it with "
+        "arms start from byte-identical state. Build it with "
         "scripts/build_hotpotqa_base_val.py. Pass 'none' to disable.",
     )
     parser.add_argument(
@@ -121,7 +121,7 @@ def main() -> int:
         action="store_true",
         help="deliberately resume from an existing gepa_state.bin in the output "
         "directory. Without this the run REFUSES to start when state exists, "
-        "because gepa resumes silently and would inherit stale results (F029).",
+        "because gepa resumes silently and would inherit stale results.",
     )
     args = parser.parse_args()
 
@@ -151,7 +151,7 @@ def main() -> int:
     # after a code fix would therefore inherit the OLD code's val scores,
     # candidate pool, Pareto frontier and evaluation cache -- and the base
     # candidate is never re-evaluated, so the corruption is invisible in the
-    # output. This exact thing happened on 2026-08-12 (F029). Refuse rather than
+    # output. Refuse rather than
     # resume by accident; --resume is how you ask for it on purpose.
     state = out / "gepa_state.bin"
     if state.exists() and not args.resume:
@@ -169,7 +169,7 @@ def main() -> int:
     # (``logging/logger.py:48``), so on Windows it uses cp1252. Reflection
     # routinely proposes prompts containing emoji or typographic punctuation --
     # a real proposal here contained U+274C -- and writing one raises
-    # UnicodeEncodeError, which killed a run at iteration 2 (F031). Refuse to
+    # UnicodeEncodeError, which killed a run at iteration 2. Refuse to
     # start rather than die seven minutes in.
     import locale
 
@@ -221,7 +221,7 @@ def main() -> int:
                 f"base-val cache not found: {args.base_val_cache}\n"
                 "Every seed and both arms must start from the SAME base-candidate\n"
                 "evaluation, or the paired comparison carries an extra 300-rollout\n"
-                "draw of noise on top of the treatment (D009).\n\n"
+                "draw of noise on top of the treatment.\n\n"
                 "  build it:  PYTHONUTF8=1 uv run python scripts/build_hotpotqa_base_val.py\n"
                 "  or opt out deliberately:  --base-val-cache none"
             )
@@ -232,16 +232,16 @@ def main() -> int:
                 "Replaying it would start this run from another program's results.\n"
                 "Rebuild: scripts/build_hotpotqa_base_val.py --force"
             )
-        # D009's completeness guarantee, checked ONCE against the val manifest --
+        # The completeness guarantee, checked ONCE against the val manifest --
         # not inferred from a per-lookup miss, which is legitimate for train
-        # instances and crashed a run when treated as an error (F016).
+        # instances and crashed a run when treated as an error.
         seed_cache.assert_covers(i.task.example_id for i in val)
         print(f"base-val cache: {len(seed_cache.entries)} val instances will be replayed (no spend)")
 
     adapter = HotpotQAAdapter(
         program=program,
         instances=instances,
-        # Gold answers reach reflection for TRAIN ids only (D028).
+        # Gold answers reach reflection for TRAIN ids only.
         reflection_gold_ids=frozenset(i.task.example_id for i in train),
         max_transport_errors=args.max_transport_errors,
         max_workers=args.workers,
@@ -287,7 +287,7 @@ def main() -> int:
         )
         # Judge spend competes for the SAME budget as rollouts and reflection.
         # The treatment arm may therefore buy fewer rollouts for the same money;
-        # that trade is what the comparison measures, not a confound (D032).
+        # that trade is what the comparison measures, not a confound.
         meters.append(judge_meter)
         print(f"taxonomy: {args.taxonomy} ({len(taxonomy)} codes, fingerprint {taxonomy.fingerprint})")
 
@@ -296,7 +296,7 @@ def main() -> int:
         meter=reflection_meter,
         model=args.reflection_model,
         # The out-of-process watchdog can only enforce a ceiling on what is on
-        # disk; without this, reflection spend is invisible to it (D030).
+        # disk; without this, reflection spend is invisible to it.
         spend_log=out / "reflection_spend.jsonl",
     )
     # Free preflight. gepa SWALLOWS a non-conformant reflection LM and logs

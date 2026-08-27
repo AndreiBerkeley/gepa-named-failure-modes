@@ -1,6 +1,6 @@
 """LiveBench-Math splits. FREE: synthetic records, no download.
 
-The committed manifests are a stage artifact (D005), so the properties that make
+The committed manifests are a stage artifact, so the properties that make
 them usable -- disjoint, exactly sized, stratified, and byte-identical at a fixed
 seed -- are pinned here rather than trusted.
 """
@@ -76,7 +76,7 @@ class TestSplits:
     def test_val_and_test_have_the_same_composition(self):
         """val drives selection and test is the headline. If their scorer mixes
         differ they measure different things, and val's partial-credit share --
-        which is what keeps minibatch comparisons informative (F036) -- becomes a
+        which is what keeps minibatch comparisons informative -- becomes a
         matter of luck."""
         pool = {str(r["question_id"]): r for r in _pool()}
         manifests = build_splits(_pool())
@@ -99,7 +99,7 @@ class TestSplits:
             assert len(strata) == 3, f"{name} is missing a stratum: {strata}"
 
     def test_manifest_ids_are_sorted(self):
-        """gepa keys val subscores POSITIONALLY (F014), so the manifest's order is
+        """gepa keys val subscores POSITIONALLY, so the manifest's order is
         the run's order and must not depend on iteration order upstream."""
         for manifest in build_splits(_pool()).values():
             ids = manifest.to_json()["example_ids"]

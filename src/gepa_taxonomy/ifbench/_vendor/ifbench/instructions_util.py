@@ -22,7 +22,6 @@ The only change from upstream is that its imports are made package-relative.
 
 import functools
 import random
-import re
 
 import nltk
 
@@ -1597,7 +1596,7 @@ def count_words(text):
     return num_words
 
 
-@functools.lru_cache(maxsize=None)
+@functools.cache
 def _get_sentence_tokenizer():
     return nltk.data.load("nltk:tokenizers/punkt/english.pickle")
 

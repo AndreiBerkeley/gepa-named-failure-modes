@@ -13,7 +13,7 @@ olympiad (``imo``,      expression re-ordering      **fractional**
 
 Ported rather than imported: ``livebench`` is not on PyPI, and its
 ``AMPS_Hard`` scorer pulls in sympy, latex2sympy2, lark and antlr4 and *raises*
-without ``OPENAI_API_KEY``. This arm excludes AMPS_Hard (D050), so vendoring the
+without ``OPENAI_API_KEY``. This arm excludes AMPS_Hard, so vendoring the
 two scorers it does use avoids four dependencies and a second vendor entirely.
 
 Source: ``livebench/process_results/math/{math_competitions,olympiad}/utils.py``
@@ -33,7 +33,7 @@ So a model that emits two confident numbers where seven are required scores
 LiveBench does. It is not harmless here: GEPA *optimizes* this number, and
 "name only the positions you are sure of" is a prompt-level change that raises
 the score without solving anything -- and it would raise it for both arms,
-flattening exactly the partial-credit signal olympiad was kept for (D050).
+flattening exactly the partial-credit signal olympiad was kept for.
 
 We therefore divide by ``len(ground_truth)``, which is what upstream's own
 ``match_expression_completions_to_ground_truth`` does -- a function defined at
@@ -375,7 +375,7 @@ def grade(answer: str, ground_truth: str, *, subtask: str, question: str) -> Gra
 
 
 def answer_feedback(graded: Grade, ground_truth: str) -> str:
-    """Gold-revealing feedback. TRAIN ids only (D028)."""
+    """Gold-revealing feedback. TRAIN ids only."""
     if graded.scorer == "olympiad":
         correct, total = graded.positions
         return (

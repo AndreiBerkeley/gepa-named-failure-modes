@@ -181,7 +181,7 @@ def test_train_instances_take_the_live_path_and_val_takes_the_cache(wired):
 
 
 def test_seed_candidate_val_evaluation_is_still_fully_replayed(wired):
-    """The scoping fix must not have broken D009's replay."""
+    """The scoping fix must not have broken the seed-replay guarantee."""
     adapter, val_ids, train_ids, solver, grader, tmp_path = wired
     calls_before = solver.calls
     result = _run(adapter, val_ids, train_ids, tmp_path, max_metric_calls=1, name="r3")

@@ -171,7 +171,7 @@ def test_selected_models_are_priced(model):
 def test_selected_models_use_an_inference_profile(model):
     """Both are INFERENCE_PROFILE-only on this account: the bare
     `anthropic.*` id is not directly invocable, so a profile prefix is
-    mandatory. Verified via ListFoundationModels on 2026-08-07."""
+    mandatory. Verified via ListFoundationModels."""
     assert model.startswith(("global.anthropic.", "us.anthropic."))
 
 

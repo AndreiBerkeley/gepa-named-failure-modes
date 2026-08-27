@@ -5,7 +5,7 @@
 
 Deterministic given the seed, so re-running overwrites with identical files.
 Refuses to overwrite differing manifests without --force: every run's val
-subscores are keyed positionally against these ids (F014), so silently changing
+subscores are keyed positionally against these ids, so silently changing
 a manifest between seeds would make the seeds incomparable.
 """
 
@@ -63,7 +63,7 @@ def main() -> int:
             raise SystemExit(
                 f"REFUSING TO OVERWRITE: {path} exists and differs.\n"
                 "Seeds already run against the old manifest would become incomparable\n"
-                "-- gepa keys val subscores POSITIONALLY against these ids (F014).\n"
+                "-- gepa keys val subscores POSITIONALLY against these ids.\n"
                 "  overwrite deliberately:  --force"
             )
         path.write_text(payload, encoding="utf-8")

@@ -5,7 +5,7 @@ Unlike HotpotQA, **nothing is sampled here**. AppWorld ships canonical splits an
 the published results (ACE, the leaderboard) are reported on them, so inventing
 our own would make our numbers incomparable with the only GEPA baseline that
 exists for this benchmark. The manifests exist to *record* which ids we used, as
-committed stage artifacts (D005), not to choose them.
+committed stage artifacts, not to choose them.
 
 The mapping to GEPA's three roles:
 
@@ -21,7 +21,7 @@ test    test_normal           168  held-out; the headline comparison
 the harder distribution, and ACE reports it separately; mixing it into test
 would make our test score incomparable with the published numbers.
 
-**val = 57 is small and is the known weakness of this arm** (F022). It is close
+**val = 57 is small and is the known weakness of this arm**. It is close
 to the val=60 that proved noise-dominated on SWE-Bench. What makes it tolerable
 is partial credit: AppWorld scores a fraction of substantive requirements per
 task rather than 0/1, so a 57-task val carries far more information than 60
@@ -45,7 +45,7 @@ ROLE_TO_SPLIT = {"train": "train", "val": "dev", "test": "test_normal"}
 
 #: AppWorld lives in its own WSL venv: it pins pydantic <2 while gepa and litellm
 #: need pydantic v2, so its task ids are read out through a subprocess rather
-#: than imported (F034).
+#: than imported.
 WSL_DISTRO = "Ubuntu-24.04"
 WSL_PYTHON = "~/appworld/.venv/bin/python"
 
@@ -90,7 +90,7 @@ def main() -> int:
             "appworld_split": split,
             "n": len(ids),
             # Sorted: gepa keys val subscores and the Pareto frontier by POSITION,
-            # not by id (F014), so a stable order is load-bearing.
+            # not by id, so a stable order is load-bearing.
             "task_ids": sorted(ids),
         }
         path = args.out / f"{role}.json"

@@ -4,7 +4,7 @@ Deliberately depends on nothing but the standard library. AppWorld pins
 ``pydantic >=1.9,<2.0`` while gepa and litellm require pydantic v2, so the two
 cannot share an environment -- and AppWorld's own ``remote_environment_url``
 client does not help, because it still imports the package that conflicts
-(F034). Talking to the server over plain JSON sidesteps the problem entirely:
+. Talking to the server over plain JSON sidesteps the problem entirely:
 the server runs in its own venv (in WSL, where ``signal.SIGALRM`` exists), and
 this side imports nothing from it.
 
@@ -57,7 +57,7 @@ class TaskResult:
       leaderboard and the published GEPA/ACE comparisons report, so it is the
       headline figure and must not be redefined.
     * ``score`` -- the fraction of **substantive** requirements passed, used for
-      optimization only. Partial credit is why this benchmark was chosen (D040):
+      optimization only. Partial credit is why this benchmark was chosen:
       a binary metric makes a minibatch comparison a coin flip, which is what
       left the SWE-Bench round unable to discriminate.
 

@@ -3,8 +3,8 @@
 
 Every optimization run -- all 3 seeds, both arms -- replays this result instead
 of recomputing it, so all runs start from literally identical state rather than
-a re-sampled approximation (D009). It is also a shared one-time pipeline cost,
-excluded from every per-seed dollar budget (D013).
+a re-sampled approximation. It is also a shared one-time pipeline cost,
+excluded from every per-seed dollar budget.
 
 Cost: ~$7.14 (100 rollouts at the measured mean of $0.0714).
 Wall clock: ~0.8 h at 4 workers with the val images pre-pulled.

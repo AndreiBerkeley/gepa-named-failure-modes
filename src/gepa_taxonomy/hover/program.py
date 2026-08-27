@@ -27,7 +27,7 @@ Gold blindness
 --------------
 Structural, and structurally only: :class:`Task` is frozen with ``slots`` and
 carries no field a supporting-fact title could travel on. The value-based audit
-is NOT applied, for the same reason as HotpotQA (F027): on this task gold titles
+is NOT applied, for the same reason as HotpotQA: on this task gold titles
 are the article names of entities the claim names outright, so they legitimately
 appear in the claim, in every correctly retrieved passage, and in any summary
 written from one. Auditing for them detects retrieval working, not leaking.
@@ -174,7 +174,7 @@ class Rollout:
 
         ``module_calls`` carries FULL prompts and outputs, not digests -- a
         trace of digests cannot be judged and cannot seed taxonomy generation
-        (F012).
+       .
         """
         return {
             "example_id": self.example_id,

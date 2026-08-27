@@ -2,7 +2,7 @@
 
 The property that matters most here is not a size or a ratio -- it is that
 train/val and test come from **different pools with disjoint constraint
-vocabularies** (D055). An earlier version split the 300-instance IFBench test set
+vocabularies**. An earlier version split the 300-instance IFBench test set
 three ways, which trained the optimizer on the out-of-distribution constraints it
 was then scored against. Both arms would have shared that leak, so the A/B would
 not have been biased -- it would simply have measured constraint memorisation
@@ -75,7 +75,7 @@ class TestTrainVal:
         )
 
     def test_multi_constraint_share_matches_between_train_and_val(self):
-        """Partial credit is what keeps the acceptance gate informative (F036),
+        """Partial credit is what keeps the acceptance gate informative,
         and it lives entirely in the multi-constraint instances."""
         pool = {str(r["key"]): r for r in _pool()}
         m = build_train_val(_pool())
@@ -112,7 +112,7 @@ class TestCommittedManifests:
         return json.loads((MANIFESTS / f"{name}.json").read_text(encoding="utf-8"))
 
     def test_train_and_val_come_from_the_training_pool_and_test_does_not(self):
-        """The whole point of D055. If test were drawn from the same pool, the
+        """The whole point of the recorded requirement. If test were drawn from the same pool, the
         optimizer would see the OOD constraints it is scored on."""
         assert self._load("train")["dataset"] == TRAIN_DATASET
         assert self._load("val")["dataset"] == TRAIN_DATASET

@@ -189,7 +189,7 @@ def test_the_optimizer_finds_the_better_candidate(tmp_path, network):
 
 def test_reflection_spend_is_written_through_for_the_watchdog(tmp_path, network):
     """The out-of-process watchdog can only enforce a ceiling on what is on
-    disk; unlogged reflection spend makes that ceiling under-count (D030)."""
+    disk; unlogged reflection spend makes that ceiling under-count."""
     train, val, adapter, reflection_lm, stopper, *_ = _build(tmp_path)
     gepa.optimize(
         seed_candidate=dict(SEED_CANDIDATE),

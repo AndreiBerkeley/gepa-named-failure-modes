@@ -1,4 +1,4 @@
-"""Deterministic splits over IFBench, following GEPA's published setup (D055).
+"""Deterministic splits over IFBench, following GEPA's published setup.
 
 Two pools, not one
 ------------------
@@ -33,7 +33,7 @@ Two consequences worth naming
 **Partial credit is much better than the test set suggests.** IF-RLVR carries 1-5
 constraints per instance (25/25/24/19/7 %), so ~75% of train and val instances
 can score strictly between 0 and 1. Selection happens on val, so the acceptance
-gate sees real granularity -- the "85% binary" limitation (F047) applies only to
+gate sees real granularity -- the "85% binary" limitation applies only to
 the final test measurement.
 
 **val=300 restores HotpotQA's search pressure.** At val=120 a $60 budget bought
@@ -70,7 +70,7 @@ VAL_SIZE = 300
 
 @dataclass(frozen=True, slots=True)
 class SplitManifest:
-    """A committed stage artifact (D005): reproducible from seed + revision."""
+    """A committed stage artifact: reproducible from seed + revision."""
 
     name: str
     seed: int
@@ -86,7 +86,7 @@ class SplitManifest:
             "dataset": self.dataset,
             "dataset_split": self.dataset_split,
             "n": self.n,
-            # gepa keys val subscores POSITIONALLY (F014), so this order IS the
+            # gepa keys val subscores POSITIONALLY, so this order IS the
             # run's order. It only has to be deterministic; sorting numerically
             # where the ids allow keeps it legible too.
             "example_ids": sorted(self.example_ids, key=_sort_key),

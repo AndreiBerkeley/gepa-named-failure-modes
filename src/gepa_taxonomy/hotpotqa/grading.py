@@ -136,7 +136,7 @@ def answer_feedback(prediction: str, gold: Gold) -> str:
     """Feedback for the answering stage: the score and the correct answer.
 
     The gold answer is shown because this is optimizer-level feedback on TRAIN
-    instances, which is standard GEPA practice (D028). The program itself never
+    instances, which is standard GEPA practice. The program itself never
     sees it -- ``assert_gold_free`` guards every prompt.
     """
     f1 = answer_f1(prediction, gold.answer)

@@ -67,7 +67,7 @@ def _response(content: str):
 
 def _instances(n: int = 6) -> list[Instance]:
     """Alternates one- and two-constraint instances, mirroring the real pool's
-    mix (F047) so partial credit is actually exercised."""
+    mix so partial credit is actually exercised."""
     out = []
     for i in range(n):
         two = i % 2 == 1
@@ -155,7 +155,7 @@ def test_the_seed_prompts_are_the_published_ones(tmp_path):
 
 
 def test_every_rollout_makes_exactly_two_calls(tmp_path, fake_lm):
-    """Cost predictability is the property AppWorld failed (D049)."""
+    """Cost predictability is the property AppWorld failed."""
     instances, adapter, *_ = _build(tmp_path)
     batch = adapter.evaluate(instances, dict(SEED_CANDIDATE), capture_traces=True)
     assert len(fake_lm.rollout_prompts) == 2 * len(instances)
@@ -183,7 +183,7 @@ def test_the_structured_constraint_spec_never_reaches_a_prompt(tmp_path, fake_lm
 
 
 def test_scores_are_assembled_by_index_not_completion_order(tmp_path, fake_lm):
-    """gepa keys val subscores and the Pareto frontier POSITIONALLY (F014). Run
+    """gepa keys val subscores and the Pareto frontier POSITIONALLY. Run
     it concurrently, which is when completion order can drift."""
     instances, adapter, *_ = _build(tmp_path, workers=4)
     batch = adapter.evaluate(instances, dict(SEED_CANDIDATE), capture_traces=True)

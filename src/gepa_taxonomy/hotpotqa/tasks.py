@@ -103,7 +103,7 @@ def assert_gold_free(text: str, gold: Gold, *, where: str) -> None:
     Applied to this pipeline it does not detect leaks, it detects retrieval
     working -- and because the adapter scores a raised rollout 0.0, it converts
     a healthy run into an all-zero one that looks exactly like a real negative
-    result. That cost a killed run to learn (F027).
+    result. That cost a killed run to learn.
 
     Gold blindness here is enforced by construction instead: :class:`Task` has
     no field gold can travel on, and the program is handed nothing else.

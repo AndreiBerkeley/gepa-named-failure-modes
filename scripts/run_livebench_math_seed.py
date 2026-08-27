@@ -14,7 +14,7 @@ identical across arms. With the flag absent, no enricher or judge is constructed
 
     # treatment, same budget, same seed
     PYTHONUTF8=1 uv run python scripts/run_livebench_math_seed.py --seed 1 --budget 30 \
-        --taxonomy results/taxonomy/livebench_math_v1/taxonomy.pruned.json
+        --taxonomy results/taxonomy/<benchmark>-auto-v1/taxonomy.json
 """
 
 from __future__ import annotations
@@ -41,7 +41,7 @@ def load_instances(manifest_path: Path):
     if missing:
         raise SystemExit(f"{len(missing)} manifest ids missing from the dataset, e.g. {sorted(missing)[:3]}")
     # Manifest order, which is sorted: gepa keys val subscores and the Pareto
-    # frontier POSITIONALLY (F014), so this ordering is load-bearing.
+    # frontier POSITIONALLY, so this ordering is load-bearing.
     return [by_id[i] for i in sorted(wanted)]
 
 
@@ -100,14 +100,14 @@ def main() -> int:
         type=Path,
         default=REPO / "results" / "livebench_math_base_val" / "base_val_cache.json",
         help="shared base-candidate val evaluation, replayed so every seed and both "
-        "arms start from byte-identical state (D009). Pass 'none' to disable.",
+        "arms start from byte-identical state. Pass 'none' to disable.",
     )
     parser.add_argument(
         "--resume",
         action="store_true",
         help="deliberately resume from an existing gepa_state.bin. Without this the "
         "run REFUSES to start when state exists, because gepa resumes silently and "
-        "would inherit stale results (F029).",
+        "would inherit stale results.",
     )
     args = parser.parse_args()
 
@@ -130,7 +130,7 @@ def main() -> int:
     # Checked BEFORE credentials: the cheapest check that can abort a run should
     # be first. gepa RESUMES silently from an existing run_dir, so a run
     # relaunched after a code fix would inherit the OLD code's val scores,
-    # candidate pool and Pareto frontier -- invisibly (F029).
+    # candidate pool and Pareto frontier -- invisibly.
     state = out / "gepa_state.bin"
     if state.exists() and not args.resume:
         raise SystemExit(
@@ -146,7 +146,7 @@ def main() -> int:
     # gepa's logger opens the run log with no encoding argument, so on Windows it
     # uses cp1252. Reflection routinely proposes prompts containing emoji or
     # typographic punctuation, and writing one raises UnicodeEncodeError -- which
-    # killed a run at iteration 2 (F031).
+    # killed a run at iteration 2.
     import locale
 
     if (locale.getpreferredencoding(False) or "").lower() not in {"utf-8", "utf8"}:
@@ -191,7 +191,7 @@ def main() -> int:
                 f"base-val cache not found: {args.base_val_cache}\n"
                 "Every seed and both arms must start from the SAME base-candidate\n"
                 "evaluation, or the paired comparison carries an extra 90-rollout\n"
-                "draw of noise on top of the treatment (D009).\n\n"
+                "draw of noise on top of the treatment.\n\n"
                 "  build it:  PYTHONUTF8=1 uv run python scripts/build_livebench_math_base_val.py\n"
                 "  or opt out deliberately:  --base-val-cache none"
             )
@@ -204,14 +204,14 @@ def main() -> int:
             )
         # D009's completeness guarantee, checked ONCE against the val manifest --
         # not inferred from a per-lookup miss, which is legitimate for train
-        # instances and crashed a run when treated as an error (F016).
+        # instances and crashed a run when treated as an error.
         seed_cache.assert_covers(i.task.example_id for i in val)
         print(f"base-val cache: {len(seed_cache.entries)} val instances will be replayed (no spend)")
 
     adapter = LiveBenchMathAdapter(
         program=program,
         instances=instances_by_id([*train, *val]),
-        # Ground truth reaches reflection for TRAIN ids only (D028).
+        # Ground truth reaches reflection for TRAIN ids only.
         reflection_gold_ids=frozenset(i.task.example_id for i in train),
         max_transport_errors=args.max_transport_errors,
         max_workers=args.workers,
@@ -250,7 +250,7 @@ def main() -> int:
         )
         # Judge spend competes for the SAME budget as rollouts and reflection.
         # The treatment arm may buy fewer rollouts for the same money; that trade
-        # is what the comparison measures, not a confound (D032).
+        # is what the comparison measures, not a confound.
         meters.append(judge_meter)
         print(f"taxonomy: {args.taxonomy} ({len(taxonomy)} codes, fingerprint {taxonomy.fingerprint})")
 
@@ -262,7 +262,7 @@ def main() -> int:
     )
     # Free preflight. gepa SWALLOWS a non-conformant reflection LM and logs "did
     # not propose a new candidate", so the run would burn its budget while never
-    # leaving the seed candidate. Fail here instead (F025).
+    # leaving the seed candidate. Fail here instead.
     print(f"reflection LM preflight: {verify_reflection_lm(reflection_lm)}")
 
     stopper = MaxTotalCostStopper(args.budget, meters)

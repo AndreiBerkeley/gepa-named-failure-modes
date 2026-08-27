@@ -40,7 +40,7 @@ while true; do
     exit 1
   fi
   # Unproductive-optimization guard: proposals keep coming but none is ever
-  # accepted -- burns money producing nothing (2026-08-08 failure). Read from
+  # accepted -- burns money producing nothing. Read from
   # run_log.json, not the console: a run launched without `tee` has no log.
   [ -f $RUNLOG ] || { SCORED=0; ACCEPTS=1; }
   [ -f $RUNLOG ] && SCORED=$(jq '[.[] | select((.subsample_scores // []) != [] or (.new_subsample_scores // []) != [])] | length' $RUNLOG 2>/dev/null || echo 0)

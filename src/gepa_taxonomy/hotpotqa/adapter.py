@@ -17,7 +17,7 @@ proves nothing.
 Gold in reflection
 ------------------
 Correct answers appear in reflective feedback only for ids in
-``reflection_gold_ids`` -- the TRAIN manifest (D028). Optimizer-level
+``reflection_gold_ids`` -- the TRAIN manifest. Optimizer-level
 supervision on train instances is standard GEPA practice; val and test gold
 never enters reflection, and the program is gold-blind on every split.
 """
@@ -68,7 +68,7 @@ class HotpotQAAdapter:
     reflection_gold_ids: frozenset[str] | None = None
     #: gepa reads this attribute UNCONDITIONALLY (api.py:224). Omitting it makes
     #: every reflection silently fail, so a run burns its budget and never
-    #: leaves the seed candidate (D016).
+    #: leaves the seed candidate.
     propose_new_texts: None = None
 
     #: Abort once this many rollouts have died of transport errors rather than
@@ -80,7 +80,7 @@ class HotpotQAAdapter:
     #: starts climbing, which is the signal to lower it.
     max_workers: int = 1
     #: Replay of the base candidate's val evaluation, shared by every seed and
-    #: both arms (D009). Without it each run re-samples the starting state, so
+    #: both arms. Without it each run re-samples the starting state, so
     #: the baseline and taxonomy arms at the same seed would differ by an
     #: independent 300-rollout draw as well as by the treatment -- noise added
     #: to precisely the comparison the experiment exists to make.
@@ -122,7 +122,7 @@ class HotpotQAAdapter:
         previous one's output, so there is nothing to overlap there.
 
         Results are assembled **by index, not by completion order**. gepa keys
-        val subscores and the Pareto frontier positionally (F014), so a batch
+        val subscores and the Pareto frontier positionally, so a batch
         returned in completion order would silently attach every score to the
         wrong instance.
         """
@@ -247,10 +247,10 @@ class HotpotQAAdapter:
         and the base candidate is also legitimately evaluated on TRAIN
         minibatches during reflective mutation, which are ordinary billed
         rollouts. Treating that second case as an incomplete cache killed a run
-        once (F016); completeness is asserted once at launch instead.
+        once; completeness is asserted once at launch instead.
 
         A replayed rollout issues no LM call, so it contributes no spend -- which
-        satisfies the budget exclusion for the shared seed evaluation (D013a) by
+        satisfies the budget exclusion for the shared seed evaluation by
         construction rather than by special-casing the stopper.
         """
         if self.seed_cache is None:

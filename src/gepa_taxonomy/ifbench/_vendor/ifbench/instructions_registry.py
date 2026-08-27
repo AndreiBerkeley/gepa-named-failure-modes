@@ -22,7 +22,6 @@ The only change from upstream is that its imports are made package-relative.
 
 from gepa_taxonomy.ifbench._vendor.ifbench import instructions
 
-
 INSTRUCTION_DICT = {
     "count:word_count_range": instructions.WordCountRangeChecker,
     "count:unique_word_count" : instructions.UniqueWordCountChecker,

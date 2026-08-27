@@ -409,7 +409,7 @@ def test_adapter_runs_the_program_for_an_out_of_scope_instance(instance):
 
 
 def test_assert_covers_still_enforces_val_completeness():
-    """D009's guarantee survives the scoping fix -- just moved to launch time."""
+    """the recorded requirement guarantee survives the scoping fix -- just moved to launch time."""
     from gepa_taxonomy.seed_cache import SeedEvaluationCache
 
     cache = SeedEvaluationCache.build(SEED_CANDIDATE, {"v1": {"score": 1.0, "output": {}, "trace": {}}})
@@ -419,7 +419,7 @@ def test_assert_covers_still_enforces_val_completeness():
 
 
 # --------------------------------------------------------------------------
-# Reflective dataset: harness substance + train-only gold (D028)
+# Reflective dataset: harness substance + train-only gold
 # --------------------------------------------------------------------------
 
 
@@ -457,7 +457,7 @@ def _adapter_for(instance, *, grader=None, reflection_gold_ids=None):
 
 def test_reflective_dataset_surfaces_harness_substance(instance):
     """Reflection must see WHY the harness failed a patch, not a bare 0 --
-    a bare score produced only generic, informationless rewrites (D028)."""
+    a bare score produced only generic, informationless rewrites."""
     ad = _adapter_for(instance, grader=SubstanceGrader())
     res = ad.evaluate([instance.task.instance_id], SEED_CANDIDATE, capture_traces=True)
     ds = ad.make_reflective_dataset(SEED_CANDIDATE, res, COMPONENTS)
@@ -500,7 +500,7 @@ def test_skip_gate_reason_reaches_reflection(instance):
 
 
 def test_reference_patch_present_for_reflection_gold_ids(instance):
-    """Train-manifest ids get the gold patch, neutrally labeled (D028)."""
+    """Train-manifest ids get the gold patch, neutrally labeled."""
     iid = instance.task.instance_id
     ad = _adapter_for(instance, reflection_gold_ids={iid})
     res = ad.evaluate([iid], SEED_CANDIDATE, capture_traces=True)
@@ -675,7 +675,7 @@ def test_stored_trace_keeps_the_produced_patch(instance):
 
 def test_reflection_spend_is_written_to_disk(tmp_path):
     """The watchdog enforces the dollar ceiling out of process, so it can only
-    count what is on disk. Reflection spend was invisible to it (D030)."""
+    count what is on disk. Reflection spend was invisible to it."""
     import json
 
     from gepa_taxonomy.bedrock import MeteredReflectionLM

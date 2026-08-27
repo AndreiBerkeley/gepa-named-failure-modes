@@ -8,7 +8,7 @@ What is optimizable, and why only this
 --------------------------------------
 The published file is 267 lines: 30 of intro and API guidance, **215 of a single
 worked demonstration**, 18 of numbered key instructions, and a 5-line task
-block. GEPA optimizes **one** component here (D046), and we scope it to the
+block. GEPA optimizes **one** component here, and we scope it to the
 guidance — intro plus key instructions, ~48 lines — leaving the demonstration
 and the task block as fixed scaffolding.
 
@@ -22,7 +22,7 @@ that it is correct.
 The trade is stated plainly because it weakens one thing: ACE ran GEPA over the
 whole template, so our 46.4% reference point is now approximate rather than
 exact. It was already approximate — they used a smaller open-source model and we
-run Haiku 4.5 (F037).
+run Haiku 4.5.
 """
 
 from __future__ import annotations

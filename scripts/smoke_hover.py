@@ -3,7 +3,7 @@
 
 Everything the offline tests cannot check: that the BM25 index actually contains
 the articles HoVer names, that retrieval finds them, and what a rollout costs.
-The cost number is the point -- the AppWorld estimate was 87% low (F042) and the
+The cost number is the point -- the AppWorld estimate was 87% low and the
 LiveBench-Math one 38% high, both from extrapolating the wrong shape.
 
     PYTHONUTF8=1 uv run python scripts/smoke_hover.py

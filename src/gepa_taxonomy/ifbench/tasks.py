@@ -1,6 +1,6 @@
 """IFBench task and gold types, spanning TWO datasets with disjoint vocabularies.
 
-Following GEPA's published setup (D055):
+Following GEPA's published setup:
 
 * **train / val** -- ``allenai/IF_multi_constraints_upto5`` (IF-RLVR Train),
   IFEval-style constraints, verified by the ``ifevalg`` registry.

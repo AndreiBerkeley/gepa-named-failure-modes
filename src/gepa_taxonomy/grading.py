@@ -155,7 +155,7 @@ class LocalDockerGrader:
 
     def _instance_substance(self, run_id: str, instance_id: str) -> dict[str, Any]:
         """Per-instance harness artifacts, surfaced so reflection sees *why* a
-        patch failed rather than a bare 0 (D028).
+        patch failed rather than a bare 0.
 
         Best-effort by design: a missing or malformed artifact yields absent
         fields, never an exception -- grading must not fail because a log did.

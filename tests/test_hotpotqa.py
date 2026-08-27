@@ -60,7 +60,7 @@ def test_splits_are_stratified_by_level_and_type():
 
 
 def test_manifest_ids_are_sorted():
-    """gepa keys val subscores and the Pareto frontier POSITIONALLY (F014), so a
+    """gepa keys val subscores and the Pareto frontier POSITIONALLY, so a
     manifest's order is load-bearing and must be stable."""
     manifest = build_splits(_pool(), seed=5)["val"]
     assert manifest.to_json()["example_ids"] == sorted(manifest.example_ids)
@@ -250,7 +250,7 @@ def test_second_hop_retrieves_with_the_generated_query():
 
 def test_trace_carries_full_prompts_not_digests():
     """A digest-only trace cannot be judged and cannot seed taxonomy generation
-    -- a mistake this project already paid for once (F012)."""
+    -- a mistake this project already paid for once."""
     program = _program(["s1", "q", "s2", "ans"])
     trace = program.run(Task("q1", "who?"), SEED_CANDIDATE).to_trace()
     calls = trace["module_calls"]
@@ -278,7 +278,7 @@ def test_gold_titles_flowing_through_the_pipeline_do_not_break_a_rollout():
     on HotpotQA that entity IS a gold supporting-fact title. Under the old
     value-based audit this raised at ``create_query_hop2``, the adapter scored it
     0.0, and the run produced an all-zero result indistinguishable from a real
-    negative. Gold blindness is structural here instead (F027).
+    negative. Gold blindness is structural here instead.
     """
     program = _program(
         ["Scott Derrickson is an American director.", "q", "s2", "Paris"],
@@ -331,7 +331,7 @@ def _adapter(replies, **kw):
 
 def test_adapter_returns_a_real_evaluation_batch():
     """Not a look-alike: a 3-field stand-in for gepa's 5-field dataclass killed
-    a launch once, after paid calls (F013)."""
+    a launch once, after paid calls."""
     adapter, instances = _adapter(["s1", "q", "s2", "Paris"])
     batch = adapter.evaluate(list(instances.values()), SEED_CANDIDATE, capture_traces=True)
     assert isinstance(batch, EvaluationBatch)
@@ -342,7 +342,7 @@ def test_adapter_returns_a_real_evaluation_batch():
 
 def test_adapter_declares_propose_new_texts():
     """gepa reads this attribute unconditionally; omitting it makes every
-    reflection silently fail (D016)."""
+    reflection silently fail."""
     adapter, _ = _adapter(["s1", "q", "s2", "a"])
     assert adapter.propose_new_texts is None
 
@@ -418,7 +418,7 @@ def test_error_counts_reach_the_run_summary():
 
 def test_parallel_evaluation_preserves_batch_order():
     """Load-bearing: gepa keys val subscores and the Pareto frontier POSITIONALLY
-    (F014). Assembling results in completion order would attach every score to
+   . Assembling results in completion order would attach every score to
     the wrong instance -- silently, and only on the concurrent path."""
     import random
     import time
@@ -522,7 +522,7 @@ def test_a_transport_storm_still_aborts_on_the_concurrent_path():
 
 
 # ---------------------------------------------------------------------------
-# Shared base-val replay (D009)
+# Shared base-val replay
 # ---------------------------------------------------------------------------
 
 
@@ -547,7 +547,7 @@ def _seed_cache_for(instances, answers):
 
 
 def test_base_candidate_val_rollouts_are_replayed_without_any_lm_call():
-    """D009: every seed and both arms must start from identical state. A live
+    """the recorded requirement: every seed and both arms must start from identical state. A live
     re-evaluation re-samples it -- two real runs of the same candidate measured
     56.0% and 56.5%."""
     instances = _instances_n(4)
@@ -562,7 +562,7 @@ def test_base_candidate_val_rollouts_are_replayed_without_any_lm_call():
     assert adapter.replayed == 4
     assert program.lm.prompts == [], "a replayed rollout must issue no LM call"
     assert batch.scores == [1.0] * 4
-    assert adapter.spend_usd == 0.0, "replay must contribute no spend (D013a)"
+    assert adapter.spend_usd == 0.0, "replay must contribute no spend"
 
 
 def test_replayed_traces_keep_full_prompts_so_they_remain_judgeable():
@@ -599,7 +599,7 @@ def test_a_mutated_candidate_is_never_replayed():
 def test_a_train_instance_miss_falls_through_instead_of_raising():
     """The base candidate is legitimately evaluated on TRAIN minibatches during
     reflective mutation. Treating that miss as an incomplete cache killed a run
-    (F016); completeness is asserted once at launch instead."""
+   ; completeness is asserted once at launch instead."""
     val = _instances_n(2)
     cache = _seed_cache_for(val, ["Paris"] * 2)
     train = [

@@ -11,7 +11,7 @@ at equal spend it explores fewer candidates. Comparing best-val at equal *spend*
 therefore penalises it for the judge, and comparing at equal *wall-clock* is
 meaningless. Depth -- candidates explored -- is the axis on which the two arms
 do comparable work, so each taxonomy seed is stopped at the accept count its own
-baseline seed reached (D059).
+baseline seed reached.
 
 Pairing is by seed, not by mean. The three baseline seeds span 1.9pp on HotpotQA
 and 3.9pp on IFBench purely from GEPA's search variance, which is the same order
@@ -38,7 +38,7 @@ REPO = Path(__file__).resolve().parents[1]
 RUNS = REPO / "results" / "runs"
 
 #: Pre-resume spend the meter never saw, because it is process-local and
-#: restarts at zero on resume (F064). Reconstructed, not measured -- read the
+#: restarts at zero on resume. Reconstructed, not measured -- read the
 #: totals for these two as approximate.
 PRE_RESUME_USD = {
     "hotpotqa-taxonomy-seed2": 31.20,
@@ -51,7 +51,7 @@ PRE_RESUME_USD = {
     # twice:
     #   1. original    -> graceful stop at 11 candidates, metered exactly $31.69
     #                     (preserved in summary.presume.json)
-    #   2. resume A    -> aborted on the credential failure (F067). Ran ~1h and
+    #   2. resume A    -> aborted on the credential failure. Ran ~1h and
     #                     NEVER wrote a summary, so its spend is invisible to
     #                     every metered artifact: ~$10.87, reconstructed.
     #   3. resume B    -> completed; its summary.json covers only itself.
@@ -143,7 +143,7 @@ def main() -> int:
 
     print("\ndelta   = taxonomy - baseline, both at baseline depth")
     print("d_trunc = how much truncating to baseline depth cost the taxonomy arm")
-    print("~       = includes a reconstructed pre-resume component (F064)")
+    print("~       = includes a reconstructed pre-resume component")
     return 0
 
 

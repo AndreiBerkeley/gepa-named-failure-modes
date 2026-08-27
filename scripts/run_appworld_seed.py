@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Run one AppWorld seed. **This spends money.** Launch it deliberately.
 
-Single-component ReAct agent (D046), seeded with the published instruction. The
+Single-component ReAct agent, seeded with the published instruction. The
 baseline arm is unmodified gepa v0.1.4 plus the dollar-budget stopper; the
 treatment arm adds ``--taxonomy PATH`` and differs by exactly one key in the
 reflective dataset.
@@ -10,8 +10,8 @@ The AppWorld server
 -------------------
 AppWorld cannot run in this process: it pins ``pydantic <2`` against gepa's and
 litellm's v2, and its executor calls ``signal.SIGALRM``, which does not exist on
-Windows (F022). It therefore runs in WSL, in its own venv, and we talk to it over
-HTTP (F034). This script starts it if it is not already up, and leaves it running
+Windows. It therefore runs in WSL, in its own venv, and we talk to it over
+HTTP. This script starts it if it is not already up, and leaves it running
 afterwards so a chain of seeds pays the startup once.
 
     PYTHONUTF8=1 uv run python scripts/run_appworld_seed.py --seed 1 --budget 60
@@ -37,7 +37,7 @@ def ensure_servers(base_port: int, n: int, wait_s: int = 120) -> int:
 
     One server per worker is mandatory, not an optimisation: the server keeps its
     task world in a module-level global and rejects requests for any other task
-    (F040), so two workers sharing a server clobber each other and two of three
+   , so two workers sharing a server clobber each other and two of three
     rollouts die. Idempotent -- already-running ports are left alone, so a chain
     of seeds pays startup once.
     """
@@ -94,7 +94,7 @@ def ensure_server(base_url: str, port: int, wait_s: int = 120) -> bool:
 def load_task_ids(manifest_path: Path) -> list[str]:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     # Sorted in the manifest already; gepa keys val subscores and the Pareto
-    # frontier POSITIONALLY (F014), so the order is load-bearing.
+    # frontier POSITIONALLY, so the order is load-bearing.
     return list(manifest["task_ids"])
 
 
@@ -134,7 +134,7 @@ def main() -> int:
         type=Path,
         default=REPO / "results" / "appworld_base_val" / "base_val_cache.json",
         help="shared base-candidate val evaluation, replayed so every seed and both "
-        "arms start byte-identically (D044). Build it with "
+        "arms start byte-identically. Build it with "
         "scripts/build_appworld_base_val.py. Pass 'none' to disable.",
     )
     parser.add_argument("--resume", action="store_true")
@@ -159,7 +159,7 @@ def main() -> int:
 
     # gepa RESUMES silently from an existing run_dir (api.py:176), inheriting the
     # old run's scores and candidate pool -- invisibly, because the base
-    # candidate is never re-evaluated (F029).
+    # candidate is never re-evaluated.
     state = out / "gepa_state.bin"
     if state.exists() and not args.resume:
         raise SystemExit(
@@ -169,7 +169,7 @@ def main() -> int:
     out.mkdir(parents=True, exist_ok=True)
 
     # gepa's logger writes the run log with the platform default encoding, and a
-    # proposed prompt containing an emoji kills the run on Windows (F031).
+    # proposed prompt containing an emoji kills the run on Windows.
     import locale
 
     if (locale.getpreferredencoding(False) or "").lower() not in {"utf-8", "utf8"}:
@@ -212,7 +212,7 @@ def main() -> int:
                 f"base-val cache not found: {args.base_val_cache}\n"
                 "Every seed and both arms must start from the SAME base-candidate\n"
                 "evaluation, or the paired comparison carries an extra draw of noise\n"
-                "on top of the treatment (D044).\n\n"
+                "on top of the treatment.\n\n"
                 "  build it:  PYTHONUTF8=1 uv run python scripts/build_appworld_base_val.py\n"
                 "  or opt out deliberately:  --base-val-cache none"
             )
@@ -223,7 +223,7 @@ def main() -> int:
                 "Rebuild: scripts/build_appworld_base_val.py --force"
             )
         # Checked ONCE against the val manifest, not per lookup: a TRAIN-task
-        # miss is legitimate and crashed a run when treated as an error (F016).
+        # miss is legitimate and crashed a run when treated as an error.
         seed_cache.assert_covers(val)
         print(f"base-val cache: {len(seed_cache.entries)} val tasks will be replayed (no spend)")
 
@@ -262,7 +262,7 @@ def main() -> int:
             judge=LLMFailureJudge(taxonomy=taxonomy, lm=judge_call, cache=JudgeCache.open(out / "judge_cache.jsonl")),
         )
         # Judge spend competes for the SAME budget as rollouts and reflection;
-        # that trade is what the comparison measures (D032).
+        # that trade is what the comparison measures.
         meters.append(judge_meter)
         print(f"taxonomy: {args.taxonomy} ({len(taxonomy)} codes, {taxonomy.fingerprint})")
 

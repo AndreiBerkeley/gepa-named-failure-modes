@@ -159,7 +159,7 @@ class Rollout:
         ``module_calls`` carries the FULL prompts and outputs, not digests. A
         trace that keeps only digests cannot be judged and cannot be used for
         taxonomy generation -- a mistake this project has already paid for once
-        (F012), and the reason a cached rollout could not be judged at all.
+       , and the reason a cached rollout could not be judged at all.
         """
         return {
             "example_id": self.example_id,

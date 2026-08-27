@@ -47,7 +47,7 @@ class TestSingleConstraint:
 
 class TestPartialCredit:
     def test_one_of_two_constraints_scores_a_half(self):
-        """The only place partial credit exists: 44 of 300 instances (F047)."""
+        """The only place partial credit exists: 44 of 300 instances."""
         g = grade("one two three four five six seven", TWO_CONSTRAINTS, prompt="")
         assert 0.0 < g.score < 1.0
         assert g.score == pytest.approx(0.5)
@@ -97,7 +97,7 @@ class TestErrorContainment:
 
 class TestFeedback:
     def test_train_feedback_names_the_failed_constraint(self):
-        """Deliberately strong, on D043's principle. PLAN.md ruled IFBench out
+        """Deliberately strong, on the recorded requirement principle. PLAN.md ruled IFBench out
         partly because the diagnosis is already in the baseline feedback --
         weakening it to flatter the taxonomy would be the rigged comparison that
         objection warns about."""

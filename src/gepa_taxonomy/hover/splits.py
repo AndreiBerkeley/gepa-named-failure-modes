@@ -46,7 +46,7 @@ DEFAULT_SIZES: dict[str, int] = {"train": 150, "val": 300, "test": 300}
 
 @dataclass(frozen=True, slots=True)
 class SplitManifest:
-    """A committed stage artifact (D005): reproducible from seed + revision."""
+    """A committed stage artifact: reproducible from seed + revision."""
 
     name: str
     seed: int
@@ -64,7 +64,7 @@ class SplitManifest:
             "n": self.n,
             # Sorted so the manifest is stable under upstream re-ordering, and so
             # positional indices into it are meaningful: gepa keys val subscores
-            # and the Pareto frontier by POSITION, not by id (F014).
+            # and the Pareto frontier by POSITION, not by id.
             "example_ids": sorted(self.example_ids),
         }
 

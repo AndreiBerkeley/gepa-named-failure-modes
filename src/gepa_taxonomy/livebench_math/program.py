@@ -6,7 +6,7 @@
 Exactly two LM calls per rollout, fixed. Cost predictability is load-bearing:
 three seeds under one dollar budget must be comparable, and a variable-cost
 agent gives one seed more iterations than another -- which is what ruled
-AppWorld out (D049).
+AppWorld out.
 
 Why two modules and not one
 ---------------------------
@@ -115,7 +115,7 @@ class Rollout:
         """The trajectory handed to the adapter and to the taxonomy wrapper.
 
         ``module_calls`` carries FULL prompts and outputs, not digests: a trace
-        of digests cannot be judged and cannot seed taxonomy generation (F012).
+        of digests cannot be judged and cannot seed taxonomy generation.
         """
         return {
             "example_id": self.example_id,

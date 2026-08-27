@@ -3,7 +3,7 @@
 
     PYTHONUTF8=1 uv run python scripts/build_hover_splits.py
 
-Manifests are a committed stage artifact (D005): reproducible from the seed plus
+Manifests are a committed stage artifact: reproducible from the seed plus
 the dataset revision, and readable by any stage without re-deriving them. Writing
 them is idempotent -- rerunning at the same seed produces byte-identical files,
 so a rebuild cannot silently move the splits underneath a finished run.

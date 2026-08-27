@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Vendor the two constraint-verifier sets the IFBench arm needs. FREE: downloads.
 
-The arm follows GEPA's published setup (D055), which uses **two different
+The arm follows GEPA's published setup, which uses **two different
 datasets with two disjoint constraint vocabularies**:
 
 * **train / val** come from ``allenai/IF_multi_constraints_upto5`` (IF-RLVR

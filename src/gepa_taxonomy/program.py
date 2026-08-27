@@ -31,8 +31,8 @@ from __future__ import annotations
 
 import re
 from collections.abc import Callable, Sequence
-from pathlib import Path
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Protocol
 
 from gepa_taxonomy.cost import CostMeter, Phase

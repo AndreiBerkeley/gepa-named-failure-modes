@@ -67,7 +67,7 @@ def test_val_hard_cannot_exceed_the_pool(toy):
 
 
 def test_lowering_val_hard_leaves_more_hard_for_test(toy):
-    """The tension recorded as F011/O013, pinned as a property."""
+    """The tension recorded as the recorded requirement/O013, pinned as a property."""
     _ids, difficulty, _repo = toy
     a = _build(toy, val_hard=30)
     b = _build(toy, val_hard=15)
@@ -109,7 +109,7 @@ class TestCommittedManifests:
         assert len(seen) == 500, "manifests must partition Verified exactly"
 
     def test_test_is_disjoint_from_val(self):
-        """The taxonomy comes from val traces; test must stay untouched (D025)."""
+        """The taxonomy comes from val traces; test must stay untouched."""
         assert not (set(load_manifest(MANIFEST_DIR / "test.json")) & set(load_manifest(MANIFEST_DIR / "val.json")))
 
     def test_ids_are_sorted_and_unique(self):

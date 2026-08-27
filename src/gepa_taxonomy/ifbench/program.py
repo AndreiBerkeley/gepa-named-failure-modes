@@ -5,7 +5,7 @@
 
 Exactly two LM calls per rollout, fixed, and no retrieval. Cost predictability is
 load-bearing: three seeds under one dollar budget must be comparable, and a
-variable-cost program gives one seed more iterations than another (D049).
+variable-cost program gives one seed more iterations than another.
 
 Faithful to the published program
 ---------------------------------
@@ -107,7 +107,7 @@ class Rollout:
         """The trajectory handed to the adapter and to the taxonomy wrapper.
 
         ``module_calls`` carries FULL prompts and outputs, not digests: a trace of
-        digests cannot be judged and cannot seed taxonomy generation (F012).
+        digests cannot be judged and cannot seed taxonomy generation.
         """
         return {
             "example_id": self.example_id,

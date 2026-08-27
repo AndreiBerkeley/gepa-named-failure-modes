@@ -25,7 +25,7 @@ and rejects any request for a different task::
 So a server process holds exactly one live task, and the experiment name does
 not isolate anything. An earlier version of this file claimed the opposite and
 gave each worker its own experiment name against a single server; two of three
-smoke rollouts died on that (F040). Concurrency therefore needs **N server
+smoke rollouts died on that. Concurrency therefore needs **N server
 processes on N ports**, and each worker is pinned to one of them.
 """
 
@@ -80,13 +80,13 @@ class AppWorldAdapter:
     #: rollouts from sharing an environment.
     client_factory: Any = None
     #: gepa reads this attribute UNCONDITIONALLY (api.py:224); omitting it makes
-    #: every reflection silently fail (D016).
+    #: every reflection silently fail.
     propose_new_texts: None = None
 
     max_workers: int = 1
     max_transport_errors: int = 25
     #: Replay of the base candidate's val evaluation, shared by every seed and
-    #: both arms (D044). AppWorld rollouts are stochastic — a multi-step agent
+    #: both arms. AppWorld rollouts are stochastic — a multi-step agent
     #: even more so than a fixed 4-call chain — so without this the baseline and
     #: taxonomy arms at the same seed would differ by an independent draw of the
     #: starting state as well as by the treatment.
@@ -232,11 +232,11 @@ class AppWorldAdapter:
         None rather than raising: a mutated candidate is not replayable, and the
         base candidate is also legitimately run on TRAIN tasks during reflective
         mutation, which are ordinary billed rollouts. Treating that second case
-        as an incomplete cache killed a run once (F016).
+        as an incomplete cache killed a run once.
 
         A replayed rollout starts no environment and makes no LM call, so it
         costs nothing -- which is how the shared-evaluation budget exclusion
-        (D013a) holds by construction rather than by special-casing the stopper.
+        holds by construction rather than by special-casing the stopper.
         """
         if self.seed_cache is None:
             return None
@@ -305,7 +305,7 @@ def client_factory(base_port: int, n_ports: int, prefix: str = "gepa", host: str
     """Pin each worker thread to its own AppWorld **server**.
 
     A server holds one live task world globally, so workers must not share one
-    (F040). Threads are assigned ports round-robin on first use and keep them,
+   . Threads are assigned ports round-robin on first use and keep them,
     which means ``n_ports`` servers must actually be running -- see
     ``ensure_servers`` in the run script.
     """

@@ -11,7 +11,7 @@ import json
 
 import pytest
 
-from gepa_taxonomy.hover.grading import Grade, grade, normalize_title, retrieval_feedback, score_feedback
+from gepa_taxonomy.hover.grading import grade, normalize_title, retrieval_feedback, score_feedback
 from gepa_taxonomy.hover.program import COMPONENTS, SEED_CANDIDATE
 from gepa_taxonomy.hover.splits import DEFAULT_SIZES, build_splits, stratum_of
 from gepa_taxonomy.hover.tasks import Gold, instance_from_record
@@ -172,7 +172,7 @@ class TestSplits:
                 assert abs(share - base[h]) < 0.05, f"{name} hop-{h} share {share:.3f} vs pool {base[h]:.3f}"
 
     def test_manifest_ids_are_sorted(self):
-        """gepa keys val subscores positionally (F014), so manifest order is
+        """gepa keys val subscores positionally, so manifest order is
         load-bearing and must not depend on upstream ordering."""
         ids = build_splits(_pool())["val"].to_json()["example_ids"]
         assert ids == sorted(ids)

@@ -16,7 +16,7 @@ a score of 0 with no indication of which module lost the point.
 Gold in reflection
 ------------------
 Correct answers appear in reflective feedback only for ids in
-``reflection_gold_ids`` -- the TRAIN manifest (D028). Optimizer-level
+``reflection_gold_ids`` -- the TRAIN manifest. Optimizer-level
 supervision on train instances is standard GEPA practice; val and test gold
 never enters reflection, and the program is gold-blind on every split.
 """
@@ -60,7 +60,7 @@ class LiveBenchMathAdapter:
     reflection_gold_ids: frozenset[str] | None = None
     #: gepa reads this attribute UNCONDITIONALLY (api.py:224). Omitting it makes
     #: every reflection silently fail, so a run burns its budget and never leaves
-    #: the seed candidate (D016).
+    #: the seed candidate.
     propose_new_texts: None = None
 
     max_transport_errors: int = 25
@@ -69,7 +69,7 @@ class LiveBenchMathAdapter:
     #: -- at which point ``transport_errors`` climbs, which is the signal to drop it.
     max_workers: int = 1
     #: Replay of the base candidate's val evaluation, shared by every seed and
-    #: both arms (D009), so all runs start from byte-identical state.
+    #: both arms, so all runs start from byte-identical state.
     seed_cache: Any | None = None
 
     rollouts: int = 0
@@ -91,7 +91,7 @@ class LiveBenchMathAdapter:
         """Run ``candidate`` over ``batch``, ``max_workers`` instances at a time.
 
         Results are assembled **by index, not by completion order**: gepa keys
-        val subscores and the Pareto frontier positionally (F014), so a batch
+        val subscores and the Pareto frontier positionally, so a batch
         returned in completion order would attach every score to the wrong
         instance -- silently.
         """
@@ -220,7 +220,7 @@ class LiveBenchMathAdapter:
         return None rather than raising: a different candidate is not replayable,
         and the base candidate is also legitimately evaluated on TRAIN minibatches
         during reflective mutation, which are ordinary billed rollouts. Treating
-        that second case as an incomplete cache killed a run once (F016);
+        that second case as an incomplete cache killed a run once;
         completeness is asserted once at launch instead.
         """
         if self.seed_cache is None:

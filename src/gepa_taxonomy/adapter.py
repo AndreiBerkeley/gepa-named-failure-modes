@@ -108,7 +108,7 @@ class SweBenchAdapter:
     repo_cache_dir: Path | None = None
     #: When set, every rollout is ALSO emitted as an AdaMAST-native record with
     #: the full trajectory. Required when this evaluation doubles as the
-    #: taxonomy-generation source (D025) -- the ordinary trace keeps only prompt
+    #: taxonomy-generation source -- the ordinary trace keeps only prompt
     #: digests, which fail AdaMAST validation.
     adamast_path: Path | None = None
     difficulty: dict[str, str] = field(default_factory=dict)
@@ -118,7 +118,7 @@ class SweBenchAdapter:
     #: Fail the run on a detected gold leak (default) rather than warning.
     strict_gold_check: bool = True
     #: Ids whose gold patch may appear in the reflective dataset -- the TRAIN
-    #: manifest set, and nothing else (D028). This is optimizer-level, train-only
+    #: manifest set, and nothing else. This is optimizer-level, train-only
     #: supervision: the program never sees it, and val/test ids must never be
     #: placed in this set.
     reflection_gold_ids: set[str] | None = None
@@ -274,7 +274,7 @@ class SweBenchAdapter:
         it is kept explicit and small: what the component was asked to do, what
         it produced, how the harness judged it, and -- for ids in
         ``reflection_gold_ids``, i.e. train instances only -- the reference
-        patch (D028). That is optimizer-level supervision; the program itself
+        patch. That is optimizer-level supervision; the program itself
         stays gold-blind, and val/test instances never receive gold here.
 
         With a ``taxonomy_judge`` attached this also carries ``failure_modes``:
@@ -312,7 +312,7 @@ class SweBenchAdapter:
                     example["failure_modes"] = failure_modes[instance_id]
                 if self.reflection_gold_ids is not None and instance_id in self.reflection_gold_ids:
                     # reflection_gold_ids is the train-manifest set; val/test
-                    # ids must never receive gold here (D028).
+                    # ids must never receive gold here.
                     example["reference_patch"] = _excerpt(
                         self.instances[instance_id].gold.patch, limit=2000
                     )

@@ -3,7 +3,7 @@
 Pool
 ----
 ``livebench/math``, ``test`` split, filtered to the two tasks this arm uses:
-**math_comp 146 + olympiad 72 = 218**. ``AMPS_Hard`` (150) is excluded (D050).
+**math_comp 146 + olympiad 72 = 218**. ``AMPS_Hard`` (150) is excluded.
 
 Retired questions are KEPT. LiveBench stamps ``livebench_removal_date`` on
 questions it retires to keep its public leaderboard contamination-free, which
@@ -29,7 +29,7 @@ HotpotQA because the three scorers are not interchangeable: olympiad is the only
 one that returns partial credit, and AIME's exact-match is much harder than
 AMC's five-way multiple choice. A split unbalanced on that axis would make val
 and test measure different things -- and would make val's partial-credit share,
-which is what keeps minibatch comparisons informative (F036), a matter of luck.
+which is what keeps minibatch comparisons informative, a matter of luck.
 """
 
 from __future__ import annotations
@@ -52,7 +52,7 @@ DEFAULT_SIZES: dict[str, int] = {"train": 40, "val": 90, "test": 88}
 
 @dataclass(frozen=True, slots=True)
 class SplitManifest:
-    """A committed stage artifact (D005): reproducible from seed + revision."""
+    """A committed stage artifact: reproducible from seed + revision."""
 
     name: str
     seed: int
@@ -72,7 +72,7 @@ class SplitManifest:
             "n": self.n,
             # Sorted so a manifest is stable under any upstream re-ordering, and
             # so positional indices into it are meaningful: gepa keys val
-            # subscores and the Pareto frontier by POSITION, not by id (F014).
+            # subscores and the Pareto frontier by POSITION, not by id.
             "example_ids": sorted(self.example_ids),
         }
 

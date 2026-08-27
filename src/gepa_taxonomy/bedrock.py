@@ -171,7 +171,7 @@ class MeteredReflectionLM:
     calls: int = 0
     #: Append-only spend log. The out-of-process watchdog enforces a hard dollar
     #: ceiling and can only read what is on disk; without this, reflection spend
-    #: is invisible to it and the ceiling under-counts (D030).
+    #: is invisible to it and the ceiling under-counts.
     spend_log: Any = None
     #: Append-only prompt/response archive. Nothing else persists the raw
     #: reflection bodies -- gepa's state and run logs store only ids and scores

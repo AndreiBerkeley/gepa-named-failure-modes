@@ -25,8 +25,9 @@ import os
 import random
 import re
 import string
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Dict, Optional, Sequence, Union
+from typing import Optional
 
 # Set NLTK data path to local directory before importing nltk
 _nltk_data_dir = Path(__file__).parent / ".nltk_data"
@@ -36,12 +37,13 @@ os.environ.setdefault("NLTK_DATA", str(_nltk_data_dir))
 import nltk
 
 nltk.data.path.insert(0, str(_nltk_data_dir))
-import emoji
-import syllapy
-import unicodedata
-from collections import Counter
 import csv
 import io
+import unicodedata
+from collections import Counter
+
+import emoji
+import syllapy
 
 from gepa_taxonomy.ifbench._vendor.ifbench import instructions_util
 
@@ -55,7 +57,7 @@ def _word_tokens_without_punctuation(text):
 
 logger = logging.getLogger(__name__)
 
-_InstructionArgsDtype = Optional[Dict[str, Union[int, str, Sequence[str]]]]
+_InstructionArgsDtype = Optional[dict[str, int | str | Sequence[str]]]
 
 # The number of keywords.
 _NUM_KEYWORDS = 2
@@ -402,7 +404,7 @@ class PersonNameCountChecker(Instruction):
 		person_names = []
 		for name in person_name_list:
 			# Use regex with word boundaries
-			pattern = r'\b{}\b'.format(re.escape(name))
+			pattern = rf'\b{re.escape(name)}\b'
 			if re.search(pattern, value):
 				person_names.append(name)
 		unique_person_names = set(person_names)
@@ -497,7 +499,7 @@ class AlphabetLoopChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -533,7 +535,7 @@ class SingleVowelParagraphChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -561,7 +563,7 @@ class ConsonantClusterChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -593,7 +595,7 @@ class IncrementingAlliterationChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -637,7 +639,7 @@ class PalindromeChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -661,7 +663,7 @@ class PunctuationCoverChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -691,7 +693,7 @@ class NestedParenthesesChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -707,8 +709,7 @@ class NestedParenthesesChecker(Instruction):
 		for char in value:
 			if char in "([{":
 				levels.append(char)
-				if len(levels) > max_depth:
-					max_depth = len(levels)
+				max_depth = max(max_depth, len(levels))
 			elif char in ")]}":
 				if levels and (
 						(levels[-1] == '(' and char == ')') or
@@ -737,7 +738,7 @@ class NestedQuotesChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -759,8 +760,7 @@ class NestedQuotesChecker(Instruction):
 			elif char == '"' or char == "'":
 				levels.append(char)
 				current_depth += 1
-				if current_depth > reached_depth:
-					reached_depth = current_depth
+				reached_depth = max(reached_depth, current_depth)
 		return False
 
 
@@ -774,7 +774,7 @@ class PrimeLengthsChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -854,7 +854,7 @@ class NewLineWordsChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -880,7 +880,7 @@ class EmojiSentenceChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -923,7 +923,7 @@ class CharacterCountUniqueWordsChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1011,7 +1011,7 @@ class StartWithVerbChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1104,7 +1104,7 @@ class IncludeKeywordChecker(Instruction):
 		if len(sentences) < self._keyword_position:
 			return False
 		# Use regex with word boundaries for robust matching
-		pattern = r'\b{}\b'.format(re.escape(self._keyword))
+		pattern = rf'\b{re.escape(self._keyword)}\b'
 		return bool(re.search(pattern, sentences[int(self._keyword_position - 1)], re.IGNORECASE))
 
 
@@ -1173,7 +1173,7 @@ class AlternateParitySyllablesChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1197,7 +1197,7 @@ class LastWordFirstNextChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1226,7 +1226,7 @@ class ParagraphLastFirstWordMatchChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1302,7 +1302,7 @@ class NoConsecutiveFirstLetterChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1329,7 +1329,7 @@ class IndentStairsChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1357,7 +1357,7 @@ class QuoteExplanationChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1419,7 +1419,7 @@ class ItalicsThesisChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1456,7 +1456,7 @@ class SubBulletPointsChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1482,7 +1482,7 @@ class SomeBulletPointsChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1518,7 +1518,7 @@ class PrintMultiplesChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1541,7 +1541,7 @@ class MultipleChoiceQuestionsChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1589,7 +1589,7 @@ class ReverseNewlineChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1651,7 +1651,7 @@ class WordReverseOrderChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1675,7 +1675,7 @@ class CharacterReverseOrderChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1696,7 +1696,7 @@ class SentenceAlphabetChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1725,7 +1725,7 @@ class EuropeanCapitalsSortChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1774,7 +1774,7 @@ class CityCSVChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1807,7 +1807,7 @@ class SpecialCharacterCSVChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1847,7 +1847,7 @@ class QuotesCSVChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -1887,7 +1887,7 @@ class DateFormatListChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -2214,7 +2214,7 @@ class TitleCaseChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -2240,9 +2240,7 @@ class TitleCaseChecker(Instruction):
 				continue
 			if word[0].isupper() and word[1:].islower():
 				continue
-			elif word[0].islower() and word[1:].isupper():
-				return False
-			elif word[0].islower() and word[1:].islower():
+			elif word[0].islower() and word[1:].isupper() or word[0].islower() and word[1:].islower():
 				return False
 		return True
 
@@ -2259,7 +2257,7 @@ class OutputTemplateChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""
@@ -2293,7 +2291,7 @@ class NoWhitespaceChecker(Instruction):
 
 	def get_instruction_args(self):
 		"""Returns the keyword args of `build_description`."""
-		return None
+		return
 
 	def get_instruction_args_keys(self):
 		"""Returns the args keys of `build_description`."""

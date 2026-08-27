@@ -4,17 +4,17 @@
 Two artifacts from one pass, which is why this is not wasted spend:
 
 1. ``base_val_cache.json`` -- the replay store every seed and both arms read, so
-   all six runs start from **byte-identical** state (D009). Without it each run
+   all six runs start from **byte-identical** state. Without it each run
    re-samples the base candidate and the arms would differ by an independent
    300-rollout draw as well as by the treatment -- noise injected into precisely
    the comparison the experiment exists to make.
 
 2. ``base_val.traces.jsonl`` -- the segmented traces the taxonomy is generated
-   from (D025). The base candidate's val evaluation IS the trace source, so this
+   from. The base candidate's val evaluation IS the trace source, so this
    pass had to happen regardless; doing it here means once, not six times.
 
 Replayed rollouts issue no LM call, so they contribute no spend -- satisfying
-the budget exclusion for the shared seed evaluation (D013a) by construction
+the budget exclusion for the shared seed evaluation by construction
 rather than by special-casing the stopper.
 
     PYTHONUTF8=1 uv run python scripts/build_hover_base_val.py
@@ -67,7 +67,7 @@ def main() -> int:
 
     # Imported so the run script's loader is the SINGLE definition of how a
     # manifest becomes instances -- two loaders are two chances to disagree
-    # about ordering, which gepa keys on positionally (F014).
+    # about ordering, which gepa keys on positionally.
     import importlib.util
 
     spec = importlib.util.spec_from_file_location("_hover_runner", REPO / "scripts" / "run_hover_seed.py")

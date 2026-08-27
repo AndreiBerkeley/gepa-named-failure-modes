@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 """Generate a failure taxonomy from segmented traces. **This spends money.**
 
-Runs the **public** AdaMAST (D047) from its own sibling checkout, through its own
+Runs the **public** AdaMAST from its own sibling checkout, through its own
 interpreter, as a subprocess. It is not a dependency of this project and must not
 become one: it pulls its own ``openai``/``pydantic`` floors, and re-resolving this
 venv mid-experiment would change the environment the baseline seeds run out of
-(D032).
+.
 
 Benchmark-agnostic: it takes a trace file, so the same command serves HotpotQA
 and AppWorld.
 
     PYTHONUTF8=1 uv run python scripts/generate_taxonomy.py \
         --traces results/base_val/base_val.traces.jsonl \
-        --out results/taxonomy/hotpotqa_v1
+        --out results/taxonomy/hotpotqa-auto-v1
 
 The output ``taxonomy.json`` is the stage boundary: ``failure_taxonomy`` reads it
 and needs nothing else, so anyone bringing their own taxonomy skips this entirely.
@@ -30,7 +30,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 
 #: Sibling checkout of the PUBLIC AdaMAST, branch agent/baseline-taxonomy-generation
-#: (D047). Its own venv, mirroring how the pinned gepa clone is handled.
+#:. Its own venv, mirroring how the pinned gepa clone is handled.
 ADAMAST_ROOT = REPO.parent / "adamast-public"
 ADAMAST_PYTHON = next(
     (
@@ -95,8 +95,8 @@ def main() -> int:
         type=float,
         default=1800,
         help="kill generation after this many seconds without a line of output. "
-        "A hung provider call (observed 2026-08-26: a Gemini request with no "
-        "client timeout) produces exactly this signature: zero CPU, zero output.",
+        "A hung provider call with no client timeout produces exactly this "
+        "signature: zero CPU, zero output.",
     )
     parser.add_argument("--adamast-python", type=Path, default=ADAMAST_PYTHON)
     args = parser.parse_args()
@@ -106,7 +106,7 @@ def main() -> int:
     if not Path(args.adamast_python).exists():
         raise SystemExit(
             f"public AdaMAST interpreter not found: {args.adamast_python}\n"
-            "Clone and install it as a sibling (D047):\n"
+            "Clone and install it as a sibling:\n"
             "  git clone --branch agent/baseline-taxonomy-generation "
             "https://github.com/multi-agent-systems-failure-taxonomy/AdaMAST.git ../adamast-public\n"
             '  cd ../adamast-public && uv venv --python 3.12 && uv pip install -e ".[bedrock,google]"\n'
@@ -149,7 +149,7 @@ def main() -> int:
 
     # Stream the worker's output live, so every draft step and agreement round
     # is visible as it happens. Two guards replace the old blanket timeout: the
-    # 4-hour ceiling (measured 2026-08-09: agreement alone can be ~1,200 serial
+    # 4-hour ceiling (agreement alone can be ~1,200 serial
     # LLM calls and needs every round -- a 2-hour ceiling cut it too fine), and
     # an idle kill for the silent-hang signature a stuck provider call leaves.
     proc = subprocess.Popen(

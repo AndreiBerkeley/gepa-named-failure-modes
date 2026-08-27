@@ -1,6 +1,6 @@
 """Reuse of the base candidate's val evaluation across every run.
 
-Requirement (D009)
+Requirement
 -------------------------------
 The base candidate's initial val evaluation is run **once** and its results are
 reused by every optimization run -- all 3 seeds and later both arms -- so every

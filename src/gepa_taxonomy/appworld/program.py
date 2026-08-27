@@ -1,6 +1,6 @@
 """The AppWorld candidate program: a single-component ReAct agent.
 
-One optimizable instruction (D046), wrapped around a fixed multi-step loop:
+One optimizable instruction, wrapped around a fixed multi-step loop:
 the model writes Python, the environment executes it, the output is appended,
 and the model writes the next step -- until it calls
 ``apis.supervisor.complete_task()`` or the step budget runs out.

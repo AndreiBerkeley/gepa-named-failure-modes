@@ -4,7 +4,7 @@
 could travel on; gold is split off at load time into a separate :class:`Gold`
 the program never receives.
 
-Unlike HotpotQA (F027), a value-based audit *would* work here -- a LiveBench
+Unlike HotpotQA, a value-based audit *would* work here -- a LiveBench
 ground truth is a bare letter, a three-digit string, or a comma-separated
 ordering, none of which legitimately appear in a problem statement. It is still
 not applied, for a different reason: single letters and short digit strings
@@ -26,7 +26,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 
 #: LiveBench's three math tasks. ``AMPS_Hard`` is deliberately excluded from
-#: this arm (D050) and is not routable here.
+#: this arm and is not routable here.
 MATH_COMP = "math_comp"
 OLYMPIAD = "olympiad"
 INCLUDED_TASKS = (MATH_COMP, OLYMPIAD)
@@ -85,5 +85,5 @@ def instance_from_record(record: Mapping[str, object]) -> Instance:
 
 
 def is_included(record: Mapping[str, object]) -> bool:
-    """True for the rows this arm uses: math_comp and olympiad only (D050)."""
+    """True for the rows this arm uses: math_comp and olympiad only."""
     return str(record.get("task") or "") in INCLUDED_TASKS

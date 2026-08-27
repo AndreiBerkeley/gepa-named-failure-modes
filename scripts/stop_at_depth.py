@@ -8,7 +8,7 @@ Why depth and not spend
 -----------------------
 Baseline seed 1 explored 22 candidates for $49.60. Seeds that stop on dollars
 alone end at whatever depth their own luck bought -- and depth, not spend, is
-what the taxonomy arms are later matched against (D059). A seed that stops at 16
+what the taxonomy arms are later matched against. A seed that stops at 16
 candidates cannot anchor a 22-candidate comparison.
 
 So the rule is a floor on depth, and the dollar budget becomes the backstop it

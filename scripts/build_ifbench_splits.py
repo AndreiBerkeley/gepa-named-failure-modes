@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 """Write the IFBench split manifests. FREE: dataset downloads only.
 
-Follows GEPA's published setup (D055): train/val from IF-RLVR Train, test is the
+Follows GEPA's published setup: train/val from IF-RLVR Train, test is the
 whole IFBench set, and the two constraint vocabularies are disjoint.
 
     uv run python scripts/build_ifbench_splits.py
 
 Deterministic given the seed. Refuses to overwrite differing manifests without
---force: val subscores are keyed positionally against these ids (F014).
+--force: val subscores are keyed positionally against these ids.
 """
 
 from __future__ import annotations
@@ -79,7 +79,7 @@ def main() -> int:
             raise SystemExit(
                 f"REFUSING TO OVERWRITE: {path} exists and differs.\n"
                 "Seeds already run against the old manifest would become incomparable\n"
-                "-- gepa keys val subscores POSITIONALLY against these ids (F014).\n"
+                "-- gepa keys val subscores POSITIONALLY against these ids.\n"
                 "  overwrite deliberately:  --force"
             )
         path.write_text(payload, encoding="utf-8")
