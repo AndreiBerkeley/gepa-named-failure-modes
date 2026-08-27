@@ -76,28 +76,43 @@ and the judge. Use `--dry-run` to print every phase without spending, and
 
 ## Using the method on your own task
 
-The demo is IFBench end to end, but the method does not depend on it. With
-your own GEPA setup (any adapter, any task), three steps apply it:
+You do not create a benchmark in this repository. Your program, adapter, and
+data stay in your own codebase; the method plugs into them at three points:
 
-1. **Harvest traces.** Run your program over a held-out split and write one
-   JSON line per rollout with `problem_id`, `task`, `raw_trajectory`, and
-   `metadata`. `failure_taxonomy.harvest_traces` and
-   `write_generation_traces` produce exactly this from GEPA trajectories.
-2. **Generate and reduce.** `scripts/generate_taxonomy.py`,
-   `scripts/judge_corpus.py`, and `scripts/reduce_taxonomy.py` consume a
-   trace file, not a benchmark; point them at your bundle and they produce a
-   frozen, evidence-reduced `taxonomy.json`.
-3. **Optimize.** In your own `gepa.optimize` call, pass
-   `reflective_dataset_enricher=TaxonomyFeedbackEnricher(judge=LLMFailureJudge(taxonomy=load_taxonomy("taxonomy.json"), lm=reflection_lm))`.
-   Your adapter is unchanged.
+**1. Harvest traces from your own program.** Evaluate it once over a held-out
+split with `capture_traces=True` and write the bundle:
 
-The `demo/` directory (with its program code in
-`src/gepa_taxonomy/ifbench/`) is a complete worked example of those three
-steps wired into the one-command pipeline. Copy them as a template only if
-you want the same orchestration for your benchmark: implement your program
-and grader in a new `src/gepa_taxonomy/<yours>/` package, write a split
-manifest, adapt the demo's harvest and run scripts, and add one entry to
-`BENCHMARKS` in `pipeline.py`.
+```python
+from failure_taxonomy import harvest_traces, write_generation_traces
+
+batch = my_adapter.evaluate(heldout, seed_candidate, capture_traces=True)
+traces = harvest_traces(batch, instance_ids=[x.id for x in heldout])
+write_generation_traces(traces, "traces.jsonl")
+```
+
+**2. Prepare the taxonomy with the generic stages.** These consume a trace
+file; no benchmark concept is involved:
+
+```bash
+uv run python scripts/generate_taxonomy.py --traces traces.jsonl --out taxonomy_dir
+uv run python scripts/judge_corpus.py --taxonomy taxonomy_dir/taxonomy.json --traces traces.jsonl --out taxonomy_dir/judgements.jsonl
+uv run python scripts/reduce_taxonomy.py --taxonomy taxonomy_dir/taxonomy.json --judgements taxonomy_dir/judgements.jsonl
+```
+
+**3. Optimize with the taxonomy in your own `gepa.optimize` call.** Your
+adapter is unchanged:
+
+```python
+from failure_taxonomy import LLMFailureJudge, TaxonomyFeedbackEnricher, load_taxonomy
+
+taxonomy = load_taxonomy("taxonomy_dir/taxonomy.json")
+enricher = TaxonomyFeedbackEnricher(judge=LLMFailureJudge(taxonomy=taxonomy, lm=reflection_lm))
+
+result = gepa.optimize(..., adapter=my_adapter, reflective_dataset_enricher=enricher)
+```
+
+The `demo/` directory is those same three steps pre-wired for IFBench so the
+whole flow is runnable before you write a line of your own.
 
 ## Observability
 
