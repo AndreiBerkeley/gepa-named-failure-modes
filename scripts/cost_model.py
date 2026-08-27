@@ -6,7 +6,7 @@
 Models the GEPA optimization loop under our solver->refiner program and prices
 it against the verified Bedrock rates, for both candidate val sizes (60 and
 100). Reports the affordable number of full candidate evaluations per seed at a
-range of budgets, which is the number Andrei asked to see before Phase 2.
+range of budgets, which is the number the seed runs were sized against.
 """
 
 from __future__ import annotations
@@ -26,7 +26,7 @@ from gepa_taxonomy.cost import (
 
 MEASURED_PATH = Path(__file__).resolve().parents[1] / "results" / "calibration" / "calibration.json"
 
-#: Andrei's target: this many realistic full candidate evals per seed...
+#: Sizing target: this many realistic full candidate evals per seed...
 TARGET_EVALS_LOW, TARGET_EVALS_HIGH = 15, 20
 #: ...at a per-seed budget under this, preferably around $100.
 TARGET_BUDGET_PREFERRED, TARGET_BUDGET_CEILING = 100, 150
@@ -401,7 +401,7 @@ def compare_refiners(n_val: int = 100) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Andrei's target: ~15-20 realistic evals/seed at <$150, preferably ~$100
+# Sizing target: ~15-20 realistic evals/seed at <$150, preferably ~$100
 # ---------------------------------------------------------------------------
 
 

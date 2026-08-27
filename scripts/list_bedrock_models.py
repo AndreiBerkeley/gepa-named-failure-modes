@@ -41,7 +41,7 @@ def main() -> int:
         print(str(exc)[:600], file=sys.stderr)
         print(
             "\nIf this is an auth error, the bearer token may not cover the control "
-            "plane. Report this and have Andrei run the listing from his own shell.",
+            "plane. Run the listing from a shell with working credentials.",
             file=sys.stderr,
         )
         return 1

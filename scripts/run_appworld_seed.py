@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Run one AppWorld seed. **This spends money.** Andrei launches it, not Claude.
+"""Run one AppWorld seed. **This spends money.** Launch it deliberately.
 
 Single-component ReAct agent (D046), seeded with the published instruction. The
 baseline arm is unmodified gepa v0.1.4 plus the dollar-budget stopper; the

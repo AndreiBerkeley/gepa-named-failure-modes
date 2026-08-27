@@ -1,6 +1,6 @@
 """Reuse of the base candidate's val evaluation across every run.
 
-Requirement (DECISIONS.md D009)
+Requirement (D009)
 -------------------------------
 The base candidate's initial val evaluation is run **once** and its results are
 reused by every optimization run -- all 3 seeds and later both arms -- so every
@@ -15,7 +15,7 @@ That is exactly the mechanism we want -- but ``gepa.optimize()`` does not expose
 it: at ``api.py:396-398`` it unconditionally constructs a *fresh empty* cache
 when ``cache_evaluation=True``, with no injection point.
 
-Baselines must run unmodified gepa v0.1.4 (CLAUDE.md hard rule 2), so we cannot
+Baselines must run unmodified gepa v0.1.4 (baseline purity), so we cannot
 patch that. We therefore implement reuse at the **adapter** level, using the
 same key shape gepa uses. This is behaviour-neutral by construction: on a hit
 the adapter returns the stored result verbatim and issues no LM call, which is
@@ -24,7 +24,7 @@ reused seed evaluation contributes no spend, satisfying budget exclusion (a)
 without any special-casing in the stopper.
 
 Adding an ``evaluation_cache`` passthrough to ``optimize()`` is a clean,
-self-contained upstream PR; see PROGRESS.md.
+self-contained upstream PR.
 """
 
 from __future__ import annotations

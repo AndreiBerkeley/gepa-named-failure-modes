@@ -10,7 +10,7 @@ questions it retires to keep its public leaderboard contamination-free, which
 would leave only 82 of these 218. That matters for a leaderboard; it does not
 for a paired A/B, where contamination raises both arms identically and the
 comparison is internal. Dropping them would leave splits smaller than
-Terminal-Bench's 89, which PLAN.md §2 rejected outright on exactly that ground.
+Terminal-Bench's 89, which was rejected outright on exactly that ground.
 The trade is recorded because it is real: it inflates the absolute base rate,
 so our numbers are not comparable to a published LiveBench score.
 

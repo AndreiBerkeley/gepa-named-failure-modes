@@ -6,7 +6,7 @@ gepa v0.1.4 ships ``MaxReflectionCostStopper``, but it meters the *reflection
 LM only*. On SWE-Bench the solver dominates spend, so it cannot bound a run.
 This module adds a stopper that meters solver + refiner + reflection together.
 
-Behaviour neutrality (CLAUDE.md hard rule 2)
+Behaviour neutrality (baseline purity)
 --------------------------------------------
 ``_should_stop()`` has exactly one call site in gepa v0.1.4 -- the main loop
 condition at ``engine.py:731``. A stopper is therefore a pure loop-exit
@@ -176,7 +176,7 @@ ALL_REFINER_MODELS: tuple[str, ...] = (REFINER_MODEL, ALT_REFINER_MODEL)
 #: model id -- a rate pair applied to ``REFINER_MODEL``.
 SONNET_5_POST_INTRO_USD_PER_TOKEN: tuple[float, float] = (3.00e-6, 15.00e-6)
 
-#: Sonnet 5 introductory pricing expires on this date; see PROGRESS.md.
+#: Sonnet 5 introductory pricing expires on this date.
 SONNET_5_INTRO_PRICING_ENDS = "2026-08-31"
 
 

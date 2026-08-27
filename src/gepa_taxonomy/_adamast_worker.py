@@ -11,7 +11,7 @@ this project, and it stays that way deliberately:
   certified under;
 * ``adamast`` pulls ``openai``/``pydantic``/``boto3`` floors into whatever
   environment installs it. The BASELINE seeds run out of this project's venv
-  and must stay behaviourally identical (CLAUDE.md hard rule 2), so
+  and must stay behaviourally identical (baseline purity), so
   re-resolving that venv mid-experiment is not an acceptable side effect of
   adding the treatment arm.
 

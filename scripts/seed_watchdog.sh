@@ -3,7 +3,7 @@
 # monitors. Kills the run (resume-safe) on any hard failure condition and
 # records the verdict. Conditions:
 #   1. no-candidate loop: >=3 "did not propose a new candidate" lines
-#   2. hard spend ceiling: rollout-cache spend > $100.50 (Andrei: stop at $100)
+#   2. hard spend ceiling: rollout-cache spend > $100.50 (target: stop at $100)
 #   3. stall: no rollouts.jsonl append AND no console.log growth for 35 min
 #   4. error storm: >=6 tracebacks in console.log
 #   5. OOM signature: >=5 errored evaluations AND >8% of rollouts

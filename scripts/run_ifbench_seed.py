@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-"""Run one IFBench seed. **This spends money.** Andrei launches it, not Claude.
+"""Run one IFBench seed. **This spends money.** Launch it deliberately.
 
 Baseline arm (no ``--taxonomy``) is unmodified gepa v0.1.4 driving our adapter.
 The only addition is the dollar-budget stopper, which observes spend and nothing
-else (CLAUDE.md hard rule 2).
+else (baseline purity).
 
 Treatment arm (``--taxonomy PATH``) adds an optimizer-side trace review between
 the adapter's normal reflective dataset and GEPA's proposal call. The adapter is

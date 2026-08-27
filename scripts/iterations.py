@@ -26,7 +26,7 @@ VALSCORE_RE = re.compile(r"^Iteration (\d+): Individual valset scores.*?\{(.*?)\
 # "11/60 resolved" form from QuietLogger. It never matched anything -- verified
 # against every log in results/, including the new HotpotQA runs: 0 matches.
 # gepa does not emit that form, so the fallback it fed was dead code pretending
-# to be a safety net (PLAN.md §6).
+# to be a safety net.
 
 
 def _console_facts(run: Path) -> tuple[dict[int, str], set[int], dict[int, float]]:

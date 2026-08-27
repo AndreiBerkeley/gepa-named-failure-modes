@@ -1,6 +1,6 @@
 """SWE-Bench task types, with gold-blindness enforced structurally.
 
-HARD INVARIANT (see DECISIONS.md D008)
+HARD INVARIANT (D008)
 --------------------------------------
 No program component -- retrieval, solver, feedback builder, or refiner -- may
 ever receive gold patches, FAIL_TO_PASS / PASS_TO_PASS test IDs or their output,

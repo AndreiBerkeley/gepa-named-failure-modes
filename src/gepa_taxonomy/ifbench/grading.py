@@ -166,7 +166,7 @@ def grade(response: str, gold: Gold, *, prompt: str) -> Grade:
 def constraint_feedback(graded: Grade, gold: Gold) -> str:
     """Gold-revealing feedback: names the constraints that failed. TRAIN ids only.
 
-    Deliberately strong, on the same principle as D043. PLAN.md ruled IFBench out
+    Deliberately strong, on the same principle as D043. IFBench was ruled out
     partly because "the diagnosis is already in the baseline feedback, so a
     taxonomy can only paraphrase it" -- weakening this to make the taxonomy look
     better would be exactly the rigged comparison that objection warns about. The

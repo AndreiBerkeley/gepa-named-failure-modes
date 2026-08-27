@@ -4,7 +4,7 @@
     zsh -c 'source ~/.zshrc >/dev/null 2>&1; \
       caffeinate -dimsu uv run python scripts/run_seed.py --seed 1 --budget 100'
 
-Baseline purity (CLAUDE.md hard rule 2): gepa v0.1.4 runs unmodified. The only
+Baseline purity: gepa v0.1.4 runs unmodified. The only
 addition is the total-cost stopper, which is a pure loop-exit observer -- it is
 consulted at exactly one call site, the main loop condition, and cannot touch
 candidate selection, reflection, sampling or scheduling.
