@@ -76,8 +76,11 @@ and the judge. Use `--dry-run` to print every phase without spending, and
 
 ## Using the method on your own task
 
-You do not create a benchmark in this repository. Your program, adapter, and
-data stay in your own codebase; the method plugs into them at three points:
+If you already run gepa, nothing about your run changes: the method is your
+existing `gepa.optimize` call plus one argument,
+`reflective_dataset_enricher`. The steps below exist only to produce that
+argument's input, a frozen `taxonomy.json`, once. Your program, adapter, and
+data stay in your own codebase:
 
 **1. Harvest traces from your own program.** Evaluate it once over a held-out
 split with `capture_traces=True` and write the bundle:
