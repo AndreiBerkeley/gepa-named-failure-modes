@@ -75,8 +75,8 @@ def main() -> int:
     )
     parser.add_argument("--manifests", type=Path, default=REPO / "demo" / "manifests")
     parser.add_argument("--out", type=Path, default=None)
-    parser.add_argument("--solver-model", default="us.anthropic.claude-haiku-4-5-20251001-v1:0")
-    parser.add_argument("--reflection-model", default="us.anthropic.claude-sonnet-4-6")
+    parser.add_argument("--solver-model", default="gpt-5-mini")
+    parser.add_argument("--reflection-model", default="gpt-5-mini")
     parser.add_argument(
         "--max-metric-calls",
         type=int,
@@ -123,15 +123,14 @@ def main() -> int:
 
     import gepa
 
-    from gepa_taxonomy.bedrock import (
-        BedrockLM,
-        MeteredReflectionLM,
-        require_credentials,
-        verify_reflection_lm,
-    )
     from gepa_taxonomy.cost import CostMeter, MaxTotalCostStopper
     from gepa_taxonomy.ifbench.adapter import IFBenchAdapter, instances_by_id
     from gepa_taxonomy.ifbench.program import COMPONENTS, SEED_CANDIDATE, GenerateEnsureProgram
+    from gepa_taxonomy.lm import (
+        MeteredLM,
+        MeteredReflectionLM,
+        verify_reflection_lm,
+    )
     from gepa_taxonomy.seed_cache import SeedEvaluationCache
 
     arm = "taxonomy" if args.taxonomy else "baseline"
@@ -163,8 +162,6 @@ def main() -> int:
             f"  relaunch with:  PYTHONUTF8=1 uv run python {Path(__file__).name} ..."
         )
 
-    require_credentials()
-
     train = load_instances(args.manifests / "train.json")
     val = load_instances(args.manifests / "val.json")
     print(f"arm={arm} seed={args.seed} budget=${args.budget:.2f} train={len(train)} val={len(val)}")
@@ -186,7 +183,7 @@ def main() -> int:
     report_spend((solver_meter, reflection_meter, judge_meter))
 
     program = GenerateEnsureProgram(
-        lm=BedrockLM(model=args.solver_model, max_retries=args.max_retries),
+        lm=MeteredLM(model=args.solver_model, max_retries=args.max_retries),
         meter=solver_meter,
         model=args.solver_model,
         max_tokens=args.max_tokens,
@@ -238,7 +235,7 @@ def main() -> int:
                 "Apply patches/gepa-reflective-dataset-enricher.patch to the pinned GEPA checkout."
             )
 
-        judge_lm = BedrockLM(model=args.reflection_model, max_retries=args.max_retries)
+        judge_lm = MeteredLM(model=args.reflection_model, max_retries=args.max_retries)
         taxonomy = load_taxonomy(args.taxonomy)
 
         def judge_call(prompt: str) -> str:
@@ -262,7 +259,7 @@ def main() -> int:
         print(f"taxonomy: {args.taxonomy} ({len(taxonomy)} codes, fingerprint {taxonomy.fingerprint})")
 
     reflection_lm = MeteredReflectionLM(
-        lm=BedrockLM(model=args.reflection_model, max_retries=args.max_retries),
+        lm=MeteredLM(model=args.reflection_model, max_retries=args.max_retries),
         meter=reflection_meter,
         model=args.reflection_model,
         spend_log=out / "reflection_spend.jsonl",

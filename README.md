@@ -36,8 +36,8 @@ and finishes with the free offline checks:
 It installs the project (`uv sync`), clones gepa v0.1.4 and applies the hook
 patch, and clones the public
 [AdaMAST](https://github.com/multi-agent-systems-failure-taxonomy/AdaMAST)
-pipeline into its own sibling environment (`../adamast-public`, with the
-`[bedrock,google]` extras) for taxonomy generation.
+pipeline into its own sibling environment (`../adamast-public`, with all
+provider extras) for taxonomy generation.
 
 ## Run the demo
 
@@ -65,10 +65,11 @@ rollout and the enricher adds the named failure modes to reflection.
 uv run gepa-taxonomy ifbench --seed 1 --budget 1 --taxonomy demo/taxonomy.json --gepa-root ../gepa-taxonomy-hook
 ```
 
-Artifacts are reused on re-runs. Model ids are litellm ids: a bare id routes
-to Bedrock, an explicit provider prefix routes there instead, and taxonomy
-generation maps the prefix to the matching AdaMAST provider automatically
-(`gemini/` becomes `google`); for example
+Artifacts are reused on re-runs. Model ids are plain litellm ids and default
+to OpenAI (`gpt-5-mini`); pass any litellm id to use another provider --
+`gemini/...`, `anthropic/...`, `bedrock/...` -- and taxonomy generation maps
+the prefix to the matching AdaMAST provider automatically (`gemini/` becomes
+`google`); for example
 `--solver-model gemini/gemini-2.5-flash-lite --reflection-model gemini/gemini-3.5-flash`
 puts a cheap model on rollouts and a stronger one on generation, reflection,
 and the judge. Use `--dry-run` to print every phase without spending, and

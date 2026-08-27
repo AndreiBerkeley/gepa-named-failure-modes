@@ -72,7 +72,7 @@ def _adamast_model(reflection_model: str) -> tuple[str, str]:
                 f"cannot map provider prefix {prefix!r} to an AdaMAST provider; known prefixes: {known}"
             )
         return provider, bare
-    return "bedrock", reflection_model
+    return "openai", reflection_model
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -104,8 +104,8 @@ def _parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--results", type=Path, default=REPO / "results")
     parser.add_argument("--workers", type=int, default=4)
-    parser.add_argument("--solver-model", default="us.anthropic.claude-haiku-4-5-20251001-v1:0")
-    parser.add_argument("--reflection-model", default="us.anthropic.claude-sonnet-4-6")
+    parser.add_argument("--solver-model", default="gpt-5-mini")
+    parser.add_argument("--reflection-model", default="gpt-5-mini")
     parser.add_argument("--max-retries", type=int, default=8)
     parser.add_argument("--adamast-python", type=Path, default=None)
     parser.add_argument(

@@ -37,9 +37,9 @@ def test_dry_run_orders_prepare_then_optimize(tmp_path, monkeypatch):
     generation = commands[1]
     corpus_judge = commands[2]
     run = commands[-1]
-    assert generation[generation.index("--model") + 1] == "us.anthropic.claude-sonnet-4-6"
-    assert corpus_judge[corpus_judge.index("--model") + 1] == "us.anthropic.claude-sonnet-4-6"
-    assert run[run.index("--reflection-model") + 1] == "us.anthropic.claude-sonnet-4-6"
+    assert generation[generation.index("--model") + 1] == "gpt-5-mini"
+    assert corpus_judge[corpus_judge.index("--model") + 1] == "gpt-5-mini"
+    assert run[run.index("--reflection-model") + 1] == "gpt-5-mini"
 
 
 def test_existing_taxonomy_skips_preparation(tmp_path, monkeypatch):

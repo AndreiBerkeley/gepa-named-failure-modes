@@ -1,7 +1,7 @@
 """Full-launch smoke test for the IFBench arm. FREE: the network is faked.
 
 Stubs at the lowest layer only -- ``litellm.completion``. Everything above it is
-real: the real ``BedrockLM``, the real ``MeteredReflectionLM``, the real
+real: the real ``MeteredLM``, the real ``MeteredReflectionLM``, the real
 generate->ensure program, the real vendored verifiers, the real adapter, the
 real cost meters and stopper, and gepa's real reflection machinery.
 """
@@ -14,14 +14,14 @@ import gepa
 import pytest
 
 from failure_taxonomy import FAILURE_MODES_KEY
-from gepa_taxonomy.bedrock import BedrockLM, MeteredReflectionLM, verify_reflection_lm
 from gepa_taxonomy.cost import CostMeter, MaxTotalCostStopper
 from gepa_taxonomy.ifbench.adapter import IFBenchAdapter, instances_by_id
 from gepa_taxonomy.ifbench.program import ENSURE, GENERATE, SEED_CANDIDATE, GenerateEnsureProgram
 from gepa_taxonomy.ifbench.tasks import Gold, Instance, Task
+from gepa_taxonomy.lm import MeteredLM, MeteredReflectionLM, verify_reflection_lm
 
-SOLVER = "global.anthropic.claude-haiku-4-5-20251001-v1:0"
-REFLECTION = "global.anthropic.claude-sonnet-4-6"
+SOLVER = "gpt-5-mini"
+REFLECTION = "gpt-5-mini"
 
 MUTATION_MARKER = "an improved instruction"
 
@@ -97,7 +97,7 @@ def _build(tmp_path, budget=5.0, workers=1):
     instances = _instances()
     solver_meter, reflection_meter = CostMeter(), CostMeter()
     program = GenerateEnsureProgram(
-        lm=BedrockLM(model=SOLVER, max_retries=2), meter=solver_meter, model=SOLVER, max_tokens=512
+        lm=MeteredLM(model=SOLVER, max_retries=2), meter=solver_meter, model=SOLVER, max_tokens=512
     )
     adapter = IFBenchAdapter(
         program=program,
@@ -106,7 +106,7 @@ def _build(tmp_path, budget=5.0, workers=1):
         max_workers=workers,
     )
     reflection_lm = MeteredReflectionLM(
-        lm=BedrockLM(model=REFLECTION, max_retries=2),
+        lm=MeteredLM(model=REFLECTION, max_retries=2),
         meter=reflection_meter,
         model=REFLECTION,
         spend_log=tmp_path / "reflection_spend.jsonl",
@@ -143,7 +143,8 @@ def test_a_full_launch_completes_and_proposes(tmp_path, fake_lm):
     assert len(result.candidates) > 1, "reflection never proposed a candidate"
     assert reflection_meter.calls > 0, "reflection spend was never metered"
     assert solver_meter.budgeted_usd > 0
-    assert fake_lm.models_called == {f"bedrock/{SOLVER}", f"bedrock/{REFLECTION}"}
+    # Model ids pass to litellm verbatim: no provider rewriting of any kind.
+    assert fake_lm.models_called == {SOLVER, REFLECTION}
 
 
 def test_the_seed_prompts_are_the_published_ones(tmp_path):

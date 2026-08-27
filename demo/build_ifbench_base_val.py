@@ -35,16 +35,16 @@ def main() -> int:
     parser.add_argument("--manifests", type=Path, default=REPO / "demo" / "manifests")
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--max-tokens", type=int, default=4096)
-    parser.add_argument("--solver-model", default="us.anthropic.claude-haiku-4-5-20251001-v1:0")
+    parser.add_argument("--solver-model", default="gpt-5-mini")
     parser.add_argument("--max-retries", type=int, default=8)
     parser.add_argument("--force", action="store_true", help="rebuild even if the cache exists")
     args = parser.parse_args()
 
-    from gepa_taxonomy.bedrock import BedrockLM, require_credentials
     from gepa_taxonomy.cost import CostMeter
     from gepa_taxonomy.ifbench.adapter import IFBenchAdapter, instances_by_id
     from gepa_taxonomy.ifbench.grading import Grade, report
     from gepa_taxonomy.ifbench.program import SEED_CANDIDATE, GenerateEnsureProgram
+    from gepa_taxonomy.lm import MeteredLM
     from gepa_taxonomy.progress import report_rollouts
     from gepa_taxonomy.seed_cache import SeedEvaluationCache
 
@@ -54,8 +54,6 @@ def main() -> int:
         print(f"base val already built: {cache_path} ({len(cached.entries)} instances)")
         print("nothing to do. Pass --force to rebuild (this re-spends and changes every run's start state).")
         return 0
-
-    require_credentials()
 
     # Imported from the runner so there is ONE definition of how a manifest
     # becomes instances -- two loaders would be two chances to disagree about
@@ -78,7 +76,7 @@ def main() -> int:
 
     meter = CostMeter()
     program = GenerateEnsureProgram(
-        lm=BedrockLM(model=args.solver_model, max_retries=args.max_retries),
+        lm=MeteredLM(model=args.solver_model, max_retries=args.max_retries),
         meter=meter,
         model=args.solver_model,
         max_tokens=args.max_tokens,

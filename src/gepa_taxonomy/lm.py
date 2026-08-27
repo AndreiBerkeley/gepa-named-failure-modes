@@ -1,96 +1,22 @@
-"""Bedrock LM client and credential handling.
+"""Metered language-model calls for the pipeline and the demo.
 
-Auth is the native bearer-token variable ``AWS_BEARER_TOKEN_BEDROCK``, which
-both boto3/botocore and litellm read directly. There is no ``.env`` file and
-none should be created.
-
-Routing invariant
------------------
-Every call must go to **Bedrock** using bearer auth. It must never fall back to
-direct-Anthropic routing -- that would hit a different account, a different
-price sheet, and (silently) a different set of credentials. The ``bedrock/``
-prefix on the model id is what pins litellm's provider resolution; the guard
-below makes an unprefixed id a hard error rather than a silent reroute.
-Locked in by ``tests/test_bedrock_routing.py``.
+One thin wrapper over litellm: every call returns its exact token counts so
+the dollar budget is enforceable, and retries, timeouts, and logging are
+uniform. Model ids are plain litellm ids -- ``gpt-5-mini``,
+``gemini/gemini-2.5-flash-lite``, ``anthropic/claude-sonnet-4-6``,
+``bedrock/...`` -- and route exactly as litellm routes them. Credentials are
+whatever the chosen provider reads from the environment; a missing credential
+surfaces as that provider's own error on the first call.
 """
 
 from __future__ import annotations
 
-import os
 from dataclasses import dataclass
 from typing import Any
 
-BEARER_ENV = "AWS_BEARER_TOKEN_BEDROCK"
-REGION_ENV = "AWS_REGION"
-DEFAULT_REGION = "us-east-1"
-
-#: litellm resolves the provider from this prefix. Without it, an
-#: ``anthropic.*`` model id routes to the direct Anthropic API instead.
-BEDROCK_PREFIX = "bedrock/"
-
-CREDENTIAL_HELP = (
-    f"{BEARER_ENV} is not set.\n"
-    "Non-interactive shells do not auto-load ~/.zshrc. Either run from an "
-    "interactive shell where it is already exported, or wrap the command:\n"
-    "  zsh -c 'source ~/.zshrc >/dev/null 2>&1; <command>'"
-)
-
-
-class CredentialsMissingError(RuntimeError):
-    """Raised at startup when Bedrock credentials are absent.
-
-    Deliberately raised *before* any work begins, so a long run cannot die
-    halfway through on an auth error.
-    """
-
-
-class RoutingError(RuntimeError):
-    """Raised when a model id would not route to Bedrock."""
-
-
-def require_credentials() -> str:
-    """Fail fast if Bedrock credentials are missing. Returns the region.
-
-    Never returns, logs, or otherwise exposes the token value.
-    """
-    if not os.environ.get(BEARER_ENV):
-        raise CredentialsMissingError(CREDENTIAL_HELP)
-    return os.environ.get(REGION_ENV) or DEFAULT_REGION
-
-
-def bedrock_model_id(model: str) -> str:
-    """Return ``model`` with the ``bedrock/`` provider prefix, validating it.
-
-    Rejects ids that carry another provider's prefix, and ids that are not
-    Bedrock inference-profile / foundation-model ids.
-    """
-    if model.startswith(BEDROCK_PREFIX):
-        bare = model[len(BEDROCK_PREFIX) :]
-    elif "/" in model:
-        # An explicit provider prefix is a deliberate routing choice: litellm
-        # receives it verbatim (e.g. "gemini/..."). Only bare ids are pinned
-        # to Bedrock below, so a stray bare id still cannot reach another
-        # provider by accident.
-        return model
-    else:
-        bare = model
-
-    if "/" in bare:
-        raise RoutingError(f"model id {model!r} nests a second provider prefix inside 'bedrock/'.")
-    if not any(
-        bare.startswith(p)
-        for p in ("anthropic.", "us.anthropic.", "global.anthropic.", "eu.anthropic.", "apac.anthropic.")
-    ):
-        raise RoutingError(
-            f"model id {model!r} is not a Bedrock Anthropic id. Expected an "
-            "'anthropic.*' foundation model or a '<region>.anthropic.*' "
-            "inference profile."
-        )
-    return BEDROCK_PREFIX + bare
-
 
 @dataclass
-class BedrockLM:
+class MeteredLM:
     """Thin litellm wrapper returning ``(text, input_tokens, output_tokens)``.
 
     Token counts come from the API response, not an estimate, because they feed
@@ -98,14 +24,9 @@ class BedrockLM:
     """
 
     model: str
-    region: str | None = None
     temperature: float | None = None
     timeout: int = 600
     max_retries: int = 3
-
-    def __post_init__(self) -> None:
-        self.region = self.region or require_credentials()
-        self.routed_model = bedrock_model_id(self.model)
 
     def complete(self, prompt: str, *, max_tokens: int = 4096) -> tuple[str, int, int]:
         import litellm
@@ -116,10 +37,9 @@ class BedrockLM:
         litellm.suppress_debug_info = True
 
         kwargs: dict[str, object] = {
-            "model": self.routed_model,
+            "model": self.model,
             "messages": [{"role": "user", "content": prompt}],
             "max_tokens": max_tokens,
-            "aws_region_name": self.region,
             "timeout": self.timeout,
             "num_retries": self.max_retries,
         }
@@ -144,7 +64,7 @@ class MeteredReflectionLM:
       returning a string**.
     * ``StatelessReflectionLM`` then calls that callable per component.
 
-    Passing a ``BedrockLM`` directly failed here: it exposes ``.complete()`` but
+    Passing a ``MeteredLM`` directly failed here: it exposes ``.complete()`` but
     is not callable, so ``self._fn(prompt)`` raised ``TypeError``. gepa catches
     that, logs "Reflective mutation did not propose a new candidate", and keeps
     iterating -- burning minibatch rollouts forever while never proposing
@@ -163,7 +83,7 @@ class MeteredReflectionLM:
     batching would buy nothing and adds a second call shape to keep conformant.
     """
 
-    lm: BedrockLM
+    lm: MeteredLM
     meter: Any
     model: str
     phase: str = "optimization"
@@ -176,8 +96,8 @@ class MeteredReflectionLM:
     #: Append-only prompt/response archive. Nothing else persists the raw
     #: reflection bodies -- gepa's state and run logs store only ids and scores
     #: -- so auditing "did the reflection prompt actually contain X" previously
-    #: required triangulating renders, billed token counts and lineage diffs
-    #: (TAXONOMY_AUDIT.md §2.5). One JSONL line per call makes that a grep.
+    #: required triangulating renders, billed token counts and lineage diffs.
+    #: One JSONL line per call makes that a grep.
     prompt_log: Any = None
 
     def __call__(self, prompt: str | list[dict[str, Any]]) -> str:

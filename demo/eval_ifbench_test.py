@@ -23,11 +23,11 @@ REPO = Path(__file__).resolve().parents[1]
 
 
 def evaluate_run(run: Path, args) -> dict | None:
-    from gepa_taxonomy.bedrock import BedrockLM
     from gepa_taxonomy.cost import CostMeter
     from gepa_taxonomy.ifbench.adapter import IFBenchAdapter, instances_by_id
     from gepa_taxonomy.ifbench.grading import Grade, report
     from gepa_taxonomy.ifbench.program import SEED_CANDIDATE, GenerateEnsureProgram
+    from gepa_taxonomy.lm import MeteredLM
 
     summary_path = run / "summary.json"
     if not summary_path.exists():
@@ -71,7 +71,7 @@ def evaluate_run(run: Path, args) -> dict | None:
 
     meter = CostMeter()
     program = GenerateEnsureProgram(
-        lm=BedrockLM(model=args.solver_model, max_retries=8),
+        lm=MeteredLM(model=args.solver_model, max_retries=8),
         meter=meter,
         model=args.solver_model,
         max_tokens=args.max_tokens,
@@ -140,7 +140,7 @@ def main() -> int:
     parser.add_argument("--manifests", type=Path, default=REPO / "demo" / "manifests")
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--max-tokens", type=int, default=4096)
-    parser.add_argument("--solver-model", default="us.anthropic.claude-haiku-4-5-20251001-v1:0")
+    parser.add_argument("--solver-model", default="gpt-5-mini")
     parser.add_argument(
         "--candidate-index",
         type=int,
@@ -151,10 +151,6 @@ def main() -> int:
     )
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
-
-    from gepa_taxonomy.bedrock import require_credentials
-
-    require_credentials()
 
     if args.all:
         runs = sorted((REPO / "results" / "runs").glob("ifbench-*"))

@@ -66,7 +66,7 @@ JUDGE_MODE = "default"
 
 #: Bedrock, so judging uses the same account, bearer credential and price sheet
 #: as every other call in this experiment.
-JUDGE_PROVIDER = "bedrock"
+JUDGE_PROVIDER = "openai"
 
 #: Trace budget handed to AdaMAST. Above the largest formatted trace we have
 #: measured (153,638 chars for ``results/traces/base_val.adamast.jsonl``) with
