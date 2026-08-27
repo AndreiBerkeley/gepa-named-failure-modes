@@ -60,6 +60,14 @@ def load_instances(manifest_path: Path, pool_path: Path | None = None):
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--seed", type=int, required=True)
+    parser.add_argument(
+        "--log-reflection-datasets",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="append every post-enrichment reflective dataset to "
+        "reflection_datasets.jsonl in the run dir, exactly as reflection "
+        "consumed it (observability; disable with --no-log-reflection-datasets)",
+    )
     parser.add_argument("--budget", type=float, required=True, help="dollar ceiling for this seed")
     parser.add_argument("--taxonomy", type=Path, help="taxonomy.json; presence selects the treatment arm")
     parser.add_argument("--out", type=Path, default=None)
@@ -218,6 +226,10 @@ def main() -> int:
 
     started = time.time()
     optimize_kwargs: dict[str, object] = {}
+    if args.log_reflection_datasets:
+        from gepa_taxonomy.reflection_log import ReflectionDatasetLogger
+
+        optimize_kwargs["callbacks"] = [ReflectionDatasetLogger(out / "reflection_datasets.jsonl")]
     if taxonomy_feedback is not None:
         optimize_kwargs["reflective_dataset_enricher"] = taxonomy_feedback
 

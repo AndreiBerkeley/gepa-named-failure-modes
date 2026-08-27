@@ -86,6 +86,14 @@ def main() -> int:
     )
     parser.add_argument("--max-tokens", type=int, default=4096, help="ceiling per call; billed on tokens produced")
     parser.add_argument("--max-retries", type=int, default=8)
+    parser.add_argument(
+        "--log-reflection-datasets",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="append every post-enrichment reflective dataset to "
+        "reflection_datasets.jsonl in the run dir, exactly as reflection "
+        "consumed it (observability; disable with --no-log-reflection-datasets)",
+    )
     parser.add_argument("--max-transport-errors", type=int, default=25)
     parser.add_argument(
         "--workers",
@@ -257,6 +265,10 @@ def main() -> int:
     stopper = MaxTotalCostStopper(args.budget, meters)
 
     optimize_kwargs: dict[str, object] = {}
+    if args.log_reflection_datasets:
+        from gepa_taxonomy.reflection_log import ReflectionDatasetLogger
+
+        optimize_kwargs["callbacks"] = [ReflectionDatasetLogger(out / "reflection_datasets.jsonl")]
     if args.max_metric_calls is not None:
         optimize_kwargs["max_metric_calls"] = args.max_metric_calls
     if taxonomy_feedback is not None:

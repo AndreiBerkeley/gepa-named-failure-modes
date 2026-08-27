@@ -47,6 +47,14 @@ def load_instances(manifest_path: Path):
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--seed", type=int, required=True, help="run seed (1, 2, 3)")
+    parser.add_argument(
+        "--log-reflection-datasets",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="append every post-enrichment reflective dataset to "
+        "reflection_datasets.jsonl in the run dir, exactly as reflection "
+        "consumed it (observability; disable with --no-log-reflection-datasets)",
+    )
     parser.add_argument("--budget", type=float, required=True, help="dollar budget for this seed")
     parser.add_argument("--taxonomy", type=Path, default=None, help="enable the treatment arm")
     parser.add_argument(
@@ -248,6 +256,10 @@ def main() -> int:
     stopper = MaxTotalCostStopper(args.budget, meters)
 
     optimize_kwargs: dict[str, object] = {}
+    if args.log_reflection_datasets:
+        from gepa_taxonomy.reflection_log import ReflectionDatasetLogger
+
+        optimize_kwargs["callbacks"] = [ReflectionDatasetLogger(out / "reflection_datasets.jsonl")]
     if args.max_metric_calls is not None:
         optimize_kwargs["max_metric_calls"] = args.max_metric_calls
     if taxonomy_feedback is not None:

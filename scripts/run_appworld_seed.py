@@ -100,6 +100,14 @@ def load_task_ids(manifest_path: Path) -> list[str]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--seed", type=int, required=True)
+    parser.add_argument(
+        "--log-reflection-datasets",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="append every post-enrichment reflective dataset to "
+        "reflection_datasets.jsonl in the run dir, exactly as reflection "
+        "consumed it (observability; disable with --no-log-reflection-datasets)",
+    )
     parser.add_argument("--budget", type=float, required=True)
     parser.add_argument("--taxonomy", type=Path, default=None, help="enable the treatment arm")
     parser.add_argument("--minibatch-size", type=int, default=10)
@@ -257,6 +265,10 @@ def main() -> int:
     stopper = MaxTotalCostStopper(args.budget, meters)
 
     optimize_kwargs = {}
+    if args.log_reflection_datasets:
+        from gepa_taxonomy.reflection_log import ReflectionDatasetLogger
+
+        optimize_kwargs["callbacks"] = [ReflectionDatasetLogger(out / "reflection_datasets.jsonl")]
     if taxonomy_feedback is not None:
         optimize_kwargs["reflective_dataset_enricher"] = taxonomy_feedback
 
