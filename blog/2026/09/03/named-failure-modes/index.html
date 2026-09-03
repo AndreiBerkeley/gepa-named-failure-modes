@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="An LLM judge automatically pinpoints what went wrong in an execution, where, and with what evidence. Feeding those findings to GEPA's reflection model lifts held-out scores by up to 9.7 percentage points under the same budget.">
+        <meta name="description" content="An LLM judge automatically pinpoints what went wrong in an execution, where, and with what evidence. Feeding those findings to GEPA's reflection model lifts held-out scores by up to 9.7 percentage points under the same online optimization budget.">
       
       
       
@@ -99,7 +99,7 @@
 <meta property="og:title" content="Learned Error Diagnosis for GEPA's Reflection">
 <meta property="og:url" content="https://gepa-ai.github.io/gepa/blog/2026/09/03/named-failure-modes/">
 <meta property="og:site_name" content="GEPA">
-<meta property="og:description" content="An LLM judge automatically pinpoints what went wrong in an execution, where, and with what evidence. Feeding those findings to GEPA's reflection model lifts held-out scores by up to 9.7 percentage points under the same budget.">
+<meta property="og:description" content="An LLM judge automatically pinpoints what went wrong in an execution, where, and with what evidence. Feeding those findings to GEPA's reflection model lifts held-out scores by up to 9.7 percentage points under the same online optimization budget.">
 <meta property="og:image" content="https://gepa-ai.github.io/gepa/blog/2026-08-18-named-failure-modes/images/hero.png">
 <meta property="article:published_time" content="2026-09-03 00:00:00+00:00">
 
@@ -108,7 +108,7 @@
 <meta name="twitter:site" content="@LakshyAAAgrawal">
 <meta name="twitter:creator" content="@LakshyAAAgrawal">
 <meta name="twitter:title" content="Learned Error Diagnosis for GEPA's Reflection">
-<meta name="twitter:description" content="An LLM judge automatically pinpoints what went wrong in an execution, where, and with what evidence. Feeding those findings to GEPA's reflection model lifts held-out scores by up to 9.7 percentage points under the same budget.">
+<meta name="twitter:description" content="An LLM judge automatically pinpoints what went wrong in an execution, where, and with what evidence. Feeding those findings to GEPA's reflection model lifts held-out scores by up to 9.7 percentage points under the same online optimization budget.">
 <meta name="twitter:image" content="https://gepa-ai.github.io/gepa/blog/2026-08-18-named-failure-modes/images/hero.png">
 
 
@@ -124,7 +124,7 @@
 <meta name="citation_author" content="Matei Zaharia">
 <meta name="citation_publication_date" content="2026/09/03">
 <meta name="citation_online_date" content="2026/09/03">
-<meta name="citation_abstract" content="An LLM judge automatically pinpoints what went wrong in an execution, where, and with what evidence. Feeding those findings to GEPA's reflection model lifts held-out scores by up to 9.7 percentage points under the same budget.">
+<meta name="citation_abstract" content="An LLM judge automatically pinpoints what went wrong in an execution, where, and with what evidence. Feeding those findings to GEPA's reflection model lifts held-out scores by up to 9.7 percentage points under the same online optimization budget.">
 <meta name="citation_abstract_html_url" content="https://gepa-ai.github.io/gepa/blog/2026/09/03/named-failure-modes/">
 <meta name="citation_fulltext_html_url" content="https://gepa-ai.github.io/gepa/blog/2026/09/03/named-failure-modes/">
 <meta name="citation_pdf_url" content="https://gepa-ai.github.io/gepa/blog/2026/09/03/named-failure-modes/paper.pdf">
@@ -142,7 +142,7 @@
   "@type": ["BlogPosting", "Article", "ScholarlyArticle"],
   "headline": "Learned Error Diagnosis for GEPA\u0027s Reflection",
   "url": "https://gepa-ai.github.io/gepa/blog/2026/09/03/named-failure-modes/",
-  "description": "An LLM judge automatically pinpoints what went wrong in an execution, where, and with what evidence. Feeding those findings to GEPA\u0027s reflection model lifts held-out scores by up to 9.7 percentage points under the same budget.",
+  "description": "An LLM judge automatically pinpoints what went wrong in an execution, where, and with what evidence. Feeding those findings to GEPA\u0027s reflection model lifts held-out scores by up to 9.7 percentage points under the same online optimization budget.",
   "image": "https://gepa-ai.github.io/gepa/blog/2026-08-18-named-failure-modes/images/hero.png",
   "datePublished": "2026-09-03T00:00:00+00:00",
   "dateModified": "2026-09-03T00:00:00+00:00",
@@ -4899,16 +4899,16 @@
             
                 <h1 id="learned-error-diagnosis-for-gepas-reflection">Learned Error Diagnosis for GEPA's Reflection<a class="headerlink" href="#learned-error-diagnosis-for-gepas-reflection" title="Permanent link">&para;</a></h1>
 <div class="admonition tip">
-<p><strong>TL;DR.</strong> GEPA's reflection model proposes new prompts by analyzing a program's executions and evaluator feedback. We give it more context: an LLM judge automatically identifies concrete problems in those executions, reporting what went wrong, where it happened, and the supporting evidence. Providing these findings improved held-out scores by up to 9.7 percentage points over standard GEPA under the same optimization budget.</p>
+<p><strong>TL;DR.</strong> GEPA's reflection model proposes new prompts by analyzing a program's executions and evaluator feedback. We give it more context: an LLM judge automatically identifies concrete problems in those executions, reporting what went wrong, where it happened, and the supporting evidence. Providing these findings improved held-out scores by up to 9.7 percentage points over standard GEPA under the same online optimization budget.</p>
 </div>
 <figure>
   <img alt="Grouped bar chart of held-out test score on three benchmarks. In each group a dashed grey line marks the unoptimized base program, an orange bar shows standard GEPA, and an indigo bar shows GEPA with the judge, with the three individual seed runs drawn as small circles on each bar. HotpotQA rises from a 0.493 base to 0.656 with GEPA and 0.679 with the judge, a gain of 2.3 points. IFBench rises from a 0.350 base to 0.462 and then 0.548, a gain of 8.6 points. HoVer rises from a 0.477 base to 0.559 and then 0.657, a gain of 9.7 points. On every benchmark the lowest judge seed sits above the highest baseline seed." src="../../../../2026-08-18-named-failure-modes/images/hero.png" style="width: 100%;" />
 <br />
-<figcaption>Figure 1. The judge's findings improve held-out test scores on every benchmark and every seed, under the same optimization budget.</figcaption>
+<figcaption>Figure 1. The judge's findings improve held-out test scores on every benchmark and every seed, under the same online optimization budget.</figcaption>
 </figure>
 <p>During each GEPA optimization round, a candidate is evaluated on a small set of tasks, and the results go to a reflection model, the LLM that proposes a revised prompt. For the step being revised, it sees the task, that step's output, and the evaluator's feedback. Evaluator feedback already tells reflection where the result diverged from what the task required: the correct answer, which gold documents were missed, which constraints failed. All of that describes the result. We introduce an LLM judge that describes the process: how the program's steps behaved on the way to that result, and where they went wrong.</p>
 <p>The judge uses a fixed vocabulary to group individual failures instead of reporting each one separately in free form, so different executions are described with the same failure patterns and reflection gets a consistent picture of the problems that recur. We call this vocabulary a <strong>failure taxonomy</strong>: a short list of the ways this particular program fails, built automatically from its own executions. Each entry is a <strong>failure mode</strong>, a failure pattern with a name and a description.<sup id="fnref:mast"><a class="footnote-ref" href="#fn:mast">1</a></sup> Each report the judge makes, which we call a finding, names the failure mode, the step, and the evidence. On HotpotQA, for example, one finding reads <code>Spurious_Fact_Introduced_At_Summarization</code> at the step <code>summarize1</code>, with the evidence "Kapolei is colloquially known as being part of the leeward coast of Oahu", a sentence the summary added that the judge flagged as unsupported by the retrieved passages.</p>
-<p>The judge works from the trace alone; the task's score, gold answer, and evaluator feedback are withheld from it. Keeping the outcome hidden keeps the judge from conditioning on the score, gold answer, or evaluator feedback, and reduces the risk that a finding merely restates the verdict. A program may make a mistake at an intermediate step and still reach the correct answer through a later recovery or a fortunate guess. Outcome-blind analysis therefore draws useful information from successful and unsuccessful executions alike, giving the reflection model a fuller account of how the candidate behaves.</p>
+<p>The judge receives the task and the execution trace, each step's inputs, prompt, and output, but not the task score, gold answer, or evaluator feedback. Keeping the outcome hidden keeps the judge from conditioning directly on those signals and reduces the risk that a finding merely restates the verdict. A program may make a mistake at an intermediate step and still reach the correct answer through a later recovery or a fortunate guess. Outcome-blind analysis therefore draws useful information from successful and unsuccessful executions alike, giving the reflection model a fuller account of how the candidate behaves.</p>
 <p>Throughout, GEPA's evaluator keeps its role: the task score still decides which candidates survive, and the judge's findings only inform the reflection model. Figure 1 shows the resulting held-out scores.</p>
 <h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
 <p>Our approach consists of two stages: constructing a failure taxonomy tailored to the program and its use case, then using an LLM judge to apply that taxonomy throughout optimization and provide findings to the reflection model.</p>
@@ -4971,8 +4971,8 @@
 <figcaption>Figure 2. The evaluator and LLM judge analyze each execution independently. Their findings meet when GEPA reflects on the current candidate.</figcaption>
 </figure>
 <h2 id="same-budget-different-allocation">Same budget, different allocation<a class="headerlink" href="#same-budget-different-allocation" title="Permanent link">&para;</a></h2>
-<p>The judge is the only operation added during optimization, and it is paid for from the same budget. Every baseline and judge run received $60 per seed, covering the optimization loop only: minibatch rollouts, reflection, validation of promoted candidates, and, in the judge arm, the judge, which uses the same model as reflection. The base program's initial validation and the final test evaluation are outside the allocated budget, for both arms. Candidate selection, sampling, scheduling, and the rule for accepting a proposal are identical in both arms.</p>
-<p>The judge arm proposed fewer candidates, since part of its budget went to the judge, and accepted a larger share of them: 50.8% overall, against 45.1% for standard GEPA. Its accepted-candidate pool therefore stayed close in size to the baseline's. Matched budgets and a similar accepted pool argue against the two simple explanations for the gap, that the judge arm spent more or had more accepted candidates to choose from; they do not isolate every way a diagnosis can change the search.</p>
+<p>The judge is the only operation added during optimization, and it is paid for from the same budget. Every baseline and judge run received $60 per seed, covering the online optimization loop only: minibatch rollouts, reflection, validation of promoted candidates, and, in the judge arm, the judge, which uses the same model as reflection. The base program's initial validation and the final test evaluation are outside the allocated budget, for both arms. Candidate selection, sampling, scheduling, and the rule for accepting a proposal are identical in both arms.</p>
+<p>The judge arm proposed fewer candidates, since part of its budget went to the judge, and accepted a larger share of them: 50.8% overall, against 45.1% for standard GEPA. Its accepted-candidate pool therefore stayed close in size to the baseline's. Matched online budgets and a similar accepted pool argue against the two simple explanations for the gap, that the judge arm spent more or had more accepted candidates to choose from; they do not isolate every way a diagnosis can change the search.</p>
 <figure>
 <table>
 <thead>
