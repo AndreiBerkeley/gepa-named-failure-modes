@@ -54,7 +54,6 @@ from typing import Any
 
 from gepa_taxonomy.adamast_trace import AdamastRecord
 from gepa_taxonomy.cost import Phase
-from gepa_taxonomy.program import REFINER, SOLVER
 from gepa_taxonomy.seed_cache import candidate_hash
 
 #: AdaMAST judge mode. ``"default"`` runs the SelectionJudge, which makes
@@ -64,8 +63,8 @@ from gepa_taxonomy.seed_cache import candidate_hash
 #: judge's share of a fixed budget.
 JUDGE_MODE = "default"
 
-#: Bedrock, so judging uses the same account, bearer credential and price sheet
-#: as every other call in this experiment.
+#: Provider name handed to AdaMAST for the corpus judge. Overridden by the
+#: ``--provider`` flag of ``scripts/judge_corpus.py``.
 JUDGE_PROVIDER = "openai"
 
 #: Trace budget handed to AdaMAST. Above the largest formatted trace we have
@@ -88,26 +87,11 @@ CHARS_PER_TOKEN = 3.5
 
 #: Role names must match the taxonomy's own ``applies_to_role`` values, or
 #: role-scoped codes cannot be routed. The pruned taxonomy uses ``"solver"``.
-ROLE_BY_COMPONENT: dict[str, str] = {SOLVER: "solver", REFINER: "refiner"}
 
-#: What each subagent is for, stated to the judge in its own trace. Taken from
-#: the program's actual structure (``program.py``), not aspirationally: the
-#: solver sees no feedback, and the refiner never sees test results.
-ROLE_PURPOSE: dict[str, str] = {
-    "solver": (
-        "First of the pipeline's two model calls. Reads the issue text and the "
-        "BM25-retrieved source files and must output a unified diff that fixes the "
-        "issue. It receives no feedback of any kind and gets exactly one attempt."
-    ),
-    "refiner": (
-        "Second of the pipeline's two model calls. Reads the issue text, the same "
-        "retrieved source files, the solver's candidate patch, and cheap static "
-        "checks on that patch (is it a well-formed diff, does it apply to the "
-        "repository, do the modified files parse). It must output a corrected "
-        "unified diff. It never sees test results, and its output is what gets "
-        "graded."
-    ),
-}
+
+#: The sibling checkout that ``scripts/bootstrap.sh`` creates, and the same
+#: default ``scripts/generate_taxonomy.py`` uses.
+_SIBLING_VENV_PYTHON = Path(__file__).resolve().parents[2].parent / "adamast-public" / ".venv" / "bin" / "python"
 
 #: Where a uv-installed ``adamast`` tool keeps its interpreter.
 _UV_TOOL_PYTHON = Path.home() / ".local" / "share" / "uv" / "tools" / "adamast" / "bin" / "python"
@@ -119,12 +103,15 @@ def default_adamast_python() -> Path | None:
     """Locate the interpreter that has ``adamast`` installed.
 
     ``ADAMAST_PYTHON`` wins so a differently-installed AdaMAST can be pointed
-    at without a code change; otherwise the uv tool layout, then the sibling of
-    whatever ``adamast`` is on PATH.
+    at without a code change; otherwise the sibling checkout that bootstrap
+    creates, then the uv tool layout, then the sibling of whatever ``adamast``
+    is on PATH.
     """
     override = os.environ.get("ADAMAST_PYTHON")
     if override:
         return Path(override)
+    if _SIBLING_VENV_PYTHON.exists():
+        return _SIBLING_VENV_PYTHON
     if _UV_TOOL_PYTHON.exists():
         return _UV_TOOL_PYTHON
     exe = shutil.which("adamast")
@@ -143,85 +130,6 @@ def taxonomy_fingerprint(path: str | Path) -> str:
     code sets inside one run.
     """
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()[:16]
-
-
-# ---------------------------------------------------------------------------
-# Role-scoped trace records
-# ---------------------------------------------------------------------------
-
-
-def build_role_record(
-    *,
-    component: str,
-    rollout: Any,
-    task: Any,
-    grading: dict[str, Any] | None = None,
-) -> AdamastRecord:
-    """Build the AdaMAST-native record for ONE subagent of one rollout.
-
-    Sections, in order: the task formulation, what this subagent is for, what it
-    was given, and its full untruncated trace (prompt then output).
-
-    Section 3 names the subagent's input rather than repeating it. The prompt in
-    section 4 already embeds that input verbatim -- for the solver that is ~60 KB
-    of retrieved source -- and duplicating it would double the judge's token bill
-    for no new evidence. The refiner's input (candidate patch, static checks) is
-    small and IS repeated, because it is the thing its failure usually turns on.
-
-    Outcome (score, resolved, harness detail) stays in ``metadata`` and out of
-    the trajectory: AdaMAST's own checklist warns against leaking oracle
-    outcomes to the judge, and ``adamast_trace.build_record`` holds the same line.
-    """
-    role = ROLE_BY_COMPONENT[component]
-    problem_statement = getattr(task, "problem_statement", "") or ""
-    solver_prompt, refiner_prompt = rollout.prompts()
-
-    if role == "solver":
-        given = (
-            f"Repository: {getattr(task, 'repo', '')}\n"
-            f"Issue: the task formulation above.\n"
-            "Retrieved source files (contents embedded verbatim in the prompt below):\n"
-            + ("\n".join(f"  - {p}" for p in rollout.retrieved_paths) or "  (none retrieved)")
-        )
-        prompt, output = solver_prompt, rollout.solver_patch
-    else:
-        given = (
-            f"Repository: {getattr(task, 'repo', '')}\n"
-            "Issue: the task formulation above.\n"
-            "Retrieved source files (contents embedded verbatim in the prompt below):\n"
-            + ("\n".join(f"  - {p}" for p in rollout.retrieved_paths) or "  (none retrieved)")
-            + "\n\nCandidate patch produced by the solver:\n"
-            + (rollout.solver_patch or "(the solver produced no patch)")
-            + "\n\nAutomated checks reported on that candidate patch:\n"
-            + (rollout.feedback.render() or "(none)")
-        )
-        prompt, output = refiner_prompt, rollout.refiner_patch
-
-    trajectory = "\n\n".join(
-        (
-            f"[TASK]\n{problem_statement}",
-            f"[ROLE: {role}]\n{ROLE_PURPOSE[role]}",
-            f"[INPUT GIVEN TO THE {role.upper()}]\n{given}",
-            f"[{role.upper()} PROMPT]\n{prompt}",
-            f"[{role.upper()} OUTPUT]\n{output or '(no output)'}",
-        )
-    )
-
-    return AdamastRecord(
-        problem_id=f"{rollout.instance_id}::{role}",
-        task=problem_statement,
-        raw_trajectory=trajectory,
-        metadata={
-            "system": "gepa-swebench-solver-refiner",
-            "benchmark": "SWE-bench_Verified",
-            "instance_id": rollout.instance_id,
-            "component": component,
-            "role": role,
-            "repo": getattr(task, "repo", None),
-            "retrieved_paths": list(rollout.retrieved_paths),
-            "grading": dict(grading or {}),
-        },
-    )
 
 
 # ---------------------------------------------------------------------------
@@ -408,8 +316,9 @@ class TaxonomyJudge:
             return {"transport": "injected", "codes": len(self._codes), "taxonomy": self._fingerprint}
         if self.python is None or not Path(self.python).exists():
             raise JudgeError(
-                "no interpreter with adamast installed. Expected the uv tool at "
-                f"{_UV_TOOL_PYTHON}, or set ADAMAST_PYTHON."
+                "no interpreter with adamast installed. Expected the sibling checkout at "
+                f"{_SIBLING_VENV_PYTHON} (created by scripts/bootstrap.sh), the uv tool at "
+                f"{_UV_TOOL_PYTHON}, or ADAMAST_PYTHON."
             )
         # Fixed argv, no shell: the only variable is the interpreter path.
         probe = subprocess.run(
@@ -430,83 +339,6 @@ class TaxonomyJudge:
             "codes": len(self._codes),
             "taxonomy": self._fingerprint,
         }
-
-    # -- API --------------------------------------------------------------
-
-    def judge(
-        self,
-        candidate: dict[str, str],
-        component: str,
-        subjects: dict[str, dict[str, Any]],
-    ) -> dict[str, list[dict[str, Any]]]:
-        """Diagnose one component of each failed rollout in ``subjects``.
-
-        ``subjects`` maps instance id to ``{"rollout": Rollout, "task": Task,
-        "grading": dict}``. Returns a mapping from instance id to that
-        component's failure codes. An instance is ABSENT from the result only
-        when its judgement failed -- a judged-but-clean instance maps to ``[]``,
-        which is a diagnosis ("no code in this taxonomy fired") and is worth
-        showing to reflection.
-        """
-        if component not in ROLE_BY_COMPONENT:
-            return {}
-
-        results: dict[str, list[dict[str, Any]]] = {}
-        pending: dict[str, AdamastRecord] = {}
-
-        for instance_id, subject in subjects.items():
-            if self.cache is not None:
-                cached = self.cache.get(
-                    taxonomy=self._fingerprint,
-                    candidate=candidate,
-                    component=component,
-                    instance_id=instance_id,
-                )
-                if cached is not None:
-                    results[instance_id] = cached
-                    continue
-            try:
-                pending[instance_id] = build_role_record(
-                    component=component,
-                    rollout=subject["rollout"],
-                    task=subject["task"],
-                    grading=subject.get("grading"),
-                )
-            except Exception as exc:
-                self._warn(f"could not build a {component} trace for {instance_id}: {exc}")
-
-        if not pending:
-            return results
-
-        try:
-            response = self._run(list(pending.values()))
-            # Metering first: a malformed response still cost money, and the
-            # budget must know about it even when the diagnosis is unusable.
-            cost = self._meter_usage(response.get("usage") or {})
-            by_trace = {str(d.get("trace_id", "")): d for d in response.get("diagnoses") or []}
-        except Exception as exc:
-            self.failures += 1
-            self._warn(f"judging failed for {sorted(pending)}: {exc}")
-            return results
-
-        for instance_id, record in pending.items():
-            diagnosis = by_trace.get(record.problem_id)
-            if diagnosis is None:
-                self._warn(f"judge returned no diagnosis for {record.problem_id}")
-                continue
-            modes = self._normalise(diagnosis.get("failure_modes") or [], role=ROLE_BY_COMPONENT[component])
-            results[instance_id] = modes
-            self.judged += 1
-            if self.cache is not None:
-                self.cache.put(
-                    taxonomy=self._fingerprint,
-                    candidate=candidate,
-                    component=component,
-                    instance_id=instance_id,
-                    failure_modes=modes,
-                    cost_usd=cost / max(1, len(pending)),
-                )
-        return results
 
     # -- internals --------------------------------------------------------
 
@@ -531,7 +363,9 @@ class TaxonomyJudge:
             return self.runner(request)
 
         if self.python is None:
-            raise JudgeError("no interpreter with adamast installed; set ADAMAST_PYTHON")
+            raise JudgeError(
+                "no interpreter with adamast installed; run scripts/bootstrap.sh or set ADAMAST_PYTHON"
+            )
         # Fixed argv, no shell: the only variable is the interpreter path.
         proc = subprocess.run(
             [str(self.python), str(_WORKER)],
@@ -553,7 +387,7 @@ class TaxonomyJudge:
         block -- so no token counts come back from a judge call. The worker
         measures the exact prompt and response CHARACTERS at the transport
         boundary and we convert at ``CHARS_PER_TOKEN``, then price the result
-        with the same ``cost.price_call`` table every other call uses. The
+        with the same ``cost.price_call`` every other call uses. The
         divisor is set low on purpose so the estimate errs high; see its comment.
         """
         prompt_tokens = math.ceil(int(usage.get("prompt_chars", 0)) / CHARS_PER_TOKEN)

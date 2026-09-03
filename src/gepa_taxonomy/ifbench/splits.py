@@ -36,10 +36,8 @@ can score strictly between 0 and 1. Selection happens on val, so the acceptance
 gate sees real granularity -- the "85% binary" limitation applies only to
 the final test measurement.
 
-**val=300 restores HotpotQA's search pressure.** At val=120 a $60 budget bought
-~138 iterations, six times HotpotQA's iterations-per-val-instance, which is the
-val-overfitting shape that sank SWE-Bench. At 300 it buys ~64, against
-HotpotQA's 53-62.
+**val=300** keeps the number of iterations a fixed budget buys per validation
+instance low enough that GEPA cannot overfit the validation split.
 
 Stratification
 --------------

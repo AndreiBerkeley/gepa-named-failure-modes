@@ -105,7 +105,7 @@ class SeedEvaluationCache:
     def assert_covers(self, instance_ids: Iterable[str]) -> None:
         """Launch-time completeness check for the val split.
 
-        This is where D009's guarantee belongs -- checked ONCE against the val
+        Checked ONCE against the val
         manifest, not inferred from a per-lookup miss. Doing it per-lookup was
         the bug: a train instance is legitimately absent, and treating that as
         an incomplete cache crashed the run.
@@ -116,7 +116,7 @@ class SeedEvaluationCache:
                 f"seed cache is missing {len(gaps)} of the val instances it must cover "
                 f"(e.g. {gaps[:3]}). Every run must start from identical state, so the "
                 "base-candidate val evaluation has to cover the whole val split. "
-                "Rebuild it with scripts/build_base_val.py."
+                "Rebuild it with demo/build_ifbench_base_val.py."
             )
 
     def get(self, candidate: dict[str, str], instance_id: str) -> dict[str, Any] | None:

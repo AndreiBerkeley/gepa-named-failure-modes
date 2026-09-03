@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 """Evaluate a finished seed's BEST candidate on the held-out test split.
 
-**This spends money (~$1.20 per candidate at the estimated rate).**
+**This spends money: one pass over the test split per candidate.**
 
 Test is touched exactly once per candidate, at the end. val drives selection, so
-a val score is an optimistically biased estimate of it -- the SWE-Bench round
-lost 7.7pp between the two (21.7% val -> 14.0% test), which is why this is a
+a val score is an optimistically biased estimate of it, which is why this is a
 separate script and a separate split.
 
-    PYTHONUTF8=1 uv run python scripts/eval_ifbench_test.py --run results/runs/ifbench-baseline-seed1
-    PYTHONUTF8=1 uv run python scripts/eval_ifbench_test.py --all
+    PYTHONUTF8=1 uv run python demo/eval_ifbench_test.py --run results/runs/ifbench-baseline-seed1
+    PYTHONUTF8=1 uv run python demo/eval_ifbench_test.py --all
 """
 
 from __future__ import annotations
@@ -40,9 +39,8 @@ def evaluate_run(run: Path, args) -> dict | None:
     # --candidate-index 0 evaluates the SEED candidate, which gepa stores as
     # candidate 0. That reference is not optional: without a base-on-test number
     # we can report "the best candidate scores X" but not "GEPA improved test by
-    # Y" -- and a val gain with a flat or falling test score is exactly what the
-    # SWE-Bench round produced (21.7% val, 14.0% test). The result is written to
-    # its own file so it never clobbers the best-candidate evaluation.
+    # Y". The result is written to its own file so it never clobbers the
+    # best-candidate evaluation.
     if args.candidate_index is not None:
         index = args.candidate_index
         if not 0 <= index < len(candidates):
@@ -64,7 +62,7 @@ def evaluate_run(run: Path, args) -> dict | None:
 
     import importlib.util
 
-    spec = importlib.util.spec_from_file_location("_ifb_runner", REPO / "scripts" / "run_ifbench_seed.py")
+    spec = importlib.util.spec_from_file_location("_ifb_runner", REPO / "demo" / "run_ifbench_seed.py")
     runner = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(runner)
     test = runner.load_instances(args.manifests / "test.json")
@@ -142,6 +140,13 @@ def main() -> int:
     parser.add_argument("--max-tokens", type=int, default=4096)
     parser.add_argument("--solver-model", default="gpt-5-mini")
     parser.add_argument(
+        "--price",
+        action="append",
+        default=[],
+        metavar="MODEL=IN,OUT",
+        help="price for a model litellm's table does not know, in USD per million input,output tokens; repeatable",
+    )
+    parser.add_argument(
         "--candidate-index",
         type=int,
         default=None,
@@ -151,6 +156,10 @@ def main() -> int:
     )
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
+    from gepa_taxonomy.cost import assert_priced, load_price_overrides
+
+    load_price_overrides(args.price)
+    assert_priced(args.solver_model)
 
     if args.all:
         runs = sorted((REPO / "results" / "runs").glob("ifbench-*"))

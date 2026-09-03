@@ -145,7 +145,7 @@ class LLMFailureJudge:
     #: occurrences, just not one-at-a-time.
     #:
     #: It matters because the judge runs on EVERY trace in a reflective
-    #: minibatch: at HotpotQA's minibatch of 15, serial judging adds fifteen
+    #: minibatch: at a minibatch of 15, serial judging adds fifteen
     #: sequential model calls to every iteration, roughly doubling a run's
     #: wall-clock.
     #:

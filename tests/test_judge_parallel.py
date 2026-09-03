@@ -1,7 +1,7 @@
 """Judge concurrency. FREE: the LM is a local callable, no network.
 
 Parallelism here is a wall-clock optimisation that must be invisible in the
-result. At HotpotQA's minibatch of 15 the judge adds fifteen sequential model
+result. At a minibatch of 15 the judge adds fifteen sequential model
 calls to every iteration, roughly doubling a run; but a concurrency bug that
 dropped or duplicated a diagnosis would corrupt what reflection sees, which is
 the treatment arm's entire input.

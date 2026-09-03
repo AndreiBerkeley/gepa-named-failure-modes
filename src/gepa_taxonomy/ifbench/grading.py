@@ -9,16 +9,12 @@ Which metric
 IFBench reports two levels. **Prompt-level** is all-or-nothing per instance;
 **instruction-level** is the fraction of that instance's constraints satisfied.
 We select on the **instruction-level fraction** and record prompt-level as a
-diagnostic — the same split D041 made on HotpotQA, and for the same reason:
-partial credit is what keeps a minibatch comparison from being a coin flip.
+diagnostic: partial credit is what keeps a minibatch comparison from being a coin flip.
 
-Be clear about how little that buys here, though. **256 of 300 instances carry
-exactly one constraint**, so for 85% of the set the two metrics coincide
-and scoring really is binary. The fraction helps on the 44 two-constraint
-instances and nowhere else. What actually keeps the acceptance gate informative
-is the base rate: IFBench's ~35.7% leaves only ~11% of minibatch-5 draws
-all-zero, against the 18.3% that made SWE-Bench's minibatches tie ~75% of the
-time.
+Be clear about how little that buys here, though. Most instances carry exactly
+one constraint, so for most of the set the two metrics coincide and scoring
+really is binary. What keeps the acceptance gate informative is the base rate: a
+seed program near 35% leaves few all-zero draws at a minibatch of 5.
 
 Strict, not loose
 -----------------

@@ -7,12 +7,12 @@ become one: it pulls its own ``openai``/``pydantic`` floors, and re-resolving th
 venv mid-experiment would change the environment the baseline seeds run out of
 .
 
-Benchmark-agnostic: it takes a trace file, so the same command serves HotpotQA
-and AppWorld.
+Benchmark-agnostic: it takes a trace file, so the same command serves any
+program whose traces were harvested.
 
     PYTHONUTF8=1 uv run python scripts/generate_taxonomy.py \
         --traces results/base_val/base_val.traces.jsonl \
-        --out results/taxonomy/hotpotqa-auto-v1
+        --out results/taxonomy/ifbench-auto-v1
 
 The output ``taxonomy.json`` is the stage boundary: ``failure_taxonomy`` reads it
 and needs nothing else, so anyone bringing their own taxonomy skips this entirely.
@@ -109,8 +109,8 @@ def main() -> int:
             "Clone and install it as a sibling:\n"
             "  git clone --branch agent/baseline-taxonomy-generation "
             "https://github.com/multi-agent-systems-failure-taxonomy/AdaMAST.git ../adamast-public\n"
-            '  cd ../adamast-public && uv venv --python 3.12 && uv pip install -e ".[bedrock,google]"\n'
-            "The [bedrock] extra is REQUIRED. Without it AdaMAST imports cleanly and then\n"
+            '  cd ../adamast-public && uv venv --python 3.12 && uv pip install -e ".[all]"\n'
+            "The provider extras are REQUIRED. Without them AdaMAST imports cleanly and then\n"
             "raises ProviderConfigurationError on the first provider call -- AFTER trace\n"
             "validation has already passed, so the failure looks like a data problem."
         )
@@ -215,7 +215,7 @@ def main() -> int:
             by_category[str(c.get("category"))] = by_category.get(str(c.get("category")), 0) + 1
         print(f"  categories: {dict(sorted(by_category.items()))}")
         scoped = sum(1 for c in codes if c.get("applies_to_role"))
-        print(f"  role-scoped: {scoped}/{len(codes)}  (watch this: 4/22 last time, F018)")
+        print(f"  role-scoped: {scoped}/{len(codes)}")
     print(f"  provenance: {args.out / 'provenance.json'}")
     return 0
 

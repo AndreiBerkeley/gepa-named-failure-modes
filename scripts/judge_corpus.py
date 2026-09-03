@@ -25,7 +25,7 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 
 from gepa_taxonomy.adamast_trace import AdamastRecord
-from gepa_taxonomy.cost import CostMeter
+from gepa_taxonomy.cost import CostMeter, assert_priced, load_price_overrides
 from gepa_taxonomy.taxonomy_judge import MAX_OUTPUT_TOKENS, TaxonomyJudge
 
 #: Room for the judge's own framing on top of the longest trace.
@@ -39,11 +39,20 @@ def main() -> int:
     parser.add_argument("--out", type=Path, required=True, help="judgements JSONL to write")
     parser.add_argument("--provider", default="openai")
     parser.add_argument("--model", default="gpt-5-mini")
+    parser.add_argument(
+        "--price",
+        action="append",
+        default=[],
+        metavar="MODEL=IN,OUT",
+        help="price for a model litellm's table does not know, in USD per million input,output tokens; repeatable",
+    )
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--chunk", type=int, default=10, help="traces per judge call")
     parser.add_argument("--max-output-tokens", type=int, default=MAX_OUTPUT_TOKENS)
     parser.add_argument("--adamast-python", type=Path, default=None)
     args = parser.parse_args()
+    load_price_overrides(args.price)
+    assert_priced(args.model)
 
     if not args.traces.exists():
         raise SystemExit(f"traces not found: {args.traces}")

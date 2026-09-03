@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-"""Evaluate the base candidate on val ONCE. **This spends money (~$1.55 est).**
+"""Evaluate the base candidate on val ONCE. **This spends money.**
 
 Two artifacts from one pass, which is why this is not wasted spend:
 
 1. ``base_val_cache.json`` -- the replay store every seed and both arms read, so
-   all six runs start from **byte-identical** state. Without it each run
+   every run starts from **byte-identical** state. Without it each run
    re-samples the base candidate, and the two arms at one seed would differ by an
    independent 300-rollout draw as well as by the treatment.
 
@@ -15,7 +15,7 @@ Two artifacts from one pass, which is why this is not wasted spend:
 Replayed rollouts issue no LM call, so they contribute no spend -- satisfying the
 budget exclusion for the shared seed evaluation by construction.
 
-    PYTHONUTF8=1 uv run python scripts/build_ifbench_base_val.py
+    PYTHONUTF8=1 uv run python demo/build_ifbench_base_val.py
 """
 
 from __future__ import annotations
@@ -36,9 +36,20 @@ def main() -> int:
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--max-tokens", type=int, default=4096)
     parser.add_argument("--solver-model", default="gpt-5-mini")
+    parser.add_argument(
+        "--price",
+        action="append",
+        default=[],
+        metavar="MODEL=IN,OUT",
+        help="price for a model litellm's table does not know, in USD per million input,output tokens; repeatable",
+    )
     parser.add_argument("--max-retries", type=int, default=8)
     parser.add_argument("--force", action="store_true", help="rebuild even if the cache exists")
     args = parser.parse_args()
+    from gepa_taxonomy.cost import assert_priced, load_price_overrides
+
+    load_price_overrides(args.price)
+    assert_priced(args.solver_model)
 
     from gepa_taxonomy.cost import CostMeter
     from gepa_taxonomy.ifbench.adapter import IFBenchAdapter, instances_by_id
@@ -60,18 +71,15 @@ def main() -> int:
     # ordering, which gepa keys on positionally.
     import importlib.util
 
-    spec = importlib.util.spec_from_file_location("_ifb_runner", REPO / "scripts" / "run_ifbench_seed.py")
+    spec = importlib.util.spec_from_file_location("_ifb_runner", REPO / "demo" / "run_ifbench_seed.py")
     runner = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(runner)
 
     val = runner.load_instances(args.manifests / "val.json")
     print(f"base candidate on {len(val)} val instances, {args.workers} workers")
 
-    # Created BEFORE the evaluation, not after, purely so the run is observable.
-    # Everything here writes on completion, so for the ~20 minutes this takes
-    # there was previously no on-disk signal at all and chain_status.py reported
-    # nothing -- the same blind spot that had me reading AppWorld's server logs to
-    # infer progress. An empty directory is enough for it to say "building".
+    # Created BEFORE the evaluation so the run directory exists, and the pass is
+    # observable, while it is in progress; everything else writes on completion.
     args.out.mkdir(parents=True, exist_ok=True)
 
     meter = CostMeter()
@@ -99,9 +107,9 @@ def main() -> int:
         raise SystemExit(
             f"REFUSING TO WRITE: {adapter.verifier_errors} constraint verifiers raised.\n"
             "A verifier that raises is scored as NOT FOLLOWED, so freezing it in would\n"
-            "silently depress one constraint class in both arms. All 344 published\n"
-            "constraint instances were verified to run clean, so this means something\n"
-            "changed upstream -- refresh with scripts/vendor_ifbench.py and inspect."
+            "silently depress one constraint class in both arms. The vendored verifiers\n"
+            "were checked to run clean, so this means something\n"
+            "changed upstream -- refresh with demo/vendor_ifbench.py and inspect."
         )
 
     entries = {

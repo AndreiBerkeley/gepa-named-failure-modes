@@ -13,8 +13,7 @@ Module names and seed instructions are GEPA's own, transcribed **verbatim** from
 the paper's LaTeX source (Appendix L, "IFBench, GPT-4.1 Mini", the ``Base
 Prompt`` blocks -- not the MIPROv2 or GEPA-optimised blocks printed alongside
 them). They are deliberately terse; GEPA's job is to improve them, and seeding
-from anything already searched would destroy the comparison. This is the same
-discipline used for HotpotQA.
+from anything already searched would destroy the comparison.
 
 Gold blindness
 --------------

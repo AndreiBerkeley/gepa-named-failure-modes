@@ -7,11 +7,10 @@ __pycache__/
 # uv
 .uv/
 
-# Experiment outputs — regenerable, and large.
-# Split manifests under manifests/ ARE committed (they are stage artifacts).
-results/**/raw/
-logs/*.log
-logs/**/*.jsonl
+# Run outputs — regenerable, and large. The demo manifests and
+# demo/taxonomy.json are committed; everything under results/ is not.
+results/
+logs/
 runs/
 
 # Datasets / HF cache
@@ -26,12 +25,3 @@ data/
 
 # OS
 .DS_Store
-
-# SWE-bench harness artifacts
-logs/run_evaluation/
-*.smoke-gold.json
-results/smoke/*.log
-.cache/
-results/stability/*.log
-results/stability/*-predictions.json
-*.stab-r*.json

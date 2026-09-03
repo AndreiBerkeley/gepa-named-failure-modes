@@ -7,7 +7,7 @@ dependencies = [
     # litellm signs Bedrock-routed calls through botocore.
     "boto3>=1.43.67",
     "datasets>=5.0.1",
-    # gepa is pinned to the exact baseline release; see docs/findings/phase0-gepa-pin.md
+    # gepa is pinned to the release the study ran on.
     "gepa==0.1.4",
     "litellm>=1.95.0",
     # litellm imports tenacity lazily inside its retry wrapper; without this
@@ -28,8 +28,6 @@ dev = [
     "ruff>=0.6",
 ]
 
-# SWE-bench evaluation harness. Kept optional: it pulls docker/modal and is only
-# needed on a machine that actually runs the evaluation harness.
 [project.scripts]
 gepa-taxonomy = "gepa_taxonomy.pipeline:main"
 
@@ -39,7 +37,7 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 # failure_taxonomy is the PR-bound package: benchmark-agnostic, depends only on
-# gepa, and carries no experiment orchestration (CLAUDE.md hard rule 4).
+# gepa, and carries no experiment orchestration.
 packages = ["src/gepa_taxonomy", "src/failure_taxonomy"]
 
 [tool.ruff]
@@ -55,5 +53,5 @@ testpaths = ["tests"]
 # Intentional, each with a comment at the call site:
 #   BLE001/S110 - cost.py falls back to litellm then raises UnpricedModelError
 #   B017        - frozen+slots raises TypeError for new attrs, not a fixed class
-#   PLW1510     - smoke_eval inspects the return code itself
+#   PLW1510     - subprocess callers inspect the return code themselves
 ignore = ["BLE001", "S110", "B017", "PLW1510", "ISC004"]

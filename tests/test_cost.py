@@ -5,20 +5,31 @@ from __future__ import annotations
 import pytest
 
 from gepa_taxonomy.cost import (
-    ALL_REFINER_MODELS,
-    ALT2_REFINER_MODEL,
-    ALT_REFINER_MODEL,
-    BEDROCK_PRICES_USD_PER_TOKEN,
-    REFINER_MODEL,
-    SONNET_5_POST_INTRO_USD_PER_TOKEN,
+    PRICE_ENV,
+    PRICE_OVERRIDES,
     CostMeter,
     MaxTotalCostStopper,
     UnpricedModelError,
+    assert_priced,
+    load_price_overrides,
+    lookup_price,
+    parse_price_spec,
     price_call,
+    set_price,
 )
 
-HAIKU = "us.anthropic.claude-haiku-4-5-20251001-v1:0"
-SONNET = "us.anthropic.claude-sonnet-5"
+HAIKU = "test-model-small"
+SONNET = "test-model-large"
+
+
+@pytest.fixture(autouse=True)
+def _prices():
+    """Every test prices two synthetic models through the override path."""
+    PRICE_OVERRIDES.clear()
+    set_price(HAIKU, 1.0, 5.0)
+    set_price(SONNET, 3.0, 15.0)
+    yield
+    PRICE_OVERRIDES.clear()
 
 
 # --------------------------------------------------------------------------
@@ -26,22 +37,30 @@ SONNET = "us.anthropic.claude-sonnet-5"
 # --------------------------------------------------------------------------
 
 
-def test_price_call_matches_table():
-    cin, cout = BEDROCK_PRICES_USD_PER_TOKEN[HAIKU]
-    assert price_call(HAIKU, 1_000_000, 0) == pytest.approx(cin * 1_000_000)
-    assert price_call(HAIKU, 0, 1_000_000) == pytest.approx(cout * 1_000_000)
+def test_price_call_uses_registered_prices():
+    assert price_call(HAIKU, 1_000_000, 0) == pytest.approx(1.0)
+    assert price_call(HAIKU, 0, 1_000_000) == pytest.approx(5.0)
 
 
 def test_bedrock_prefix_is_accepted():
     assert price_call(f"bedrock/{HAIKU}", 1000, 100) == price_call(HAIKU, 1000, 100)
 
 
-def test_cross_region_profile_carries_premium():
-    """`us.` inference profiles cost ~10% more than the base model."""
-    base_in, base_out = BEDROCK_PRICES_USD_PER_TOKEN["anthropic.claude-sonnet-5"]
-    prof_in, prof_out = BEDROCK_PRICES_USD_PER_TOKEN["us.anthropic.claude-sonnet-5"]
-    assert prof_in == pytest.approx(base_in * 1.1)
-    assert prof_out == pytest.approx(base_out * 1.1)
+def test_provider_prefix_and_bare_id_agree():
+    set_price("anthropic/claude-example", 3.0, 15.0)
+    assert price_call("anthropic/claude-example", 1000, 1000) == price_call("claude-example", 1000, 1000)
+
+
+def test_litellm_table_prices_the_default_model():
+    pytest.importorskip("litellm")
+    assert lookup_price("gpt-5-mini") is not None
+    assert price_call("openai/gpt-5-mini", 1000, 1000) == price_call("gpt-5-mini", 1000, 1000) > 0
+
+
+def test_override_beats_litellm_table():
+    pytest.importorskip("litellm")
+    set_price("gpt-5-mini", 100.0, 100.0)
+    assert price_call("gpt-5-mini", 1_000_000, 0) == pytest.approx(100.0)
 
 
 def test_unknown_model_raises_rather_than_metering_zero():
@@ -50,75 +69,29 @@ def test_unknown_model_raises_rather_than_metering_zero():
     litellm's completion_cost returns 0.0 for unknown models. If we inherited
     that, the stopper would meter $0 forever and never fire.
     """
+    with pytest.raises(UnpricedModelError, match="--price"):
+        price_call("nobody/some-unreleased-model", 1000, 1000)
+
+
+def test_assert_priced_fails_before_any_spend():
+    assert_priced(HAIKU, SONNET)
     with pytest.raises(UnpricedModelError):
-        price_call("anthropic.some-unreleased-model", 1000, 1000)
+        assert_priced(HAIKU, "nobody/unpriced")
 
 
-def test_our_table_agrees_with_litellm():
-    """Guards against a typo in the hand-written table."""
-    litellm = pytest.importorskip("litellm")
-    for model, (cin, cout) in BEDROCK_PRICES_USD_PER_TOKEN.items():
-        info = litellm.model_cost.get(model)
-        if info is None:
-            continue
-        assert cin == pytest.approx(info["input_cost_per_token"]), model
-        assert cout == pytest.approx(info["output_cost_per_token"]), model
+def test_parse_price_spec():
+    assert parse_price_spec("gemini/gemini-3.5-flash=1.50,9.00") == ("gemini/gemini-3.5-flash", 1.5, 9.0)
+    for bad in ("no-equals", "m=1", "m=a,b", "=1,2", "m=-1,2"):
+        with pytest.raises(ValueError):
+            parse_price_spec(bad)
 
 
-# --------------------------------------------------------------------------
-# The costed alternative refiner (Sonnet 4.6) -- for the budget decision
-# --------------------------------------------------------------------------
-
-
-@pytest.mark.parametrize("model", ALL_REFINER_MODELS)
-def test_refiner_rates_cross_checked_against_litellm(model):
-    """Every candidate refiner rate is verified offline, not assumed."""
-    litellm = pytest.importorskip("litellm")
-    cin, cout = BEDROCK_PRICES_USD_PER_TOKEN[model]
-    info = litellm.model_cost[model]
-    assert cin == pytest.approx(info["input_cost_per_token"])
-    assert cout == pytest.approx(info["output_cost_per_token"])
-    assert (cin, cout) == (3.00e-6, 15.00e-6)
-
-
-def test_alt_refiner_is_a_distinct_active_sonnet():
-    assert ALT_REFINER_MODEL != REFINER_MODEL
-    assert "sonnet" in ALT_REFINER_MODEL
-
-
-def test_pinned_refiner_rate_is_verified():
-    """Sonnet 4.6 at $3/$15, cross-checked against litellm."""
-    assert BEDROCK_PRICES_USD_PER_TOKEN[REFINER_MODEL] == (3.00e-6, 15.00e-6)
-    assert BEDROCK_PRICES_USD_PER_TOKEN[REFINER_MODEL] == SONNET_5_POST_INTRO_USD_PER_TOKEN
-
-
-@pytest.mark.parametrize("model", ALL_REFINER_MODELS)
-def test_pricing_guards_hold_for_every_refiner(model):
-    """Every candidate id must price without raising, so the budget stopper
-    stays valid whichever refiner is pinned."""
-    assert price_call(model, 10_000, 1_000) > 0
-    assert price_call(f"bedrock/{model}", 10_000, 1_000) > 0
-
-
-def test_alt2_refiner_is_priced_and_cross_checked():
-    """Sonnet 4.5 pricing verified offline against litellm, not assumed."""
-    litellm = pytest.importorskip("litellm")
-    assert ALT2_REFINER_MODEL in BEDROCK_PRICES_USD_PER_TOKEN
-    cin, cout = BEDROCK_PRICES_USD_PER_TOKEN[ALT2_REFINER_MODEL]
-    info = litellm.model_cost[ALT2_REFINER_MODEL]
-    assert cin == pytest.approx(info["input_cost_per_token"])
-    assert cout == pytest.approx(info["output_cost_per_token"])
-    assert (cin, cout) == (3.00e-6, 15.00e-6), "Sonnet 4.5 is $3/$15 per MTok"
-
-
-def test_every_available_sonnet_shares_one_rate():
-    """Sonnet 4.6 and 4.5 are both $3/$15, so stepping down the remaining
-    ladder buys nothing on cost."""
-    assert BEDROCK_PRICES_USD_PER_TOKEN[REFINER_MODEL] == BEDROCK_PRICES_USD_PER_TOKEN[ALT_REFINER_MODEL]
-
-
-def test_all_older_sonnets_share_one_rate():
-    assert BEDROCK_PRICES_USD_PER_TOKEN[ALT_REFINER_MODEL] == BEDROCK_PRICES_USD_PER_TOKEN[ALT2_REFINER_MODEL]
+def test_load_price_overrides_from_flags_and_env(monkeypatch):
+    monkeypatch.setenv(PRICE_ENV, "env-model=2,4;other=1,1")
+    load_price_overrides(["flag-model=0.5,1.5"])
+    assert price_call("env-model", 1_000_000, 1_000_000) == pytest.approx(6.0)
+    assert price_call("other", 1_000_000, 0) == pytest.approx(1.0)
+    assert price_call("flag-model", 0, 1_000_000) == pytest.approx(1.5)
 
 
 # --------------------------------------------------------------------------

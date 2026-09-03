@@ -4,7 +4,7 @@
 Follows GEPA's published setup: train/val from IF-RLVR Train, test is the
 whole IFBench set, and the two constraint vocabularies are disjoint.
 
-    uv run python scripts/build_ifbench_splits.py
+    uv run python demo/build_ifbench_splits.py
 
 Deterministic given the seed. Refuses to overwrite differing manifests without
 --force: val subscores are keyed positionally against these ids.

@@ -1,6 +1,6 @@
 """VENDORED from github.com/allenai/IFBench @ main -- do not edit by hand.
 
-Apache-2.0. Refresh with scripts/vendor_ifbench.py.
+Apache-2.0. Refresh with demo/vendor_ifbench.py.
 The only change from upstream is that its imports are made package-relative.
 """
 

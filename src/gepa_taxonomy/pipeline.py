@@ -22,6 +22,8 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
+from gepa_taxonomy.cost import assert_priced, load_price_overrides
+
 REPO = Path(__file__).resolve().parents[2]
 
 
@@ -106,6 +108,13 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--solver-model", default="gpt-5-mini")
     parser.add_argument("--reflection-model", default="gpt-5-mini")
+    parser.add_argument(
+        "--price",
+        action="append",
+        default=[],
+        metavar="MODEL=IN,OUT",
+        help="price for a model litellm's table does not know, in USD per million input,output tokens; repeatable",
+    )
     parser.add_argument("--max-retries", type=int, default=8)
     parser.add_argument("--adamast-python", type=Path, default=None)
     parser.add_argument(
@@ -128,6 +137,9 @@ def _parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+    load_price_overrides(args.price)
+    assert_priced(args.solver_model, args.reflection_model)
+    price_args = [x for spec in args.price for x in ("--price", spec)]
     pipeline = BENCHMARKS[args.benchmark]
     python = sys.executable
     results = args.results.resolve()
@@ -171,6 +183,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     args.solver_model,
                     "--max-retries",
                     str(args.max_retries),
+                    *price_args,
                 ],
                 dry_run=args.dry_run,
                 pythonpath=pythonpath,
@@ -221,6 +234,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     provider,
                     "--workers",
                     str(args.workers),
+                    *price_args,
                 ]
                 if args.adamast_python:
                     command.extend(["--adamast-python", str(args.adamast_python.resolve())])
@@ -277,6 +291,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             args.reflection_model,
             "--max-retries",
             str(args.max_retries),
+            *price_args,
             *args.run_arg,
         ]
         _run(command, dry_run=args.dry_run, pythonpath=pythonpath)

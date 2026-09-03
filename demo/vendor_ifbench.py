@@ -23,8 +23,8 @@ Vendoring rather than reimplementing is deliberate. There are 58 + ~170
 constraint types and each is a place to introduce a silent scoring bug -- a wrong
 verifier does not crash, it mis-scores an entire constraint class in both arms.
 
-    uv run python scripts/vendor_ifbench.py
-    uv run python scripts/vendor_ifbench.py --check   # detect drift, write nothing
+    uv run python demo/vendor_ifbench.py
+    uv run python demo/vendor_ifbench.py --check   # detect drift, write nothing
 """
 
 from __future__ import annotations
@@ -68,7 +68,7 @@ SOURCES: dict[str, tuple[str, str, tuple[tuple[str, str], ...]]] = {
 
 HEADER = '''"""VENDORED from {origin} -- do not edit by hand.
 
-Apache-2.0. Refresh with scripts/vendor_ifbench.py.
+Apache-2.0. Refresh with demo/vendor_ifbench.py.
 The only change from upstream is that its imports are made package-relative.
 """
 
@@ -87,7 +87,7 @@ def main() -> int:
 
     VENDOR.mkdir(parents=True, exist_ok=True)
     (VENDOR / "__init__.py").write_text(
-        '"""Vendored constraint verifiers. See scripts/vendor_ifbench.py."""\n', encoding="utf-8"
+        '"""Vendored constraint verifiers. See demo/vendor_ifbench.py."""\n', encoding="utf-8"
     )
 
     drift = False

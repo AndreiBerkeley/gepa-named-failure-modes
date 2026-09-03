@@ -88,8 +88,7 @@ def fake_lm(monkeypatch):
 
     lm = FakeLM()
     monkeypatch.setattr(litellm, "completion", lm)
-    monkeypatch.setenv("AWS_BEARER_TOKEN_BEDROCK", "test-token")
-    monkeypatch.setenv("AWS_REGION", "us-east-1")
+    monkeypatch.setenv("OPENAI_API_KEY", "test-token")
     return lm
 
 
@@ -156,7 +155,7 @@ def test_the_seed_prompts_are_the_published_ones(tmp_path):
 
 
 def test_every_rollout_makes_exactly_two_calls(tmp_path, fake_lm):
-    """Cost predictability is the property AppWorld failed."""
+    """Cost predictability: every rollout makes exactly two model calls."""
     instances, adapter, *_ = _build(tmp_path)
     batch = adapter.evaluate(instances, dict(SEED_CANDIDATE), capture_traces=True)
     assert len(fake_lm.rollout_prompts) == 2 * len(instances)

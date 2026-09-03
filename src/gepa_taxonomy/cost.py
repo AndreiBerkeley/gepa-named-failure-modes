@@ -3,8 +3,9 @@
 Why this exists
 ---------------
 gepa v0.1.4 ships ``MaxReflectionCostStopper``, but it meters the *reflection
-LM only*. On SWE-Bench the solver dominates spend, so it cannot bound a run.
-This module adds a stopper that meters solver + refiner + reflection together.
+LM only*. In a multi-step program the task model usually dominates spend, so
+it cannot bound a run. This module adds a stopper that meters every model call
+together.
 
 Behaviour neutrality (baseline purity)
 --------------------------------------------
@@ -14,11 +15,11 @@ observer: it cannot influence candidate selection, reflection, sampling, merge
 scheduling, or acceptance.
 
 One constraint follows from reading the engine: ``_get_remaining_budget()``
-(engine.py:1002) and the tqdm total (engine.py:564) both duck-type on an
+(engine.py:1002) and the tqdm total in gepa's engine both duck-type on an
 attribute literally named ``max_metric_calls``. Both consumers are
 reporting-only, but this stopper still must not expose that name -- doing so
 would hijack the progress bar and the ``BudgetUpdatedEvent`` field. Enforced by
-``test_stopper.py::test_does_not_expose_max_metric_calls``.
+``tests/test_cost.py``.
 
 Budget accounting -- what is IN and what is OUT
 ----------------------------------------------
@@ -46,6 +47,7 @@ numbers.
 from __future__ import annotations
 
 import json
+import os
 import threading
 from collections.abc import Iterable
 from dataclasses import dataclass, field
@@ -61,122 +63,14 @@ Phase = Literal["optimization", "seed_val", "final_test", "generation"]
 #: Phases whose spend counts against the per-seed dollar budget.
 BUDGETED_PHASES: frozenset[str] = frozenset({"optimization"})
 
-#: Explicit Bedrock price table, USD per token, verified against litellm 1.95.0
-#: Kept explicit rather than trusting ``litellm.completion_cost``
-#: alone for two reasons:
-#:
-#: 1. ``completion_cost`` returns ``0.0`` for an unknown model rather than
-#:    raising. A stopper that silently meters $0 never fires -- unbounded spend.
-#: 2. Sonnet 5 is on introductory pricing that ends 2026-08-31. Pinning the
-#:    rate we budgeted against keeps a mid-experiment repricing from silently
-#:    changing our accounting.
-#:
-#: Both target models are ``INFERENCE_PROFILE``-only on this account -- the bare
-#: ``anthropic.*`` id is NOT directly invocable, so a profile prefix is
-#: mandatory. Two prefixes are available and they are priced differently:
-#:
-#:   ``global.``  base rate            <- what we use
-#:   ``us.``      base rate + ~10%     (US cross-region premium)
-#:
-#: Bare ids are listed only so a mistaken direct call is priced rather than
-#: raising; they are not what we invoke.
-BEDROCK_PRICES_USD_PER_TOKEN: dict[str, tuple[float, float]] = {
-    # model id: (input $/token, output $/token)
-    # Gemini ids route through litellm's gemini provider (explicit prefix).
-    # Pinned for the same reason as the Bedrock ids below: the pinned litellm
-    # predates the model, and its fallback table must not decide budget stops.
-    # $1.50 / $9.00 per million tokens (Gemini API list price, 2026-08).
-    "gemini/gemini-3.5-flash": (1.50e-6, 9.00e-6),
-    "anthropic.claude-haiku-4-5-20251001-v1:0": (1.00e-6, 5.00e-6),
-    "global.anthropic.claude-haiku-4-5-20251001-v1:0": (1.00e-6, 5.00e-6),
-    "us.anthropic.claude-haiku-4-5-20251001-v1:0": (1.10e-6, 5.50e-6),
-    # Opus 4.5 / 4.6 are the strongest models this API key can actually invoke
-    # Opus 5/4.8/4.7, Sonnet 5 and Fable 5 all 403). Pinned here rather than
-    # left to litellm's fallback table: that table ships with the library and
-    # can change under a version bump, which would silently reprice a run and
-    # move the budget stopper's firing point.
-    "anthropic.claude-opus-4-6-v1": (5.00e-6, 25.00e-6),
-    "global.anthropic.claude-opus-4-6-v1": (5.00e-6, 25.00e-6),
-    "us.anthropic.claude-opus-4-6-v1": (5.50e-6, 27.50e-6),
-    "anthropic.claude-opus-4-5-20251101-v1:0": (5.00e-6, 25.00e-6),
-    "global.anthropic.claude-opus-4-5-20251101-v1:0": (5.00e-6, 25.00e-6),
-    "us.anthropic.claude-opus-4-5-20251101-v1:0": (5.50e-6, 27.50e-6),
-    "anthropic.claude-sonnet-5": (2.00e-6, 10.00e-6),
-    "global.anthropic.claude-sonnet-5": (2.00e-6, 10.00e-6),
-    "us.anthropic.claude-sonnet-5": (2.20e-6, 11.00e-6),
-    "anthropic.claude-sonnet-4-6": (3.00e-6, 15.00e-6),
-    "global.anthropic.claude-sonnet-4-6": (3.00e-6, 15.00e-6),
-    "us.anthropic.claude-sonnet-4-6": (3.30e-6, 16.50e-6),
-    "anthropic.claude-sonnet-4-5-20250929-v1:0": (3.00e-6, 15.00e-6),
-    "global.anthropic.claude-sonnet-4-5-20250929-v1:0": (3.00e-6, 15.00e-6),
-    "us.anthropic.claude-sonnet-4-5-20250929-v1:0": (3.30e-6, 16.50e-6),
-}
+#: Environment variable holding extra prices, ``MODEL=IN,OUT`` specs separated
+#: by ``;`` with IN and OUT in USD per million tokens.
+PRICE_ENV = "GEPA_TAXONOMY_PRICES"
 
-#: Inference-profile prefix. Both target models are INFERENCE_PROFILE-only on
-#: this account, so a prefix is mandatory. ``global.`` is the base rate; ``us.``
-#: carries a ~10% cross-region premium. Configurable so a region change or a
-#: profile-scoped authorization problem is a one-line fix.
-INFERENCE_PROFILE_PREFIX = "global."
-
-
-def with_profile(base_model_id: str, prefix: str = INFERENCE_PROFILE_PREFIX) -> str:
-    """Attach an inference-profile prefix to a bare foundation-model id."""
-    if base_model_id.startswith(("global.", "us.", "eu.", "apac.")):
-        return base_model_id
-    return f"{prefix}{base_model_id}"
-
-
-#: Base (unprefixed) foundation-model ids.
-SOLVER_BASE = "anthropic.claude-haiku-4-5-20251001-v1:0"
-REFINER_BASE = "anthropic.claude-sonnet-4-6"
-
-#: Solver: Haiku 4.5, newest Haiku. **Invocation-proven** -- it completed a real
-#: paid call during the failed calibration run.
-SOLVER_MODEL = with_profile(SOLVER_BASE)
-
-#: Refiner: Sonnet 4.6, the strongest Sonnet below Sonnet 5.
-#:
-#: WARNING -- invocability is NOT verified. Sonnet 5 is permanently unavailable
-#: to this account, yet every Bedrock control-plane surface
-#: (GetFoundationModelAvailability, GetInferenceProfile, ListFoundationModels)
-#: reports it AUTHORIZED / AVAILABLE / ACTIVE. The restriction is enforced
-#: outside Bedrock's model-access layer -- an IAM identity policy or SCP scoped
-#: to model ARNs -- which no control-plane call exposes. So the same APIs that
-#: wrongly cleared Sonnet 5 also "clear" Sonnet 4.6, and they cannot be trusted.
-#: Run ``scripts/probe_invocation.py`` (~$0.0002) before committing a budget.
-REFINER_MODEL = with_profile(REFINER_BASE)
-
-#: Sonnet 5 -- REMOVED FROM CONSIDERATION. Permanently unavailable to this
-#: account (403 on invocation). Retained only as a price row so that a stray
-#: reference is priced rather than silently metered at $0.
-UNAVAILABLE_MODELS: frozenset[str] = frozenset(
-    {
-        "anthropic.claude-sonnet-5",
-        "global.anthropic.claude-sonnet-5",
-        "us.anthropic.claude-sonnet-5",
-    }
-)
-
-#: Sonnet candidates in strength order, for the invocation probe. Sonnet 5 is
-#: deliberately absent.
-SONNET_CANDIDATES: tuple[str, ...] = (
-    "anthropic.claude-sonnet-4-6",
-    "anthropic.claude-sonnet-4-5-20250929-v1:0",
-)
-
-#: The rung below the pin, if 4.6 also turns out to be blocked.
-ALT_REFINER_MODEL = with_profile("anthropic.claude-sonnet-4-5-20250929-v1:0")
-ALT2_REFINER_MODEL = ALT_REFINER_MODEL
-
-#: Every refiner id the routing and pricing guards must hold for.
-ALL_REFINER_MODELS: tuple[str, ...] = (REFINER_MODEL, ALT_REFINER_MODEL)
-
-#: Sonnet 5's post-introductory rate, for budgeting past 2026-08-31. Not a
-#: model id -- a rate pair applied to ``REFINER_MODEL``.
-SONNET_5_POST_INTRO_USD_PER_TOKEN: tuple[float, float] = (3.00e-6, 15.00e-6)
-
-#: Sonnet 5 introductory pricing expires on this date.
-SONNET_5_INTRO_PRICING_ENDS = "2026-08-31"
+#: Prices supplied by the user for models litellm's table does not know:
+#: model id -> (USD per input token, USD per output token). Filled from
+#: ``--price`` flags and :data:`PRICE_ENV`; nothing is hard-coded here.
+PRICE_OVERRIDES: dict[str, tuple[float, float]] = {}
 
 
 class UnpricedModelError(RuntimeError):
@@ -192,31 +86,81 @@ def _normalise(model: str) -> str:
     return model.removeprefix("bedrock/")
 
 
-def price_call(model: str, input_tokens: int, output_tokens: int) -> float:
-    """Price one call in USD from the explicit table.
+def _price_keys(model: str) -> list[str]:
+    """Lookup keys for a model id, most specific first.
 
-    Falls back to litellm only for models absent from the table, and raises if
-    litellm cannot price them either.
+    A litellm id may carry a provider prefix (``anthropic/claude-sonnet-4-6``,
+    ``openai/gpt-5-mini``); litellm's table keys some entries with the prefix
+    and some without, so both forms are tried.
     """
     key = _normalise(model)
-    entry = BEDROCK_PRICES_USD_PER_TOKEN.get(key)
-    if entry is not None:
-        cost_in, cost_out = entry
-        return input_tokens * cost_in + output_tokens * cost_out
+    keys = [key]
+    if "/" in key:
+        keys.append(key.split("/", 1)[1])
+    return keys
 
-    try:  # pragma: no cover - exercised only for off-table models
+
+def parse_price_spec(spec: str) -> tuple[str, float, float]:
+    """Parse ``MODEL=IN,OUT`` with IN and OUT in USD per million tokens."""
+    try:
+        model, rates = spec.split("=", 1)
+        cost_in, cost_out = (float(x) for x in rates.split(",", 1))
+    except ValueError as exc:
+        raise ValueError(f"bad price spec {spec!r}; expected MODEL=IN,OUT in USD per million tokens") from exc
+    if not model.strip() or cost_in < 0 or cost_out < 0:
+        raise ValueError(f"bad price spec {spec!r}; expected MODEL=IN,OUT in USD per million tokens")
+    return model.strip(), cost_in, cost_out
+
+
+def set_price(model: str, input_usd_per_million: float, output_usd_per_million: float) -> None:
+    """Register a price for ``model`` (USD per million tokens)."""
+    prices = (input_usd_per_million / 1e6, output_usd_per_million / 1e6)
+    for key in _price_keys(model):
+        PRICE_OVERRIDES[key] = prices
+
+
+def load_price_overrides(specs: Iterable[str] | None = None) -> None:
+    """Register prices from ``specs`` and from :data:`PRICE_ENV`."""
+    env = os.environ.get(PRICE_ENV, "")
+    for spec in [s for s in env.split(";") if s.strip()] + list(specs or []):
+        set_price(*parse_price_spec(spec))
+
+
+def lookup_price(model: str) -> tuple[float, float] | None:
+    """Per-token prices for ``model``: user overrides first, then litellm's table."""
+    keys = _price_keys(model)
+    for key in keys:
+        if key in PRICE_OVERRIDES:
+            return PRICE_OVERRIDES[key]
+    try:
         import litellm
 
-        info = litellm.model_cost.get(key)
-        if info:
-            return input_tokens * info["input_cost_per_token"] + output_tokens * info["output_cost_per_token"]
+        for key in keys:
+            info = litellm.model_cost.get(key)
+            if info and "input_cost_per_token" in info and "output_cost_per_token" in info:
+                return float(info["input_cost_per_token"]), float(info["output_cost_per_token"])
     except Exception:
         pass
+    return None
 
-    raise UnpricedModelError(
-        f"no price for model {model!r}. Add it to BEDROCK_PRICES_USD_PER_TOKEN. "
-        "Refusing to meter it as $0 -- that would make the budget stopper fail open."
-    )
+
+def price_call(model: str, input_tokens: int, output_tokens: int) -> float:
+    """Price one call in USD, raising for a model nobody has priced."""
+    prices = lookup_price(model)
+    if prices is None:
+        raise UnpricedModelError(
+            f"no price for model {model!r}. litellm's table does not list it; pass "
+            f"--price {model}=IN,OUT (USD per million tokens) or set {PRICE_ENV}. "
+            "Refusing to meter it as $0 -- that would make the budget stopper fail open."
+        )
+    cost_in, cost_out = prices
+    return input_tokens * cost_in + output_tokens * cost_out
+
+
+def assert_priced(*models: str) -> None:
+    """Fail before any spend if one of ``models`` cannot be priced."""
+    for model in models:
+        price_call(model, 1, 1)
 
 
 # ---------------------------------------------------------------------------
@@ -254,9 +198,9 @@ class CostMeter:
     #:   segment per interruption.
     #: * A resumed run's summary covers only its final segment, so the recorded
     #:   cost understates the true one silently.
-    #: * Live spend cannot be read at all. The only thing on disk mid-run was
-    #:   the reflection log, which on a finished HoVer seed was $1.26 of $49.60
-    #:   -- 2.5% of the truth, and easily mistaken for the whole.
+    #: * Live spend cannot be read at all. The only thing on disk mid-run is
+    #:   the reflection log, a small fraction of the total and easily mistaken
+    #:   for the whole.
     #:
     #: A SNAPSHOT is rewritten rather than a line appended per call: the solver
     #: makes tens of thousands of calls per run, and the useful question is
@@ -359,10 +303,9 @@ class MaxTotalCostStopper:
     Overshoot
     ---------
     The engine consults this between iterations, so realised spend overshoots
-    the budget by up to one iteration's cost. On SWE-Bench that is material.
-    We do not pretend to a hard ceiling: ``realised_usd`` is reported per seed
-    and seeds are compared on realised cost. The caveat belongs in the blog
-    post's methods section.
+    the budget by up to one iteration's cost. We do not pretend to a hard
+    ceiling: ``realised_usd`` is reported per seed and seeds are compared on
+    realised cost.
     """
 
     def __init__(

@@ -1,9 +1,7 @@
 """``GEPAAdapter`` for the IFBench generate -> ensure program.
 
-Structurally the HotpotQA and LiveBench-Math adapters with a different program
-and grader; the concurrency, error-classification, index-ordering and replay
-behaviour are identical because each encodes a bug this project already paid for
-(F014, F016, F029, F032).
+The concurrency, error-classification, index-ordering and replay behaviour are
+deliberate; each encodes a failure seen in earlier runs.
 
 Per-stage feedback
 ------------------

@@ -1,7 +1,7 @@
 # Taxonomy-conditioned GEPA
 
 Companion repository for the study
-[Named Failure Modes: Diagnosing the Program, Not Just the Output](https://andreiberkeley.github.io/gepa-named-failure-modes/blog/2026/08/18/named-failure-modes/).
+[Learned Error Diagnosis for GEPA's Reflection](https://andreiberkeley.github.io/gepa-named-failure-modes/blog/2026/08/18/named-failure-modes/).
 It contains the method, its pipeline, and one runnable benchmark demo. The
 optimizer-side hook itself lives in [gepa](https://github.com/gepa-ai/gepa) as
 the `reflective_dataset_enricher` argument on `gepa.optimize`.
@@ -42,8 +42,10 @@ provider extras) for taxonomy generation.
 ## Run the demo
 
 `demo/` ships everything needed: a 10/10/10 IFBench split (small enough that
-the whole pipeline costs cents) and `demo/taxonomy.json`, a real
-evidence-reduced taxonomy. Two ways to run it:
+the whole pipeline costs cents) and `demo/taxonomy.json`, an evidence-reduced
+taxonomy generated with `gemini/gemini-3.5-flash` from 300 validation traces of
+the full-size IFBench split and reduced from 20 to 13 failure modes; the demo
+split's validation traces are a subset of that corpus. Two ways to run it:
 
 **1. From zero** -- generate the taxonomy yourself, then optimize with it:
 
@@ -53,7 +55,7 @@ uv run gepa-taxonomy ifbench --seed 1 --budget 2 --gepa-root ../gepa-taxonomy-ho
 
 One command runs the whole method: harvest the base program's traces over the
 demo validation split, generate a taxonomy with stock AdaMAST, judge it back
-over the same traces to measure each code's support, reduce it to the codes
+over the same traces with AdaMAST's own judge to measure each code's support, reduce it to the codes
 the evidence supports (`--min-support`, default 2; `--max-codes`, default 25,
 as a safety net; every code accounted for in `reduction_report.json`), and
 launch GEPA with the frozen taxonomy: an outcome-blind judge diagnoses each
@@ -65,15 +67,26 @@ rollout and the enricher adds the named failure modes to reflection.
 uv run gepa-taxonomy ifbench --seed 1 --budget 1 --taxonomy demo/taxonomy.json --gepa-root ../gepa-taxonomy-hook
 ```
 
-Artifacts are reused on re-runs. Model ids are plain litellm ids and default
+Harvested traces and a generated taxonomy are reused on re-runs; to continue
+an existing run directory, pass `--run-arg=--resume`. Model ids are plain litellm ids and default
 to OpenAI (`gpt-5-mini`); pass any litellm id to use another provider --
 `gemini/...`, `anthropic/...`, `bedrock/...` -- and taxonomy generation maps
 the prefix to the matching AdaMAST provider automatically (`gemini/` becomes
 `google`); for example
 `--solver-model gemini/gemini-2.5-flash-lite --reflection-model gemini/gemini-3.5-flash`
 puts a cheap model on rollouts and a stronger one on generation, reflection,
-and the judge. Use `--dry-run` to print every phase without spending, and
-`--prepare-only` to stop once the taxonomy is frozen.
+and the judge. The dollar budget prices every call from litellm's own price
+table; for a model that table does not know yet, pass
+`--price MODEL=IN,OUT` in USD per million tokens (for example
+`--price gemini/gemini-3.5-flash=1.50,9.00`) or set `GEPA_TAXONOMY_PRICES`,
+and the run refuses to start rather than metering an unpriced model as free.
+Use `--dry-run` to print every phase without spending, and `--prepare-only`
+to stop once the taxonomy is frozen.
+
+Provider credentials are read by litellm from the usual environment variables
+(`OPENAI_API_KEY`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, whichever applies).
+Taxonomy generation and corpus judging run in the sibling AdaMAST environment
+that bootstrap creates; set `ADAMAST_PYTHON` to use a different interpreter.
 
 ## Using the method on your own task
 
@@ -124,16 +137,16 @@ Every run writes its own audit trail into the run directory:
 
 * `reflection_datasets.jsonl` — one record per reflection round, exactly the
   dataset reflection consumed, including each example's injected
-  `failure_modes` (disable with `--no-log-reflection-datasets`);
+  `failure_modes` (disable with `--run-arg=--no-log-reflection-datasets`);
 * `judge_cache.jsonl` — every judge diagnosis: code, name, evidence span,
   component;
 * `spend.solver.json`, `spend.reflection.json`, `spend.judge.json` — live
   per-stream spend, flushed at exit, plus a once-a-minute heartbeat;
-* `reduction_report.json` — every generated code as retained, ungrounded, or
-  over cap.
+* `reduction_report.json`, written next to the taxonomy rather than in the run
+  directory — every generated code as retained, ungrounded, or over cap.
 
-The taxonomy also records the trace ids it was generated from, and the
-enricher refuses at run time to diagnose an instance from that corpus.
+The taxonomy also records the trace ids it was judged over, and at run time
+the enricher leaves a reflection batch undiagnosed if it contains one of them.
 
 ## Tests
 
@@ -141,9 +154,11 @@ enricher refuses at run time to diagnose an instance from that corpus.
 uv run pytest
 ```
 
-The suite is free and offline. Tests that exercise the optimizer hook need
-the patched checkout on the path:
-`PYTHONPATH=../gepa-taxonomy-hook/src uv run pytest`.
+The suite makes no model calls. The four tests that exercise the optimizer
+hook fail without the patched checkout on the path, so run
+`PYTHONPATH=../gepa-taxonomy-hook/src uv run pytest`; one split test reads
+`allenai/IF_multi_constraints_upto5` from the Hugging Face cache and needs it
+downloaded once.
 
 ## Until the hook is in a gepa release
 

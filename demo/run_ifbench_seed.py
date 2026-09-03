@@ -10,10 +10,10 @@ the adapter's normal reflective dataset and GEPA's proposal call. The adapter is
 identical across arms. With the flag absent, no enricher or judge is constructed.
 
     # baseline
-    PYTHONUTF8=1 uv run python scripts/run_ifbench_seed.py --seed 1 --budget 60
+    PYTHONUTF8=1 uv run python demo/run_ifbench_seed.py --seed 1 --budget 60
 
     # treatment, same budget, same seed
-    PYTHONUTF8=1 uv run python scripts/run_ifbench_seed.py --seed 1 --budget 60 \
+    PYTHONUTF8=1 uv run python demo/run_ifbench_seed.py --seed 1 --budget 60 \
         --taxonomy results/taxonomy/<benchmark>-auto-v1/taxonomy.json
 """
 
@@ -69,7 +69,7 @@ def main() -> int:
         type=int,
         default=5,
         help="instances per reflective minibatch. 5 rather than gepa's default 3: "
-        "256 of 300 IFBench instances carry a single constraint, so scoring is "
+        "most IFBench instances carry a single constraint, so scoring is "
         "mostly binary and a small minibatch ties often -- and a tie is a wasted "
         "iteration, since gepa accepts on STRICT improvement only.",
     )
@@ -78,12 +78,19 @@ def main() -> int:
     parser.add_argument("--solver-model", default="gpt-5-mini")
     parser.add_argument("--reflection-model", default="gpt-5-mini")
     parser.add_argument(
+        "--price",
+        action="append",
+        default=[],
+        metavar="MODEL=IN,OUT",
+        help="price for a model litellm's table does not know, in USD per million input,output tokens; repeatable",
+    )
+    parser.add_argument(
         "--max-metric-calls",
         type=int,
         default=None,
         help="hard cap on rollouts, independent of spend. The dollar budget is the "
         "primary control; this is a backstop for when the per-rollout cost estimate "
-        "is wrong -- which it was by 87%% on AppWorld.",
+        "is wrong.",
     )
     parser.add_argument("--max-tokens", type=int, default=4096, help="ceiling per call; billed on tokens produced")
     parser.add_argument("--max-retries", type=int, default=8)
@@ -120,6 +127,10 @@ def main() -> int:
         "would inherit stale results.",
     )
     args = parser.parse_args()
+    from gepa_taxonomy.cost import assert_priced, load_price_overrides
+
+    load_price_overrides(args.price)
+    assert_priced(args.solver_model, args.reflection_model)
 
     import gepa
 
@@ -195,9 +206,9 @@ def main() -> int:
             raise SystemExit(
                 f"base-val cache not found: {args.base_val_cache}\n"
                 "Every seed and both arms must start from the SAME base-candidate\n"
-                "evaluation, or the paired comparison carries an extra 120-rollout\n"
-                "draw of noise on top of the treatment.\n\n"
-                "  build it:  PYTHONUTF8=1 uv run python scripts/build_ifbench_base_val.py\n"
+                "evaluation, or the paired comparison carries an extra draw of\n"
+                "noise on top of the treatment.\n\n"
+                "  build it:  PYTHONUTF8=1 uv run python demo/build_ifbench_base_val.py\n"
                 "  or opt out deliberately:  --base-val-cache none"
             )
         seed_cache = SeedEvaluationCache.load(args.base_val_cache)
@@ -205,7 +216,7 @@ def main() -> int:
             raise SystemExit(
                 "base-val cache was built for a DIFFERENT seed candidate.\n"
                 "Replaying it would start this run from another program's results.\n"
-                "Rebuild: scripts/build_ifbench_base_val.py --force"
+                "Rebuild: demo/build_ifbench_base_val.py --force"
             )
         # Checked ONCE against the val manifest, not inferred from a per-lookup
         # miss -- which is legitimate for train instances and crashed a run.
