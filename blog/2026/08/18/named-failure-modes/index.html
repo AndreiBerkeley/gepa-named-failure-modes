@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A fully automatic second reviewer uses a learned guidebook of recurring process problems to improve GEPA by up to 9.7 percentage points under the same optimization budget.">
+        <meta name="description" content="An LLM judge automatically pinpoints what went wrong in an execution, where, and with what evidence. Feeding those findings to GEPA's reflection model lifts held-out scores by up to 9.7 percentage points under the same budget.">
       
       
       
@@ -30,7 +30,7 @@
   
     
       
-        <title>Named Failure Modes: Diagnosing the Program, Not Just the Output - GEPA</title>
+        <title>Learned Error Diagnosis for GEPA's Reflection - GEPA</title>
       
     
   
@@ -96,10 +96,10 @@
 
 <!-- Open Graph meta tags -->
 <meta property="og:type" content="article">
-<meta property="og:title" content="GEPA: Named Failure Modes: Diagnosing the Program, Not Just the Output">
+<meta property="og:title" content="Learned Error Diagnosis for GEPA's Reflection">
 <meta property="og:url" content="https://gepa-ai.github.io/gepa/blog/2026/08/18/named-failure-modes/">
 <meta property="og:site_name" content="GEPA">
-<meta property="og:description" content="A fully automatic second reviewer uses a learned guidebook of recurring process problems to improve GEPA by up to 9.7 percentage points under the same optimization budget.">
+<meta property="og:description" content="An LLM judge automatically pinpoints what went wrong in an execution, where, and with what evidence. Feeding those findings to GEPA's reflection model lifts held-out scores by up to 9.7 percentage points under the same budget.">
 <meta property="og:image" content="https://gepa-ai.github.io/gepa/blog/2026-08-18-named-failure-modes/images/hero.png">
 <meta property="article:published_time" content="2026-08-18 00:00:00+00:00">
 
@@ -107,9 +107,29 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@LakshyAAAgrawal">
 <meta name="twitter:creator" content="@LakshyAAAgrawal">
-<meta name="twitter:title" content="GEPA: Named Failure Modes: Diagnosing the Program, Not Just the Output">
-<meta name="twitter:description" content="A fully automatic second reviewer uses a learned guidebook of recurring process problems to improve GEPA by up to 9.7 percentage points under the same optimization budget.">
+<meta name="twitter:title" content="Learned Error Diagnosis for GEPA's Reflection">
+<meta name="twitter:description" content="An LLM judge automatically pinpoints what went wrong in an execution, where, and with what evidence. Feeding those findings to GEPA's reflection model lifts held-out scores by up to 9.7 percentage points under the same budget.">
 <meta name="twitter:image" content="https://gepa-ai.github.io/gepa/blog/2026-08-18-named-failure-modes/images/hero.png">
+
+
+<!-- Google Scholar citation meta tags (Highwire Press) -->
+<meta name="citation_title" content="Learned Error Diagnosis for GEPA's Reflection">
+<meta name="citation_author" content="Andrei Cojocaru*">
+<meta name="citation_author" content="Lakshya A Agrawal*">
+<meta name="citation_author" content="Joseph E. Gonzalez">
+<meta name="citation_author" content="Dan Klein">
+<meta name="citation_author" content="Koushik Sen">
+<meta name="citation_author" content="Alexandros G. Dimakis">
+<meta name="citation_author" content="Ion Stoica">
+<meta name="citation_author" content="Matei Zaharia">
+<meta name="citation_publication_date" content="2026/08/18">
+<meta name="citation_online_date" content="2026/08/18">
+<meta name="citation_abstract" content="An LLM judge automatically pinpoints what went wrong in an execution, where, and with what evidence. Feeding those findings to GEPA's reflection model lifts held-out scores by up to 9.7 percentage points under the same budget.">
+<meta name="citation_abstract_html_url" content="https://gepa-ai.github.io/gepa/blog/2026/08/18/named-failure-modes/">
+<meta name="citation_fulltext_html_url" content="https://gepa-ai.github.io/gepa/blog/2026/08/18/named-failure-modes/">
+<meta name="citation_pdf_url" content="https://gepa-ai.github.io/gepa/blog/2026/08/18/named-failure-modes/paper.pdf">
+<meta name="citation_language" content="en">
+<meta name="citation_keywords" content="prompt optimization, reflective optimization, failure taxonomy, error analysis, credit assignment, LLM judge, GEPA, AdaMAST, MAST, HotpotQA, IFBench, HoVer">
 
 
 
@@ -119,14 +139,14 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": ["BlogPosting", "Article"],
-  "headline": "GEPA: Named Failure Modes: Diagnosing the Program, Not Just the Output",
+  "@type": ["BlogPosting", "Article", "ScholarlyArticle"],
+  "headline": "Learned Error Diagnosis for GEPA\u0027s Reflection",
   "url": "https://gepa-ai.github.io/gepa/blog/2026/08/18/named-failure-modes/",
-  "description": "A fully automatic second reviewer uses a learned guidebook of recurring process problems to improve GEPA by up to 9.7 percentage points under the same optimization budget.",
+  "description": "An LLM judge automatically pinpoints what went wrong in an execution, where, and with what evidence. Feeding those findings to GEPA\u0027s reflection model lifts held-out scores by up to 9.7 percentage points under the same budget.",
   "image": "https://gepa-ai.github.io/gepa/blog/2026-08-18-named-failure-modes/images/hero.png",
   "datePublished": "2026-08-18T00:00:00+00:00",
   "dateModified": "2026-08-18T00:00:00+00:00",
-  
+  "author": [{"@type": "Person", "name": "Andrei Cojocaru*"}, {"@type": "Person", "name": "Lakshya A Agrawal*"}, {"@type": "Person", "name": "Joseph E. Gonzalez"}, {"@type": "Person", "name": "Dan Klein"}, {"@type": "Person", "name": "Koushik Sen"}, {"@type": "Person", "name": "Alexandros G. Dimakis"}, {"@type": "Person", "name": "Ion Stoica"}, {"@type": "Person", "name": "Matei Zaharia"}],
   "publisher": {
     "@type": "Organization",
     "name": "GEPA",
@@ -175,7 +195,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#named-failure-modes-diagnosing-the-program-not-just-the-output" class="md-skip">
+        <a href="#learned-error-diagnosis-for-gepas-reflection" class="md-skip">
           Skip to content
         </a>
       
@@ -4727,10 +4747,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#why-the-second-reviewer-is-outcome-blind" class="md-nav__link">
+  <a href="#judging-during-optimization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why the second reviewer is outcome-blind
+        Judging during optimization
       
     </span>
   </a>
@@ -4766,10 +4786,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#named-feedback-wins-on-every-benchmark-and-every-seed" class="md-nav__link">
+  <a href="#the-judges-findings-improve-every-benchmark-and-every-seed" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Named feedback wins on every benchmark and every seed
+        The judge's findings improve every benchmark and every seed
       
     </span>
   </a>
@@ -4777,21 +4797,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#what-diagnoses-the-judge-produced" class="md-nav__link">
+  <a href="#what-reflection-did-with-the-findings" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What diagnoses the judge produced
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#one-paired-trace-confidence-versus-grounding" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        One paired trace: confidence versus grounding
+        What reflection did with the findings
       
     </span>
   </a>
@@ -4816,10 +4825,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#using-the-hook" class="md-nav__link">
+  <a href="#using-the-enricher" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using the hook
+        Using the enricher
       
     </span>
   </a>
@@ -4866,7 +4875,7 @@
     <article class="md-content__inner md-typeset">
 
         <header class="blog-post-header">
-            <h1 class="blog-post-title">Named Failure Modes: Diagnosing the Program, Not Just the Output</h1>
+            <h1 class="blog-post-title">Learned Error Diagnosis for GEPA's Reflection</h1>
 
             <div class="blog-post-byline">
                 
@@ -4878,8 +4887,9 @@
                 
 
                 
-                    <span class="blog-post-authors"><a href="https://github.com/AndreiBerkeley">Andrei Cojocaru</a>, <a href="https://x.com/LakshyAAAgrawal">Lakshya A Agrawal</a>
+                    <span class="blog-post-authors"><a href="https://github.com/AndreiBerkeley">Andrei Cojocaru</a><sup>*</sup>, <a href="https://x.com/LakshyAAAgrawal">Lakshya A Agrawal</a><sup>*</sup>, <a href="https://people.eecs.berkeley.edu/~jegonzal/">Joseph E. Gonzalez</a>, <a href="https://www2.eecs.berkeley.edu/Faculty/Homepages/klein.html">Dan Klein</a>, <a href="https://people.eecs.berkeley.edu/~ksen/?rnd=1771147393589">Koushik Sen</a>, <a href="https://people.eecs.berkeley.edu/~alexdimakis/">Alexandros G. Dimakis</a>, <a href="https://people.eecs.berkeley.edu/~istoica/">Ion Stoica</a>, <a href="https://people.eecs.berkeley.edu/~matei/">Matei Zaharia</a>
                     </span>
+                    <br><span class="blog-post-equal-contrib"><sup>*</sup> Equal Contribution</span>
                 
             </div>
         </header>
@@ -4887,85 +4897,88 @@
         
         <div class="blog-post-body">
             
-                <h1 id="named-failure-modes-diagnosing-the-program-not-just-the-output">Named Failure Modes: Diagnosing the Program, Not Just the Output<a class="headerlink" href="#named-failure-modes-diagnosing-the-program-not-just-the-output" title="Permanent link">&para;</a></h1>
+                <h1 id="learned-error-diagnosis-for-gepas-reflection">Learned Error Diagnosis for GEPA's Reflection<a class="headerlink" href="#learned-error-diagnosis-for-gepas-reflection" title="Permanent link">&para;</a></h1>
 <div class="admonition tip">
-<p><strong>TL;DR.</strong> GEPA usually reflects on feedback about task performance. Our pipeline automatically builds a reusable guidebook from execution traces, then uses it to review how each answer was produced. No one writes the categories or reviews individual traces, and the added process report improved every paired run we evaluated under the same optimization budget.</p>
+<p><strong>TL;DR.</strong> GEPA's reflection model proposes new prompts by analyzing a program's executions and evaluator feedback. We give it more context: an LLM judge automatically identifies concrete problems in those executions, reporting what went wrong, where it happened, and the supporting evidence. Providing these findings improved held-out scores by up to 9.7 percentage points over standard GEPA under the same optimization budget.</p>
 </div>
 <figure>
-  <img alt="Grouped bar chart of held-out test score on three benchmarks. In each group a dashed grey line marks the unoptimized base program, an orange bar shows unmodified GEPA, and an indigo bar shows GEPA with the automatic process report, with the three individual seed runs drawn as small circles on each bar. HotpotQA rises from a 0.493 base to 0.656 with GEPA and 0.679 with the process report, a gain of 2.3 points. IFBench rises from a 0.350 base to 0.462 and then 0.548, a gain of 8.6 points. HoVer rises from a 0.477 base to 0.559 and then 0.657, a gain of 9.7 points. On every benchmark the lowest process-report seed sits above the highest baseline seed." src="../../../../2026-08-18-named-failure-modes/images/hero.png" style="width: 100%;" />
+  <img alt="Grouped bar chart of held-out test score on three benchmarks. In each group a dashed grey line marks the unoptimized base program, an orange bar shows standard GEPA, and an indigo bar shows GEPA with the judge, with the three individual seed runs drawn as small circles on each bar. HotpotQA rises from a 0.493 base to 0.656 with GEPA and 0.679 with the judge, a gain of 2.3 points. IFBench rises from a 0.350 base to 0.462 and then 0.548, a gain of 8.6 points. HoVer rises from a 0.477 base to 0.559 and then 0.657, a gain of 9.7 points. On every benchmark the lowest judge seed sits above the highest baseline seed." src="../../../../2026-08-18-named-failure-modes/images/hero.png" style="width: 100%;" />
 <br />
-<figcaption>Figure 1. Adding the automatic process report improves held-out test scores under the same optimization budget.</figcaption>
+<figcaption>Figure 1. The judge's findings improve held-out test scores on every benchmark and every seed, under the same optimization budget.</figcaption>
 </figure>
-<p>At each proposal step, GEPA asks a reflection model to revise the current candidate using examples from the current minibatch and feedback produced by the task adapter. That feedback can be detailed, but it is anchored to task performance. It does not necessarily expose recurring patterns in how the program's intermediate steps interact.</p>
-<p>We add a second automated reviewer that examines the program's intermediate steps and uses extra inference to uncover recurring process problems. The system creates its own review criteria from earlier traces, applies them to new traces, and sends the resulting report to GEPA. A person never writes the categories, labels a trace, or approves an individual report.</p>
-<p>The evaluator and second reviewer work independently, and their reports meet only when GEPA reflects on the current rollout. The rest of this post describes how that report is built and what changed when reflection received it.</p>
+<p>During each GEPA optimization round, a candidate is evaluated on a small set of tasks, and the results go to a reflection model, the LLM that proposes a revised prompt. For the step being revised, it sees the task, that step's output, and the evaluator's feedback. Evaluation tells reflection how far the output fell short and what is missing: the correct answer, the gold documents not yet retrieved, the constraints that failed. We introduce an LLM judge that reads the whole run and tells reflection what each step did wrong: a named failure pattern, with evidence from the trace.</p>
+<p>The judge uses a fixed vocabulary to group individual failures instead of reporting each one separately in free form. By naming the common denominator among its findings, we give reflection a broader perspective on the overall cause of a failure instead of having it fixate on individual instances. We call this vocabulary a <strong>failure taxonomy</strong>: a short list of the ways this particular program fails, built automatically from its own executions. Each entry is a <strong>failure mode</strong>, a failure pattern with a name and a description.<sup id="fnref:mast"><a class="footnote-ref" href="#fn:mast">1</a></sup></p>
+<p>The judge works from the trace alone; the task's score, gold answer, and evaluator feedback are withheld from it. Keeping the outcome hidden prevents the result from influencing which problems it looks for. A program may make a mistake at an intermediate step and still reach the correct answer through a later recovery or a fortunate guess. Outcome-blind analysis therefore draws useful information from successful and unsuccessful executions alike, giving the reflection model a fuller account of how the candidate behaves.</p>
+<p>Throughout, GEPA's evaluator keeps its role: the task score still decides which candidates survive, and the judge's findings only inform the reflection model. Figure 1 shows the resulting held-out scores.</p>
 <h2 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
-<p>After launch, every stage runs automatically.</p>
-<p><strong>1. Harvest.</strong> Run the base program and retain its component-level execution traces.</p>
-<p><strong>2. Generate.</strong> Build and refine a reusable set of named process problems from those traces, then freeze it for optimization.</p>
-<p><strong>3. Review.</strong> Apply the frozen criteria to each new rollout and pass the resulting process report to reflection alongside the usual task feedback.</p>
-<p>If trusted review criteria already exist, the pipeline can begin at the third step.</p>
-<figure>
-  <img alt="Simple three-part diagram of one reflection step. The current candidate runs on a minibatch. Two independent reviewers produce reports for reflection: the task evaluator reports output performance, while the second reviewer spends additional inference to surface hidden process patterns without seeing the task outcome. A stateless reflection call then proposes revised text from the current candidate and current minibatch. GEPA's usual task score still decides candidate acceptance." src="../../../../2026-08-18-named-failure-modes/images/pipeline.svg" style="width: 100%;" />
-<br />
-<figcaption>Figure 2. Two independent reviewers produce complementary reports from the same rollout. Only the task evaluator sees the outcome.</figcaption>
-</figure>
+<p>Our approach consists of two stages: constructing a failure taxonomy tailored to the program and its use case, then using an LLM judge to apply that taxonomy throughout optimization and provide findings to the reflection model.</p>
 <h3 id="taxonomy-generation">Taxonomy generation<a class="headerlink" href="#taxonomy-generation" title="Permanent link">&para;</a></h3>
-<p>We call this reusable set of review criteria a <strong>failure taxonomy</strong>. Each entry, or <strong>failure mode</strong>, names a recurring process problem and specifies the trace evidence that supports it.</p>
-<p>We generate that vocabulary with the open-source <a href="https://github.com/multi-agent-systems-failure-taxonomy/AdaMAST">AdaMAST</a><sup id="fnref:adamast"><a class="footnote-ref" href="#fn:adamast">1</a></sup> pipeline. Independent LLM annotators propose, refine, and test the codes through iterative agreement rounds. The agreement gate measures whether the codes can be applied consistently and with sufficient coverage; it does not establish that every diagnosis is correct.</p>
-<p>For each benchmark program, this process runs once and produces a frozen taxonomy. The same taxonomy is reused across seeds and later optimization runs, and the online reviewer cannot invent codes outside it. Taxonomy generation is fully automatic: no person writes labels, edits the taxonomy, resolves disagreements, or annotates individual examples.</p>
-<details class="note">
-<summary>Taxonomy generation details</summary>
-<p>All stages used Sonnet 4.6: generation, refinement, and four independent annotators. Each benchmark began with eight draft steps and required four or five agreement rounds. In each round, the four annotators judged five traces. The target thresholds were κ ≥ 0.75 and coverage ≥ 0.70.</p>
+<p>Building the vocabulary takes two inputs, the program and a dataset. The same launcher that starts optimization runs the base program over the dataset, collects the trajectories, and hands them to <a href="https://arxiv.org/abs/2607.16387">AdaMAST</a><sup id="fnref:adamast"><a class="footnote-ref" href="#fn:adamast">2</a></sup>, which generates the taxonomy on its own. The categories, the labels, and the adjudication are all produced by the pipeline itself. Inside AdaMAST, the process runs as follows.</p>
+<p>AdaMAST first analyzes the trajectories to understand the program's domain, structure, and component roles, as well as the behavioral patterns present in its executions. It uses this analysis to draft system-level, role-specific, and domain-specific failure modes. The draft is then consolidated to remove overlapping modes, clarify their boundaries, and identify gaps in coverage.</p>
+<p>The resulting taxonomy then passes through agreement rounds. In each round, four LLM annotators (four separate contexts of one model) read the same five trajectories, agree on which errors are present, and independently assign one or more failure modes to each. AdaMAST then measures how consistently they chose the same modes (macro Fleiss' κ over the failure modes used) and how much of what they found the taxonomy covers.</p>
+<p>Between rounds, while κ is below its target, the taxonomy is refined: the definitions of the modes the annotators disagreed on are clarified. The process stops once κ has stayed at or above 0.75 and coverage at or above 0.70 for three consecutive rounds, or at the round cap.</p>
+<p>Once the rounds finish, the taxonomy is frozen and reused throughout optimization and across other runs of the same program. The companion pipeline additionally trims a freshly generated taxonomy to the failure modes its own traces support before freezing it, a step added after the study.</p>
+<p>In our experiments, each benchmark's taxonomy took four or five agreement rounds and ended with 22 to 28 failure modes (Table 1).</p>
+<figure>
 <table>
 <thead>
 <tr>
 <th>Benchmark</th>
 <th style="text-align: right;">Agreement rounds</th>
-<th>κ trajectory</th>
-<th style="text-align: right;">Final codes</th>
-<th style="text-align: right;">Anchors</th>
+<th style="text-align: right;">First-round κ</th>
+<th style="text-align: right;">Final κ</th>
+<th style="text-align: right;">Final coverage</th>
+<th style="text-align: right;">Final failure modes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>HotpotQA</td>
 <td style="text-align: right;">4</td>
-<td>0.707 → 1.0</td>
+<td style="text-align: right;">0.707</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">1.0</td>
 <td style="text-align: right;">28</td>
-<td style="text-align: right;">24</td>
 </tr>
 <tr>
 <td>IFBench</td>
 <td style="text-align: right;">5</td>
-<td>0.689 → 0.918 → 1.0</td>
+<td style="text-align: right;">0.689</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">1.0</td>
 <td style="text-align: right;">24</td>
-<td style="text-align: right;">27</td>
 </tr>
 <tr>
 <td>HoVer</td>
 <td style="text-align: right;">4</td>
-<td>0.925 → 1.0</td>
+<td style="text-align: right;">0.925</td>
+<td style="text-align: right;">1.0</td>
+<td style="text-align: right;">1.0</td>
 <td style="text-align: right;">22</td>
-<td style="text-align: right;">24</td>
 </tr>
 </tbody>
 </table>
-<p>All three runs ended at κ = 1.0 and coverage = 1.0, with one learned rule each. These values describe agreement on five traces in the final round, so they are a consistency check over a small sample rather than evidence that every diagnosis is correct.</p>
-</details>
-<h3 id="why-the-second-reviewer-is-outcome-blind">Why the second reviewer is outcome-blind<a class="headerlink" href="#why-the-second-reviewer-is-outcome-blind" title="Permanent link">&para;</a></h3>
-<p>During optimization, an LLM applies the frozen taxonomy to each trace. We refer to this model as the <strong>taxonomy judge</strong>. It reviews a deliberately restricted version of the trace: the program's intermediate inputs and outputs are available, but the task score, pass/fail result, gold answer, and evaluator feedback are not. Trace review is automatic, so no person selects the codes, checks the supporting evidence, or approves a diagnosis before reflection receives it.</p>
-<p>This separation keeps the second report focused on process rather than correctness. A failure mode can appear in a rollout whose final answer happens to be correct; exposing the outcome could bias the judge toward failed tasks or encourage it to restate the evaluator's verdict. Outcome blindness lets the judge search for hidden patterns on its own terms, preserving information that the task-level report may miss.</p>
+<figcaption>Table 1. Taxonomy generation per benchmark. Final-round values are measured over the five traces of that round.</figcaption>
+</figure>
+<h3 id="judging-during-optimization">Judging during optimization<a class="headerlink" href="#judging-during-optimization" title="Permanent link">&para;</a></h3>
+<p>GEPA captures the execution traces of every candidate it evaluates during optimization, and the LLM judge reviews each trace against the frozen taxonomy. It sees the task and every step's inputs, prompts, and outputs.</p>
+<p>For each execution, the judge records every finding: the failure mode, the step where it occurred, and the supporting evidence. This is a dedicated pass over the trajectory, on top of the reflective examples the adapter builds, and it surfaces failure modes those examples do not spell out. One execution can show several failure modes, and the same failure mode more than once.</p>
+<p>In our runs, as in GEPA's default, one step (a <em>component</em>, in its terms) is revised at a time, and reflection now sees the judge's findings for that step alongside the usual inputs, outputs, and feedback. Figure 2 shows where the judge sits in one reflection step.</p>
+<figure>
+  <img alt="Simple three-part diagram of one reflection step. The current candidate runs on a minibatch. The task evaluator and the judge analyze the same execution independently: the evaluator reports output performance, while the judge spends additional inference to surface the taxonomy's failure modes without seeing the task outcome. Reflection then proposes revised text from the current candidate and current minibatch. GEPA's usual task score still decides candidate acceptance." src="../../../../2026-08-18-named-failure-modes/images/pipeline.svg" style="width: 100%;" />
+<br />
+<figcaption>Figure 2. The evaluator and LLM judge analyze each execution independently. Their findings meet when GEPA reflects on the current candidate.</figcaption>
+</figure>
 <h2 id="same-budget-different-allocation">Same budget, different allocation<a class="headerlink" href="#same-budget-different-allocation" title="Permanent link">&para;</a></h2>
-<p>The online review is the only operation added during optimization. Candidate selection, sampling, scheduling, and the acceptance gate remain unchanged, and the taxonomy judge uses the same model as the reflector.</p>
-<p>Every baseline and taxonomy run received the same $60-per-seed optimization budget. Unmodified GEPA spends that budget on rollouts, candidate evaluation, validation, and reflection. The taxonomy arm pays for those operations and the online judge from the same $60.</p>
-<p>Across the reported benchmark averages, the taxonomy arm accepted 50.8% of its proposals, compared with 45.1% for unmodified GEPA, although the rate was not higher on every individual benchmark. Its accepted-candidate pool therefore remained close in size even after paying for diagnosis. A larger budget or substantially larger accepted pool cannot explain the score difference.</p>
+<p>The judge is the only operation added during optimization, and it is paid for from the same budget. Every baseline and judge run received $60 per seed, covering the optimization loop only: minibatch rollouts, reflection, validation of promoted candidates, and, in the judge arm, the judge, which uses the same model as reflection. The base program's initial validation and the final test evaluation are outside the allocated budget, for both arms. Candidate selection, sampling, scheduling, and the rule for accepting a proposal are identical in both arms.</p>
+<p>The judge arm proposed fewer candidates, since part of its budget went to the judge, and accepted a larger share of them: 50.8% overall, against 45.1% for standard GEPA. Its accepted-candidate pool therefore stayed close in size to the baseline's. Matched budgets and a similar accepted pool rule out the two obvious alternative explanations for the gap: that the judge arm simply spent more, or that it had more accepted candidates to choose from.</p>
+<figure>
 <table>
 <thead>
 <tr>
 <th>Cost component</th>
-<th>Unmodified GEPA</th>
-<th>GEPA + taxonomy</th>
+<th>Standard GEPA</th>
+<th>GEPA + judge</th>
 </tr>
 </thead>
 <tbody>
@@ -4975,7 +4988,7 @@
 <td>Included in the $60-per-seed budget</td>
 </tr>
 <tr>
-<td>Online taxonomy judge</td>
+<td>Judge</td>
 <td>Not applicable</td>
 <td>Included in the same $60-per-seed budget</td>
 </tr>
@@ -4996,33 +5009,33 @@
 </tr>
 </tbody>
 </table>
-<p>The table separates the matched online budget from one-time offline preparation. Trace harvesting runs the base program once over a configurable trace source, the validation split in our runs, and records the intermediate component inputs and outputs used to build the taxonomy. Those model calls cost $1.14 for HotpotQA, $1.87 for IFBench, and $1.28 for HoVer.</p>
-<p>Generating and refining the taxonomy costs $3 to $4 per benchmark. Combined with trace harvesting, the one-time offline setup costs $4 to $6 per benchmark, or roughly 3% of the $180 optimization budget across three treatment seeds. The frozen taxonomy can then be reused across seeds and later runs.</p>
-<details class="note">
-<summary>How diagnoses are attributed to components</summary>
-<p>The taxonomy defines behaviors, not a fixed code-to-component map. For reflection, the integration uses trace evidence to attach a diagnosis only to the component records it implicates. This attribution identifies where the behavior appeared in the trace; it does not say whether the overall task passed or failed.</p>
-</details>
+<figcaption>Table 2. Where the $60 per seed went in each arm, and the one-time offline preparation cost of the judge arm.</figcaption>
+</figure>
+<p>Table 2 separates the matched online budget from one-time offline preparation. Trace harvesting runs the base program once over a chosen trace source (the validation split in our runs) and records the inputs and outputs of every step. Those model calls cost $1.14 for HotpotQA, $1.87 for IFBench, and $1.28 for HoVer.</p>
+<p>Generating and refining the taxonomy costs $3 to $4 per benchmark. Combined with trace harvesting, the one-time offline setup costs $4 to $6 per benchmark, or roughly 3% of the $180 optimization budget across three judge-arm seeds. The frozen taxonomy can then be reused across seeds and later runs.</p>
 <h2 id="results">Results<a class="headerlink" href="#results" title="Permanent link">&para;</a></h2>
-<p>We evaluated on three benchmarks that stress different parts of a program: multi-hop question answering (HotpotQA), instruction following (IFBench), and multi-hop claim verification (HoVer). Each arm ran three seeds.</p>
+<p>We evaluated on three benchmarks: multi-hop question answering (HotpotQA), instruction following (IFBench), and multi-hop claim verification (HoVer). Each arm ran three seeds.</p>
 <details class="note">
 <summary>Setup</summary>
 <ul>
-<li><strong>Models.</strong> Haiku 4.5 as the task model; Sonnet 4.6 for both GEPA's reflection and the taxonomy judge.</li>
-<li><strong>Splits.</strong> 150 train / 300 validation / 300 test on all three. HotpotQA is drawn from the fullwiki validation set (7,405 labeled examples), HoVer from the dev release (4,000 claims) filtered to claims with exactly three unique supporting titles.</li>
+<li><strong>Models.</strong> Haiku 4.5 as the task model; Sonnet 4.6 for both GEPA's reflection model and the judge.</li>
+<li><strong>Splits.</strong> 150 train / 300 validation / 300 test on all three. HotpotQA is drawn from the fullwiki validation set (7,405 labeled examples), HoVer from the dev release (4,000 claims), stratified by hop count (2, 3, or 4).</li>
 <li><strong>IFBench generalization.</strong> Train and validation come from <code>allenai/IF_multi_constraints_upto5</code>; the test set is all 300 examples of <code>allenai/IFBench_test</code>. The constraint vocabularies are disjoint, with 54 constraint IDs on the train side and 58 on the test side, so the result cannot come from replaying a train-side constraint ID.</li>
-<li><strong>Programs.</strong> HotpotQA and HoVer are four-component programs; IFBench is two components, a generator and a checker. Reflection mini-batches are 15, 6, and 5 examples respectively.</li>
+<li><strong>Programs.</strong> HotpotQA and HoVer are four-step programs; IFBench is two steps, a generator and a checker.</li>
+<li><strong>Feedback.</strong> Deliberately strong for the baseline: on training examples it names the correct answer (HotpotQA), the missing gold documents and the hop that lost them (HoVer), and each constraint's pass or fail (IFBench).</li>
 <li><strong>Metrics.</strong> HotpotQA is scored by mean F1, IFBench by prompt-level loose accuracy, HoVer by strict all-document retrieval.</li>
 <li><strong>Seeds.</strong> Three per arm, paired across arms.</li>
 </ul>
 </details>
-<h3 id="named-feedback-wins-on-every-benchmark-and-every-seed">Named feedback wins on every benchmark and every seed<a class="headerlink" href="#named-feedback-wins-on-every-benchmark-and-every-seed" title="Permanent link">&para;</a></h3>
+<h3 id="the-judges-findings-improve-every-benchmark-and-every-seed">The judge's findings improve every benchmark and every seed<a class="headerlink" href="#the-judges-findings-improve-every-benchmark-and-every-seed" title="Permanent link">&para;</a></h3>
+<figure>
 <table>
 <thead>
 <tr>
 <th>Benchmark</th>
 <th>Base program</th>
 <th>GEPA</th>
-<th>GEPA + taxonomy</th>
+<th>GEPA + judge</th>
 <th>Δ</th>
 </tr>
 </thead>
@@ -5050,17 +5063,19 @@
 </tr>
 </tbody>
 </table>
-<p>All nine seed-paired comparisons favor named feedback, and on every benchmark the observed ranges are disjoint: the lowest taxonomy seed beats the highest baseline seed. The separation is widest on HoVer, where the lowest taxonomy run scores 0.6367 against a highest baseline score of 0.5800.</p>
+<figcaption>Table 3. Held-out test scores, mean of three seeds. Δ is the difference between the two GEPA arms.</figcaption>
+</figure>
+<p>Table 3 gives the means. All nine seed-paired comparisons favor the judge arm, and on every benchmark the observed ranges are disjoint: the lowest judge seed beats the highest baseline seed. On HoVer, for example, the lowest judge run scores 0.6367 against a highest baseline score of 0.5800.</p>
 <details class="note">
 <summary>Per-seed results</summary>
-<p>Every row is a paired comparison with the same seed and optimization budget. The taxonomy arm adds the diagnostic call and feeds its output to reflection.</p>
+<p>Every row is a paired comparison with the same seed and optimization budget. The second arm adds the judge and feeds its findings to the reflection model.</p>
 <table>
 <thead>
 <tr>
 <th>Benchmark</th>
 <th>Seed</th>
 <th>GEPA</th>
-<th>GEPA + taxonomy</th>
+<th>GEPA + judge</th>
 <th>Δ</th>
 </tr>
 </thead>
@@ -5131,52 +5146,47 @@
 </tbody>
 </table>
 </details>
-<p>Measured as lift over the base program, the effect is larger than the raw deltas suggest. Unmodified GEPA improves the base program by 16.3 points on HotpotQA, 11.2 on IFBench, and 8.3 on HoVer; with named feedback, those lifts become 18.6, 19.8, and 18.0 points. The total improvement over the base program is therefore 1.1×, 1.8×, and 2.2× the lift delivered by unmodified GEPA.</p>
-<h3 id="what-diagnoses-the-judge-produced">What diagnoses the judge produced<a class="headerlink" href="#what-diagnoses-the-judge-produced" title="Permanent link">&para;</a></h3>
-<p>The judge produced a broad, benchmark-specific mix of diagnoses. It fired 21 or 22 distinct codes on each benchmark, with markedly different distributions.</p>
+<p>Measured as lift over the base program, the effect is larger than the raw deltas suggest. Standard GEPA improves the base program by 16.3 points on HotpotQA, 11.2 on IFBench, and 8.3 on HoVer; with the judge's findings, those lifts become 18.6, 19.8, and 18.0 points. The total improvement over the base program is therefore 1.1×, 1.8×, and 2.2× the lift delivered by standard GEPA.</p>
+<h3 id="what-reflection-did-with-the-findings">What reflection did with the findings<a class="headerlink" href="#what-reflection-did-with-the-findings" title="Permanent link">&para;</a></h3>
+<p>Across the three benchmarks the judge used 21 or 22 of the failure modes, with the most frequent one accounting for about a fifth of all findings; the totals and the counts for the most frequent modes are collected in the expandable table below. The clearest view of what those findings do is a single reflection step where the two runs diverged.</p>
+<details class="note">
+<summary>Failure mode distributions</summary>
+<p>Totals per benchmark, then the counts for the most frequent modes. Shares are of all occurrences on that benchmark, and the final row of each table collapses the remaining failure modes.</p>
 <table>
 <thead>
 <tr>
 <th>Benchmark</th>
 <th>Judged traces</th>
-<th>Codes per trace</th>
-<th>Codes fired</th>
-<th>Most frequent code</th>
+<th>Failure modes used</th>
+<th>Most frequent</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>HotpotQA</td>
 <td>2,356</td>
-<td>0.84</td>
 <td>22</td>
 <td><code>Spurious_Fact_Introduced_At_Summarization</code> (20.3%)</td>
 </tr>
 <tr>
 <td>IFBench</td>
 <td>989</td>
-<td>2.77</td>
 <td>22</td>
 <td><code>Checker_Missed_Constraint_Violation_In_Draft</code> (19.0%)</td>
 </tr>
 <tr>
 <td>HoVer</td>
 <td>934</td>
-<td>2.27</td>
 <td>21</td>
 <td><code>Partial_Verification_Treated_As_Full</code> (18.8%)</td>
 </tr>
 </tbody>
 </table>
-<p>The rate difference is consistent with the programs' different shapes and should not be read as a task failure rate or a direct comparison of failure severity. HotpotQA averages 0.84 codes per trace; IFBench averages 2.77, in part because its generator-and-checker structure lets one span receive both <code>Solver_Constraint_Noncompliance_In_Draft</code> and <code>Checker_Missed_Constraint_Violation_In_Draft</code>. Counts are code occurrences rather than distinct failed tasks, and the judge can assign multiple labels to one span.</p>
-<details class="note">
-<summary>Failure code distributions</summary>
-<p>Shares are of all code occurrences on that benchmark. The final row of each table collapses the remaining codes.</p>
-<p><strong>HotpotQA</strong>: 1,990 occurrences over 2,356 traces, 22 of 28 codes fired.</p>
+<p><strong>HotpotQA</strong>: 1,990 occurrences over 2,356 traces, 22 of 28 failure modes used.</p>
 <table>
 <thead>
 <tr>
-<th>Code</th>
+<th>Failure mode</th>
 <th>n</th>
 <th>Share</th>
 </tr>
@@ -5223,17 +5233,17 @@
 <td>4.9%</td>
 </tr>
 <tr>
-<td>14 further codes</td>
+<td>14 further failure modes</td>
 <td>245</td>
 <td>12.3%</td>
 </tr>
 </tbody>
 </table>
-<p><strong>IFBench</strong>: 2,739 occurrences over 989 traces, 22 codes fired.</p>
+<p><strong>IFBench</strong>: 2,739 occurrences over 989 traces, 22 failure modes used.</p>
 <table>
 <thead>
 <tr>
-<th>Code</th>
+<th>Failure mode</th>
 <th>n</th>
 <th>Share</th>
 </tr>
@@ -5280,17 +5290,17 @@
 <td>5.3%</td>
 </tr>
 <tr>
-<td>14 further codes</td>
+<td>14 further failure modes</td>
 <td>699</td>
 <td>25.5%</td>
 </tr>
 </tbody>
 </table>
-<p><strong>HoVer</strong>: 2,119 occurrences over 934 traces, 21 codes fired.</p>
+<p><strong>HoVer</strong>: 2,119 occurrences over 934 traces, 21 failure modes used.</p>
 <table>
 <thead>
 <tr>
-<th>Code</th>
+<th>Failure mode</th>
 <th>n</th>
 <th>Share</th>
 </tr>
@@ -5337,67 +5347,62 @@
 <td>3.5%</td>
 </tr>
 <tr>
-<td>13 further codes</td>
+<td>13 further failure modes</td>
 <td>434</td>
 <td>20.5%</td>
 </tr>
 </tbody>
 </table>
 </details>
-<h3 id="one-paired-trace-confidence-versus-grounding">One paired trace: confidence versus grounding<a class="headerlink" href="#one-paired-trace-confidence-versus-grounding" title="Permanent link">&para;</a></h3>
-<p>A paired trace comparison from HotpotQA seed 1 illustrates how the information presented to reflection differed. Both arms rewrote the same component from the same seed text at the same transition. The starting instruction for <code>summarize1</code> was the DSPy default:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Given the fields question, passages, produce the fields summary.
+<p>In HotpotQA seed 1, both runs selected the same parent candidate and chose to rewrite the same step, <code>summarize1</code>, still carrying its default instruction, "Given the fields question, passages, produce the fields summary." Both reflection calls saw the same inputs, outputs, and evaluator feedback.</p>
+<p>The judge run's call additionally saw two findings on the batch, <code>Spurious_Fact_Introduced_At_Summarization</code> and <code>Dual_Summary_Aggregation_Failure</code>, one of them quoting the evidence "Kapolei is colloquially known as being part of the leeward coast of Oahu."</p>
+<p>With feedback alone, the reflection model concluded that the summarizer was too cautious and rewrote toward confidence:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Directly answer the question... Do not hedge or say the answer cannot be
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>determined if you can reasonably infer it from context or general knowledge
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>combined with the passages.
 </code></pre></div>
-<p>The baseline arm, with no diagnoses, rewrote toward confidence:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Directly answer the question... Do not hedge or say the answer cannot be
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>determined if you can reasonably infer it from context or general knowledge
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>combined with the passages.
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>...
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>Do not over-qualify: Avoid adding unnecessary caveats about what passages
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>do or don't contain.
+<p>With the judge's findings, it concluded that the summarizer was inventing content and rewrote toward grounding:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Ground every claim strictly in the provided passages: Do NOT introduce any
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>facts, inferences, or details that are not explicitly stated in the passages.
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>...
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>Do not add colloquial nicknames, historical context, or additional facts
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>unless they are directly quoted or stated in one of the provided passages.
 </code></pre></div>
-<p>At the same transition, the taxonomy arm saw the failure modes <code>Spurious_Fact_Introduced_At_Summarization</code> and <code>Dual_Summary_Aggregation_Failure</code> in the reflection minibatch. It instead rewrote toward grounding:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Ground every claim strictly in the provided passages: Do NOT introduce any
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>facts, inferences, or details that are not explicitly stated in the passages.
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>...
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>Do not add colloquial nicknames, historical context, or additional facts
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>unless they are directly quoted or stated in one of the provided passages.
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>...
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>Key Principle ... When in doubt, omit rather than invent.
-</code></pre></div>
-<p>Same component, same starting text, same step of the search, opposite conclusions: the baseline moves toward confidence, while the taxonomy arm moves toward grounding. This paired trace is illustrative rather than a causal attribution to a single label, but it shows the concrete distinction between the information available to the two reflection calls. On this benchmark, the judge's most frequently assigned code is the introduction of unsupported facts during summarization.</p>
-<p>The evidence span also aligns closely with the rewrite. For that run, the judge attached <code>Spurious_Fact_Introduced_At_Summarization</code> to <code>summarize1</code> with the evidence "Kapolei is colloquially known as being part of the leeward coast of Oahu." The rewritten prompt targets the behavior down to the word <em>colloquially</em>.</p>
+<p>The second rewrite even tracks the evidence: the judge had quoted a colloquial nickname, and the new instruction forbids exactly that. That failure mode, unsupported facts introduced at summarization, was also the judge's most frequent finding on HotpotQA, so the rewrite went after the program's most-reported problem.</p>
 <h2 id="integration-point">Integration point<a class="headerlink" href="#integration-point" title="Permanent link">&para;</a></h2>
-<p>The integration sits inside GEPA's reflective proposal path rather than inside a task adapter. After the adapter creates its ordinary reflection records for the current minibatch, an optional reviewer examines the captured trajectories and adds the process report before GEPA requests a revision. The adapter remains the same object throughout, so existing DSPy, LangChain, OpenAI, and custom adapter behavior is unchanged.</p>
-<p>Taxonomy generation remains a separate preparation phase. A single launcher can harvest the seed program's traces, generate and freeze the taxonomy, and then start optimization without human intervention, but the GEPA run begins only after the taxonomy artifact has been written.</p>
-<h3 id="using-the-hook">Using the hook<a class="headerlink" href="#using-the-hook" title="Permanent link">&para;</a></h3>
-<p>The integration is one optional argument on <code>gepa.optimize</code>. The enricher passed to that argument receives the candidate, the captured evaluation batch, the components under revision, and the adapter's reflective dataset, and returns the enriched dataset:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gepa</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">failure_taxonomy</span><span class="w"> </span><span class="kn">import</span> <span class="n">LLMFailureJudge</span><span class="p">,</span> <span class="n">TaxonomyFeedbackEnricher</span><span class="p">,</span> <span class="n">load_taxonomy</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">taxonomy</span> <span class="o">=</span> <span class="n">load_taxonomy</span><span class="p">(</span><span class="s2">"results/taxonomy/ifbench-auto-v1/taxonomy.json"</span><span class="p">)</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">enricher</span> <span class="o">=</span> <span class="n">TaxonomyFeedbackEnricher</span><span class="p">(</span><span class="n">judge</span><span class="o">=</span><span class="n">LLMFailureJudge</span><span class="p">(</span><span class="n">taxonomy</span><span class="o">=</span><span class="n">taxonomy</span><span class="p">,</span> <span class="n">lm</span><span class="o">=</span><span class="n">reflection_lm</span><span class="p">))</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">result</span> <span class="o">=</span> <span class="n">gepa</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">seed_candidate</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="n">adapter</span><span class="o">=</span><span class="n">my_adapter</span><span class="p">,</span>  <span class="c1"># DSPy, LangChain, OpenAI, or custom, unchanged</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="n">trainset</span><span class="o">=</span><span class="n">trainset</span><span class="p">,</span>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    <span class="n">valset</span><span class="o">=</span><span class="n">valset</span><span class="p">,</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="n">reflection_lm</span><span class="o">=</span><span class="n">reflection_lm</span><span class="p">,</span>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="n">reflective_dataset_enricher</span><span class="o">=</span><span class="n">enricher</span><span class="p">,</span>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="p">)</span>
+<p>The judge plugs into GEPA through one optional argument on <code>gepa.optimize</code>, <code>reflective_dataset_enricher</code>. GEPA calls the enricher inside its reflective proposer, after the adapter has built the reflection records for the current batch and before the reflection model is asked for a revision. At that point the enricher reads the captured trajectories, runs the judge, and adds a <code>failure_modes</code> field to each diagnosed record. The adapter is never touched: DSPy, LangChain, and any custom adapter that follows GEPA's contract (reflection records aligned one-to-one with trajectories) keep their code, their evaluation, and their dataset construction. The reflection prompt gains one field, and leaving the argument out gives ordinary GEPA.</p>
+<p>Two things depend on what the adapter records. Step attribution needs the trajectories to expose per-step calls, as the adapters in the companion repository do; without them, findings are still produced but go to every step under revision. And what the judge sees depends on the adapter: with per-step calls it is shown only the task and each step's input, prompt, and output; without them it is shown the whole trajectory, so keeping evaluator output out of it is then the adapter's job.</p>
+<h3 id="using-the-enricher">Using the enricher<a class="headerlink" href="#using-the-enricher" title="Permanent link">&para;</a></h3>
+<p>The enricher receives the candidate, the captured evaluation batch, the components under revision, and the adapter's reflection records, and returns those records with findings added; everything else in them is exactly what the adapter produced:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gepa</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">failure_taxonomy</span><span class="w"> </span><span class="kn">import</span> <span class="n">LLMFailureJudge</span><span class="p">,</span> <span class="n">TaxonomyFeedbackEnricher</span><span class="p">,</span> <span class="n">load_taxonomy</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">taxonomy</span> <span class="o">=</span> <span class="n">load_taxonomy</span><span class="p">(</span><span class="s2">"taxonomy.json"</span><span class="p">)</span>  <span class="c1"># produced by the preparation pipeline, or your own</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">enricher</span> <span class="o">=</span> <span class="n">TaxonomyFeedbackEnricher</span><span class="p">(</span><span class="n">judge</span><span class="o">=</span><span class="n">LLMFailureJudge</span><span class="p">(</span><span class="n">taxonomy</span><span class="o">=</span><span class="n">taxonomy</span><span class="p">,</span> <span class="n">lm</span><span class="o">=</span><span class="n">reflection_lm</span><span class="p">))</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">result</span> <span class="o">=</span> <span class="n">gepa</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">seed_candidate</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">adapter</span><span class="o">=</span><span class="n">my_adapter</span><span class="p">,</span>  <span class="c1"># DSPy, LangChain, or custom, unchanged</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="n">trainset</span><span class="o">=</span><span class="n">trainset</span><span class="p">,</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="n">valset</span><span class="o">=</span><span class="n">valset</span><span class="p">,</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="n">reflection_lm</span><span class="o">=</span><span class="n">reflection_lm</span><span class="p">,</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="n">max_metric_calls</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span>  <span class="c1"># or any other GEPA stop condition</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="n">reflective_dataset_enricher</span><span class="o">=</span><span class="n">enricher</span><span class="p">,</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="p">)</span>
 </code></pre></div>
-<p>Each diagnosed example gains a single <code>failure_modes</code> field naming the fired codes and their evidence spans. Everything else in the reflective dataset is exactly what the adapter produced, and leaving the argument out gives ordinary GEPA.</p>
 <h3 id="availability">Availability<a class="headerlink" href="#availability" title="Permanent link">&para;</a></h3>
-<p>The hook is available in <a href="https://github.com/gepa-ai/gepa">gepa</a>: pass the single argument shown above and nothing else about an adapter changes. The taxonomy components used in this post (the judge, the enricher, and the preparation pipeline) live in the <a href="https://github.com/AndreiBerkeley/gepa-named-failure-modes">companion repository</a>, together with a runnable IFBench demo of the whole pipeline.</p>
+<p>The argument is available in <a href="https://github.com/gepa-ai/gepa">gepa</a>: pass it as shown above and nothing else about an adapter changes. The judge, the enricher, and the preparation pipeline are open source in the <a href="https://github.com/AndreiBerkeley/gepa-named-failure-modes">companion repository</a>, together with a runnable IFBench demo of the whole pipeline.</p>
 <h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
-<p>A natural next step is to test whether structured diagnoses can replace, rather than augment, the evaluator used during optimization. We are exploring whether the taxonomy judge can serve both as the source of reflective feedback and as the rubric for ranking and accepting candidates, without exposing gold labels or manually authored correctness feedback anywhere in the optimization loop. If successful, this would make GEPA applicable to settings where reliable gold feedback is expensive, unavailable, or impossible to construct. Early results are promising, but the procedure still requires refinement and broader evaluation, particularly on tasks where gold feedback is unavailable during optimization.</p>
+<p>The evaluator kept its role in this study, and two studies follow from that division. The first is an ablation of the external call: a separate judge, compared with handing the full taxonomy to the reflection model and letting it apply the failure modes itself. The second is whether the judge can take the evaluator's role as well, serving both as the sole source of reflective feedback and as the rubric for ranking and accepting candidates, without gold labels or hand-written correctness feedback anywhere in the loop. That is the open question we are working on.</p>
 <div class="footnote">
 <hr />
 <ol>
+<li id="fn:mast">
+<p>Mert Cemri, Melissa Z. Pan, Shuyi Yang, Lakshya A. Agrawal, Bhavya Chopra, Rishabh Tiwari, Kurt Keutzer, Aditya Parameswaran, Dan Klein, Kannan Ramchandran, Matei Zaharia, Joseph E. Gonzalez, and Ion Stoica, "<a href="https://arxiv.org/abs/2503.13657">Why Do Multi-Agent LLM Systems Fail?</a>," 2025.&#160;<a class="footnote-backref" href="#fnref:mast" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
 <li id="fn:adamast">
-<p>Mert Cemri, Andrei Cojocaru, Melissa Pan, Shu Liu, Shubham Agarwal, Alexander Krentsel, Jay Tang, Kannan Ramchandran, Joseph E. Gonzalez, Matei Zaharia, Alexandros G. Dimakis, and Ion Stoica, "<a href="https://arxiv.org/abs/2607.16387">Fantastic Adaptive Taxonomies and How to Use Them</a>," ICML 2026 FAGEN Workshop (Best Paper). <a href="https://multi-agent-systems-failure-taxonomy.github.io/AdaMAST/">Project page</a>.&#160;<a class="footnote-backref" href="#fnref:adamast" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+<p>Mert Cemri, Andrei Cojocaru, Melissa Pan, Shu Liu, Shubham Agarwal, Alexander Krentsel, Jay Tang, Kannan Ramchandran, Joseph E. Gonzalez, Matei Zaharia, Alexandros G. Dimakis, and Ion Stoica, "<a href="https://arxiv.org/abs/2607.16387">Fantastic Adaptive Taxonomies and How to Use Them</a>," ICML 2026 FAGEN Workshop (Best Paper). <a href="https://multi-agent-systems-failure-taxonomy.github.io/AdaMAST/">Project page</a>.&#160;<a class="footnote-backref" href="#fnref:adamast" title="Jump back to footnote 2 in the text">&#8617;</a></p>
 </li>
 </ol>
 </div>

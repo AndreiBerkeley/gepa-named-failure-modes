@@ -25,7 +25,7 @@
   </style>
   <rect class="band" x="16" y="16" width="1008" height="298" rx="10"/>
   <text class="phase" x="40" y="43">ONE REFLECTION STEP</text>
-  <text class="note" x="1000" y="43" text-anchor="end">Review criteria generated automatically and frozen</text>
+  <text class="note" x="1000" y="43" text-anchor="end">Taxonomy learned automatically and frozen</text>
 
   <rect class="card" x="40" y="82" width="220" height="154" rx="10"/>
   <text class="step" x="62" y="111">CURRENT MINIBATCH</text>
@@ -34,19 +34,19 @@
   <text class="sub" x="62" y="190">Component traces</text>
 
   <rect class="input" x="310" y="64" width="390" height="190" rx="10"/>
-  <text class="step" x="332" y="92">TWO INDEPENDENT REVIEWERS</text>
+  <text class="step" x="332" y="92">TWO INDEPENDENT ANALYSES</text>
   <line class="rule" x1="332" y1="106" x2="678" y2="106"/>
 
   <text class="ttl" x="332" y="133">Task feedback</text>
   <text class="sub" x="332" y="155">Evaluator reports output performance</text>
 
   <line class="rule" x1="332" y1="172" x2="678" y2="172"/>
-  <text class="ttl" x="332" y="200">Process report</text>
-  <text class="sub" x="332" y="222">Second reviewer surfaces hidden patterns</text>
-  <text class="sub" x="332" y="241">The second reviewer sees no task outcome</text>
+  <text class="ttl" x="332" y="200">Judge's findings</text>
+  <text class="sub" x="332" y="222">Judge surfaces hidden failure modes</text>
+  <text class="sub" x="332" y="241">The judge sees no task outcome</text>
 
   <rect class="card" x="750" y="82" width="250" height="154" rx="10"/>
-  <text class="step" x="772" y="111">STATELESS REFLECTION</text>
+  <text class="step" x="772" y="111">REFLECTION</text>
   <text class="ttl" x="772" y="140">Propose revised text</text>
   <text class="sub" x="772" y="168">Current candidate</text>
   <text class="sub" x="772" y="190">Current minibatch only</text>
