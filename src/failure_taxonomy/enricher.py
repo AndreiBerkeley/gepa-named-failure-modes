@@ -76,7 +76,46 @@ class TaxonomyFeedbackEnricher:
             self._warn(f"diagnosis failed: {type(exc).__name__}: {exc}")
             return reflective_dataset
 
+        by_component = self._generalise_foreign_components(by_component, known=set(candidate))
         return self._inject(reflective_dataset, trajectories, by_component)
+
+    def _generalise_foreign_components(
+        self,
+        by_component: list[dict[str | None, list[Occurrence]]],
+        *,
+        known: set[str],
+    ) -> list[dict[str | None, list[Occurrence]]]:
+        """Treat occurrences attributed to a component the candidate lacks as unattributed.
+
+        The judge attributes to the component names it sees in the trace. When those
+        are the candidate's own components (DSPy predictors, the companion adapters)
+        attribution is exact and an occurrence reaches only the step it names. Some
+        callers trace steps the candidate does not own: ``optimize_anything`` puts
+        the whole text under one component, ``current_candidate``, while the
+        evaluator's ``module_calls`` may name the program's internal steps. An
+        occurrence attributed to such a name has no record to attach to and would
+        be lost, so it is routed to every component under revision instead, exactly
+        like an occurrence the judge could not attribute. Occurrences attributed to
+        a real candidate component that is not under revision this round are still
+        held back: that is step attribution working as intended.
+        """
+        foreign: set[str] = set()
+        rebuilt: list[dict[str | None, list[Occurrence]]] = []
+        for grouped in by_component:
+            regrouped: dict[str | None, list[Occurrence]] = {}
+            for component, occurrences in grouped.items():
+                target = component
+                if component is not None and component not in known:
+                    foreign.add(component)
+                    target = None
+                regrouped.setdefault(target, []).extend(occurrences)
+            rebuilt.append(regrouped)
+        if foreign:
+            self._warn(
+                f"occurrences attributed to components the candidate does not have "
+                f"({', '.join(sorted(foreign))}); routing them to every component under revision"
+            )
+        return rebuilt
 
     # -- internals ---------------------------------------------------------
 

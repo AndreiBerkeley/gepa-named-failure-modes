@@ -347,6 +347,32 @@ def test_general_occurrences_reach_every_component(taxonomy):
         assert got[component][0][FAILURE_MODES_KEY] == [{"name": "Output_Truncation", "evidence": "shared"}]
 
 
+def test_occurrences_for_components_the_candidate_lacks_reach_every_component(taxonomy):
+    """optimize_anything traces name the program's steps while the candidate has one component."""
+    inner = InnerAdapter()
+    batch = _EvalBatch([_trajectory("i1", "p", "q")])
+    judge = ScriptedJudge({"i1": [Occurrence("B.4", "Malformed_Output", "solver evidence", "solver")]})
+    warnings: list[str] = []
+    _baseline, got, _enricher = _enrich(inner, batch, judge, components=("current_candidate",), log=warnings.append)
+
+    expected = [{"name": "Malformed_Output", "evidence": "solver evidence"}]
+    assert got["current_candidate"][0][FAILURE_MODES_KEY] == expected
+    assert any("components the candidate does not have" in w for w in warnings)
+
+
+def test_occurrences_for_candidate_components_not_under_revision_are_held_back(taxonomy):
+    """Step attribution still holds: a finding about refiner never reaches solver's records."""
+    inner = InnerAdapter()
+    batch = _EvalBatch([_trajectory("i1", "p", "q")])
+    judge = ScriptedJudge({"i1": [Occurrence("C.2", "Wrong_Entity", "refiner evidence", "refiner")]})
+    candidate = {"solver": "s", "refiner": "r"}
+    baseline = inner.make_reflective_dataset(candidate, batch, ["solver"])
+    enricher = TaxonomyFeedbackEnricher(judge=judge, log=lambda m: None)
+    got = enricher(candidate=candidate, eval_batch=batch, components_to_update=["solver"], reflective_dataset=baseline)
+
+    assert FAILURE_MODES_KEY not in got["solver"][0]
+
+
 def test_examples_without_occurrences_gain_no_key(taxonomy):
     inner = InnerAdapter()
     batch = _EvalBatch([_trajectory("i1", "p", "q")])
