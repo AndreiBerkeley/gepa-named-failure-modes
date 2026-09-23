@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 360" width="1040" height="360" font-family="Arial" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 400" width="1040" height="400" font-family="Arial" role="img">
   <style>
     .band  { fill: #f5f6f8; }
     .card  { fill: #ffffff; stroke: #c9ccd4; stroke-width: 1.5; }
@@ -6,9 +6,9 @@
     .ln    { stroke: #8b909b; stroke-width: 2; fill: none; }
     .arrow { fill: #8b909b; }
     .phase { fill: #6b7280; font-size: 12px; font-weight: 700; letter-spacing: .1em; }
-    .step  { fill: #4F46E5; font-size: 12px; font-weight: 700; letter-spacing: .06em; }
-    .ttl   { fill: #1f2430; font-size: 16px; font-weight: 650; }
-    .sub   { fill: #5b6270; font-size: 12.5px; }
+    .step  { fill: #4F46E5; font-size: 11.5px; font-weight: 700; letter-spacing: .06em; }
+    .ttl   { fill: #1f2430; font-size: 15px; font-weight: 650; }
+    .sub   { fill: #5b6270; font-size: 12px; }
     .lbl   { fill: #5b6270; font-size: 11.5px; font-style: italic; }
     .note  { fill: #5b6270; font-size: 12.5px; font-weight: 550; }
     @media (prefers-color-scheme: dark) {
@@ -22,57 +22,55 @@
       .ttl { fill: #eef0f4; }
     }
   </style>
-  <rect class="band" x="16" y="16" width="1008" height="328" rx="10"/>
+  <rect class="band" x="16" y="16" width="1008" height="368" rx="10"/>
   <text class="phase" x="40" y="43">ONE REFLECTION STEP</text>
-  <text class="note" x="1000" y="43" text-anchor="end">Taxonomy learned automatically and frozen</text>
+  <text class="note" x="1000" y="43" text-anchor="end">AdaMAST taxonomy, learned automatically and frozen</text>
 
   <!-- current minibatch -->
-  <rect class="card" x="40" y="92" width="220" height="154" rx="10"/>
-  <text class="step" x="62" y="121">CURRENT MINIBATCH</text>
-  <text class="ttl" x="62" y="150">Run current candidate</text>
-  <text class="sub" x="62" y="178">Component traces</text>
-  <text class="sub" x="62" y="200">Task output</text>
+  <rect class="card" x="40" y="135" width="200" height="130" rx="10"/>
+  <text class="step" x="60" y="163">CURRENT MINIBATCH</text>
+  <text class="ttl" x="60" y="190">Run the candidate</text>
+  <text class="sub" x="60" y="216">Component traces</text>
+  <text class="sub" x="60" y="238">Task output</text>
 
-  <!-- LLM judge: reads the component traces -->
-  <rect class="input" x="310" y="64" width="390" height="108" rx="10"/>
-  <text class="step" x="332" y="90">LLM JUDGE</text>
-  <text class="ttl" x="332" y="116">Findings</text>
-  <text class="sub" x="332" y="138">Failure mode, step, evidence</text>
-  <text class="sub" x="332" y="158">Sees no score, gold answer, or feedback</text>
+  <!-- llm judge -->
+  <rect class="input" x="350" y="80" width="340" height="110" rx="10"/>
+  <text class="step" x="372" y="108">LLM JUDGE</text>
+  <text class="ttl" x="372" y="134">Findings</text>
+  <text class="sub" x="372" y="157">Failure mode, step, evidence</text>
+  <text class="sub" x="372" y="177">Sees no score, gold answer, or feedback</text>
 
-  <!-- evaluator: assesses the task output -->
-  <rect class="input" x="310" y="186" width="390" height="88" rx="10"/>
-  <text class="step" x="332" y="212">EVALUATOR</text>
-  <text class="ttl" x="332" y="238">Task feedback</text>
-  <text class="sub" x="332" y="260">Feedback on the task output, plus the score</text>
+  <!-- evaluator -->
+  <rect class="input" x="350" y="210" width="340" height="110" rx="10"/>
+  <text class="step" x="372" y="238">EVALUATOR</text>
+  <text class="ttl" x="372" y="264">Task feedback</text>
+  <text class="sub" x="372" y="287">Measured against the task's answer</text>
+  <text class="sub" x="372" y="307">Also produces the task score</text>
 
   <!-- reflection -->
-  <rect class="card" x="750" y="92" width="250" height="154" rx="10"/>
-  <text class="step" x="772" y="121">REFLECTION</text>
-  <text class="ttl" x="772" y="150">Propose revised text</text>
-  <text class="sub" x="772" y="178">Judge's findings</text>
-  <text class="sub" x="772" y="200">Evaluator feedback</text>
-  <text class="sub" x="772" y="222">Current candidate</text>
+  <rect class="card" x="800" y="135" width="200" height="130" rx="10"/>
+  <text class="step" x="820" y="163">REFLECTION</text>
+  <text class="ttl" x="820" y="190">Propose revised text</text>
+  <text class="sub" x="820" y="216">Judge's findings</text>
+  <text class="sub" x="820" y="238">Evaluator feedback</text>
 
-  <!-- inputs: component traces -> judge, task output -> evaluator -->
-  <path class="ln" d="M262,173 H286 V118 H297"/>
-  <path class="arrow" d="M297,113 L307,118 L297,123 Z"/>
-  <path class="ln" d="M262,195 H286 V230 H297"/>
-  <path class="arrow" d="M297,225 L307,230 L297,235 Z"/>
+  <!-- minibatch to the two analyses: mirrored, equal length -->
+  <path class="ln" d="M240,170 H295 V135 H338"/>
+  <path class="arrow" d="M338,130 L350,135 L338,140 Z"/>
+  <path class="ln" d="M240,230 H295 V265 H338"/>
+  <path class="arrow" d="M338,260 L350,265 L338,270 Z"/>
 
-  <!-- outputs: findings and feedback -> reflection -->
-  <path class="ln" d="M702,118 H726 V173 H737"/>
-  <path class="arrow" d="M737,168 L747,173 L737,178 Z"/>
-  <text class="lbl" x="714" y="108" text-anchor="middle">findings</text>
-  <path class="ln" d="M702,230 H726 V195 H737"/>
-  <path class="arrow" d="M737,190 L747,195 L737,200 Z"/>
-  <text class="lbl" x="714" y="246" text-anchor="middle">feedback</text>
+  <!-- the two analyses to reflection: mirrored, equal length -->
+  <path class="ln" d="M690,135 H745 V170 H788"/>
+  <path class="arrow" d="M788,165 L800,170 L788,175 Z"/>
+  <path class="ln" d="M690,265 H745 V230 H788"/>
+  <path class="arrow" d="M788,225 L800,230 L788,235 Z"/>
 
-  <!-- score -> candidate acceptance -->
-  <path class="ln" d="M505,276 V293"/>
-  <path class="arrow" d="M500,293 L505,303 L510,293 Z"/>
-  <text class="lbl" x="513" y="292">score</text>
+  <!-- score leaves the loop -->
+  <path class="ln" d="M520,320 V344"/>
+  <path class="arrow" d="M515,344 L520,356 L525,344 Z"/>
+  <text class="lbl" x="532" y="343">score</text>
 
-  <rect class="card" x="40" y="305" width="960" height="25" rx="7"/>
-  <text class="note" x="520" y="322" text-anchor="middle">Candidate acceptance is unchanged: GEPA compares task scores on the same minibatch.</text>
+  <rect class="card" x="40" y="356" width="960" height="25" rx="7"/>
+  <text class="note" x="520" y="373" text-anchor="middle">Candidate acceptance is unchanged: GEPA compares task scores on the same minibatch.</text>
 </svg>
