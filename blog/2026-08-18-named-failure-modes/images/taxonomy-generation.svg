@@ -51,9 +51,9 @@
   <!-- frozen taxonomy -->
   <rect class="card" x="812" y="86" width="188" height="132" rx="10"/>
   <text class="step" x="832" y="114">FROZEN TAXONOMY</text>
-  <text class="ttl" x="832" y="142">22 to 28 modes</text>
-  <text class="sub" x="832" y="168">Reused across seeds</text>
-  <text class="sub" x="832" y="188">and later runs</text>
+  <text class="ttl" x="832" y="142">Reusable vocabulary</text>
+  <text class="sub" x="832" y="168">22–28 modes in this study</text>
+  <text class="sub" x="832" y="188">Reused across seeds/runs</text>
 
   <!-- forward arrows -->
   <line class="ln" x1="238" y1="152" x2="275" y2="152"/>
@@ -66,12 +66,12 @@
 
   <line class="ln" x1="762" y1="152" x2="799" y2="152"/>
   <path class="arrow" d="M799,147 L809,152 L799,157 Z"/>
-  <text class="lbl" x="780" y="140" text-anchor="middle">κ met</text>
+  <text class="lbl" x="780" y="140" text-anchor="middle">freeze</text>
 
   <!-- refinement loop -->
   <path class="loop" d="M652,220 V256 H390 V220"/>
   <path class="arrow" d="M385,220 L390,210 L395,220 Z"/>
-  <text class="lbl" x="521" y="274" text-anchor="middle">while κ is below target, clarify the definitions annotators disagreed on</text>
+  <text class="lbl" x="521" y="274" text-anchor="middle">Refine definitions while agreement is below target (at most five rounds)</text>
 
   <rect class="card" x="40" y="288" width="960" height="25" rx="7"/>
   <text class="note" x="520" y="305" text-anchor="middle">The frozen taxonomy is the vocabulary the judge uses for every candidate during optimization.</text>
