@@ -22,6 +22,9 @@
         
       
       
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../feed_rss_updated.xml">
+      
       <link rel="icon" href="../static/img/gepa_logo.svg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
@@ -56,6 +59,8 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
       <link rel="stylesheet" href="../static/css/custom.css">
     
@@ -218,6 +223,48 @@
     
       <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
     
     
       <div class="md-header__source">
@@ -1144,7 +1191,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/dspy_full_program_evolution.ipynb" class="md-nav__link">
+      <a href="../tutorials/dspy_full_program_evolution/" class="md-nav__link">
         
   
   
@@ -1172,7 +1219,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/arc_agi.ipynb" class="md-nav__link">
+      <a href="../tutorials/arc_agi/" class="md-nav__link">
         
   
   
@@ -1200,7 +1247,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/3d_unicorn_optimization.ipynb" class="md-nav__link">
+      <a href="../tutorials/3d_unicorn_optimization/" class="md-nav__link">
         
   
   
@@ -1228,7 +1275,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/confidence_adapter_classification.ipynb" class="md-nav__link">
+      <a href="../tutorials/confidence_adapter_classification/" class="md-nav__link">
         
   
   
@@ -1256,7 +1303,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/langchain_adapter_pair_sum_product_walkthrough.ipynb" class="md-nav__link">
+      <a href="../tutorials/langchain_adapter_pair_sum_product_walkthrough/" class="md-nav__link">
         
   
   
@@ -6214,7 +6261,7 @@ A_i \;=\; \frac{r(x, y_i) \;-\; \bar r_g}{\sigma_g \;+\; \varepsilon}, \qquad \b
 </div>
 </div>
 <p>The zero-shot model produces a recognizable but crude unicorn — blocky torso, piston-like legs, a horn on a box head. GEPA iteratively refines the geometry, improving proportions, adding anatomical detail, and even adds a swirl around the horn, all without any human-written seed code to start from.</p>
-<p>The seedless mode is particularly useful for tasks where the solution space is large and unfamiliar such as creative or exploratory tasks. You bring the evaluation criteria (your <em>taste</em>) and the optimizer handles everything else. <a href="../tutorials/3d_unicorn_optimization.ipynb">Full code →</a></p>
+<p>The seedless mode is particularly useful for tasks where the solution space is large and unfamiliar such as creative or exploratory tasks. You bring the evaluation criteria (your <em>taste</em>) and the optimizer handles everything else. <a href="../tutorials/3d_unicorn_optimization/">Full code →</a></p>
 <h3 id="conclusion-getting-started"><a class="toclink" href="2026/02/18/introducing-optimize-anything/#conclusion-getting-started">Conclusion &amp; Getting Started</a></h3>
 <p><code>optimize_anything</code> has a simple premise: if your artifact is text and its performance can be measured, you can optimize it. The API is minimal, requiring only a seed (or task description), an evaluator, and optionally a dataset. The results span algorithmic discovery, kernel generation, systems research, prompt tuning, agent architecture search, blackbox optimization, and coding agent skill learning.</p>
 <p>The key ideas: (1) <strong>three unified modes</strong> (single-task search, multi-task search, and generalization) under one declarative API; (2) <strong>Actionable Side Information (ASI)</strong> as a first-class API concept that turns blind mutation into targeted, diagnostic-driven engineering; (3) <strong>Pareto-efficient search</strong> across metrics and examples that outperforms naive all-at-once optimization.</p>
