@@ -1,7 +1,7 @@
 # Learned error diagnosis for GEPA
 
 Companion repository for the post
-[Learned Error Diagnosis for GEPA's Reflection](https://andreiberkeley.github.io/gepa-named-failure-modes/blog/2026/08/18/named-failure-modes/).
+[Learned Error Diagnosis for GEPA's Reflection](https://andreiberkeley.github.io/gepa-named-failure-modes/blog/2026/09/30/named-failure-modes/).
 It contains the method, the pipeline that prepares its input, and one runnable
 demo. The hook that plugs the method into the optimizer lives in
 [gepa](https://github.com/gepa-ai/gepa) as the `reflective_dataset_enricher`
