@@ -69,9 +69,9 @@
   <text class="lbl" x="780" y="140" text-anchor="middle">freeze</text>
 
   <!-- refinement loop -->
-  <path class="loop" d="M652,220 V256 H390 V220"/>
-  <path class="arrow" d="M385,220 L390,210 L395,220 Z"/>
-  <text class="lbl" x="521" y="274" text-anchor="middle">Refine definitions while agreement is below target (at most five rounds)</text>
+  <path class="loop" d="M716,220 V252 H588 V220"/>
+  <path class="arrow" d="M583,230 L588,220 L593,230 Z"/>
+  <text class="lbl" x="652" y="270" text-anchor="middle">Next round: refine definitions while agreement is below target (at most five)</text>
 
   <rect class="card" x="40" y="288" width="960" height="25" rx="7"/>
   <text class="note" x="520" y="305" text-anchor="middle">The frozen taxonomy is the vocabulary the judge uses for every candidate during optimization.</text>
